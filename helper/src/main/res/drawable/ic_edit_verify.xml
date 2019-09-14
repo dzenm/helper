@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="50dp"
+        android:height="50dp"
+        android:viewportWidth="50"
+        android:viewportHeight="50">
+
+    <!--向上的圆弧 -->
+    <path
+            android:name="round"
+            android:pathData="M25 49 A24 24 0 1 0 1 25"
+            android:strokeWidth="1"
+            android:strokeAlpha="0.8"
+            android:strokeColor="@android:color/darker_gray"
+            android:strokeLineCap="round" />
+
+    <!-- 对号-->
+    <path
+            android:name="right"
+            android:pathData="M1 25 l 6 6 l 18 -18"
+            android:strokeWidth="1"
+            android:strokeAlpha="0.8"
+            android:strokeColor="@android:color/darker_gray"
+            android:strokeLineCap="round" />
+</vector>

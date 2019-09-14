@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:gravity="center"
+        android:padding="@dimen/padding_small"
+        android:src="@drawable/ic_close" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:maxHeight="@dimen/button_size"
+        android:textColor="@color/colorPrimaryTextDark"
+        android:textSize="@dimen/title_text_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_normal"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:layout_marginRight="@dimen/margin_normal"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_small"
+        android:textColor="@color/colorSecondaryTextDark"
+        android:textSize="@dimen/subtitle_text_size" />
+
+    <TextView
+        android:id="@+id/tv_permission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_normal"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:lineSpacingMultiplier="1.8"
+        android:maxLines="6"
+        android:minLines="1"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_small"
+        android:textColor="@color/colorSecondaryTextDark"
+        android:textSize="@dimen/subtitle_text_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_size"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/subtitle_text_size" />
+
+</LinearLayout>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_100"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="只请求一次权限"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_101"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="未授予权限时提示手动打开"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_102"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="未授予权限不能进行下一步操作"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_103"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="查看是否打开通知权限"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_104"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="查看是否打开安装APP权限"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_105"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="查看是否打开悬浮窗权限"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

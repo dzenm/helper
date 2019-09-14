@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_edit_verify">
+
+    <target
+        android:name="round"
+        android:animation="@animator/trim_path_end" />
+
+    <target
+        android:name="right"
+        android:animation="@animator/trim_path_start" />
+
+</animated-vector>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BaseDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>                          <!--无标题-->
+        <item name="android:windowIsTranslucent">true</item>                    <!--半透明-->
+        <item name="android:windowBackground">@android:color/transparent</item> <!--背景透明-->
+    </style>
+
+    <!-- 透明Activity主题-->
+    <style name="TransparentActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@android:color/transparent</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="colorAccent">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!-- Activity转场动画主题, 右进右出 新Activity从右边进入, 旧Activity从左边出去-->
+    <style name="Activity.Right.Animation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_left_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_left_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_right_out</item>
+    </style>
+
+    <!-- Activity转场动画主题, 右进右出, 新Activity从右边进入覆盖旧Activity -->
+    <style name="Activity.Right.Cover.Animation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_right_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/alpha_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/alpha_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_right_out</item>
+    </style>
+
+    <!-- Activity转场动画主题, 左进左出, 新Activity从左边进入, 旧Activity从右边出去 -->
+    <style name="Activity.Left.Animation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_left_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_right_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_right_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_left_out</item>
+    </style>
+
+    <!-- Activity转场动画主题, 左进左出, 新Activity从左边进入覆盖旧Activity -->
+    <style name="Activity.Left.Cover.Animation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_left_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/alpha_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/alpha_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_left_out</item>
+    </style>
+
+    <!-- Activity转场动画主题, 下进下出, 新Activity从上面进入, 旧Activity从下面出去 -->
+    <style name="Activity.Top.Animation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_top_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_bottom_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_bottom_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_top_out</item>
+    </style>
+
+    <!-- Activity转场动画主题, 下进下出, 新Activity从上面进入覆盖旧Activity -->
+    <style name="Activity.Top.Cover.Animation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_top_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/alpha_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/alpha_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_top_out</item>
+    </style>
+
+    <!-- Activity转场动画主题, 下进下出, 新Activity从下面进入, 旧Activity从上面出去 -->
+    <style name="Activity.Bottom.Animation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_bottom_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_top_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_top_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_bottom_out</item>
+    </style>
+
+    <!-- Activity转场动画主题, 下进下出, 新Activity从下面进入覆盖旧Activity -->
+    <style name="Activity.Bottom.Cover.Animation" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_bottom_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/alpha_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/alpha_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_bottom_out</item>
+    </style>
+
+    <!-- Activity转场动画主题 -->
+    <style name="Activity.Transition.Animation" parent="@android:style/Animation">
+        <item name="android:windowEnterTransition">@transition/slide_right</item>
+        <item name="android:windowExitTransition">@android:transition/fade</item>
+        <item name="android:windowReenterTransition">@android:transition/slide_right</item>
+    </style>
+
+    <!-- DialogFragment主题 -->
+    <style name="AbsFragmentTheme" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 是否半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!--下进下出-->
+    <style name="BaseDialog.Bottom.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_trans_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_trans_bottom_out</item>
+    </style>
+
+    <!--上进上出-->
+    <style name="BaseDialog.Top.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_trans_top_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_trans_top_out</item>
+    </style>
+
+    <!--下进上出-->
+    <style name="BaseDialog.Bottom.Top.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_trans_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_trans_top_out</item>
+    </style>
+
+    <!--上进下出-->
+    <style name="BaseDialog.Top.Bottom.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_trans_top_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_trans_bottom_out</item>
+    </style>
+
+    <!--左进左出-->
+    <style name="BaseDialog.Left.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_trans_left_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_trans_left_out</item>
+    </style>
+
+    <!--右进右出-->
+    <style name="BaseDialog.Right.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_trans_right_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_trans_right_out</item>
+    </style>
+
+    <!--左进右出-->
+    <style name="BaseDialog.Left.Right.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_trans_left_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_trans_right_out</item>
+    </style>
+
+    <!--右进左出-->
+    <style name="BaseDialog.Right.Left.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_trans_right_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_trans_left_out</item>
+    </style>
+
+    <!--放大-->
+    <style name="BaseDialog.Scale.Expand.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_scale_expand_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_scale_expand_out</item>
+    </style>
+
+    <!--缩小-->
+    <style name="BaseDialog.Scale.Shrink.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_scale_shrink_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_scale_shrink_out</item>
+    </style>
+
+    <!--下弹入，上弹出-->
+    <style name="BaseDialog.Overshoot.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_overshoot_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_overshoot_top_out</item>
+    </style>
+
+    <!--透明度变化-->
+    <style name="BaseDialog.Alpha.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_alpha_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_alpha_out</item>
+    </style>
+
+    <!--EditText单行输入主题-->
+    <style name="EditTextTheme" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/button_normal_size</item>
+        <item name="android:paddingLeft">@dimen/padding_normal</item>
+        <item name="android:paddingRight">@dimen/padding_normal</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="BasePopup" parent="Widget.AppCompat.PopupWindow" />
+
+    <!--竖直方向进出-->
+    <style name="BasePopup.Fade.Vertical.Animator" parent="BasePopup">
+        <item name="android:windowEnterAnimation">@anim/popup_fade_vertical_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_fade_vertical_out</item>
+    </style>
+
+    <!--水平方向进出-->
+    <style name="BasePopup.Fade.Horizontal.Animator" parent="BasePopup">
+        <item name="android:windowEnterAnimation">@anim/popup_fade_horizontal_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_fade_horizontal_out</item>
+    </style>
+
+    <!--下进下出-->
+    <style name="BasePopup.Bottom.Animator" parent="BasePopup">
+        <item name="android:windowEnterAnimation">@anim/popup_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_bottom_out</item>
+    </style>
+</resources>

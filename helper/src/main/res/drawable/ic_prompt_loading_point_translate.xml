@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="60dp"
+    android:height="60dp"
+    android:viewportWidth="100.0"
+    android:viewportHeight="100.0">
+
+    <group
+        android:name="point_i"
+        android:pivotX="15"
+        android:pivotY="20">
+        <path
+            android:fillColor="@android:color/holo_red_light"
+            android:pathData="M5 20 A10 10 0 1 0 25 20 A10 10 0 1 0 5 20" />
+    </group>
+    <group
+        android:name="point_ii"
+        android:pivotX="50"
+        android:pivotY="20">
+        <path
+            android:fillColor="@android:color/holo_blue_light"
+            android:pathData="M40 20 A10 10 0 1 0 60 20 A10 10 0 1 0 40 20" />
+    </group>
+    <group
+        android:name="point_iii"
+        android:pivotX="85"
+        android:pivotY="20">
+        <path
+            android:fillColor="@android:color/holo_orange_light"
+            android:pathData="M75 20 A10 10 0 1 0 95 20 A10 10 0 1 0 75 20" />
+    </group>
+
+</vector>

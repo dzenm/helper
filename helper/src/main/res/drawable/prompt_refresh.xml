@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_prompt_refresh">
+
+    <target
+        android:name="ic_refresh"
+        android:animation="@animator/trim_path_end" />
+</animated-vector>

@@ -1,0 +1,13 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <path
+        android:name="ic_success"
+        android:pathData="M50 94 A 44 44 0 1 1 50 6 A 44 44 0 1 1 50 94 M30 54 L48 70 M48 70 L73 33"
+        android:strokeWidth="8"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round" />
+</vector>

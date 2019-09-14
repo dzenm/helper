@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="400"
+    android:interpolator="@android:interpolator/accelerate_quint"
+    android:propertyName="fillAlpha"
+    android:repeatCount="infinite"
+    android:repeatMode="reverse"
+    android:startOffset="200"
+    android:valueFrom="0.3"
+    android:valueTo="1.0"
+    android:valueType="floatType" />

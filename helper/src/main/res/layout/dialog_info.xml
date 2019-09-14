@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_title_icon"
+            android:layout_width="@dimen/icon_size_normal"
+            android:layout_height="@dimen/icon_size_normal"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/padding_big"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxHeight="@dimen/avatar_big_size"
+            android:maxLines="1"
+            android:textSize="@dimen/title_text_size" />
+
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="5"
+            android:minLines="1"
+            android:textSize="@dimen/subtitle_text_size" />
+
+        <com.dzenm.helper.view.EditText
+            android:id="@+id/et_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:minHeight="@dimen/button_size"
+            android:minLines="1"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:textCursorDrawable="@drawable/edit_cursor_drawable"
+            android:textSize="@dimen/subtitle_text_size"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/line_1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divide_small_line" />
+
+        <LinearLayout
+            android:id="@+id/ll_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_size"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_negative"
+                android:layout_width="@dimen/layout_empty_size"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/dialog_btn_cancel" />
+
+            <View
+                android:id="@+id/line_2"
+                android:layout_width="@dimen/divide_small_line"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_positive"
+                android:layout_width="@dimen/layout_empty_size"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/dialog_btn_confirm" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

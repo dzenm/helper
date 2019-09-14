@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ProgressBar">
+        <attr name="textSize" format="dimension" />
+        <attr name="maxValue" format="integer" />
+        <attr name="textStatic" format="boolean" />
+        <attr name="progressHeight" format="dimension" />
+        <attr name="progressColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="PhotoLayout">
+        <attr name="totalNumber" format="integer" />
+        <attr name="columnNumber" format="integer" />
+        <attr name="margin" format="dimension" />
+        <attr name="isPreview" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="RatioImageView">
+        <attr name="ratio" format="float" />
+        <attr name="foregroundColor" format="color" />
+    </declare-styleable>
+
+</resources>

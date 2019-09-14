@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Helper</string>
+
+    <!--drawerLayout navigation-->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--公共文字-->
+    <string name="dialog_info">温馨提示</string>
+    <string name="dialog_btn_cancel">取消</string>
+    <string name="dialog_btn_confirm">确定</string>
+
+    <!--编辑框的默认文字-->
+    <string name="dialog_edit_hint">请输入内容</string>
+
+    <!--提示框的默认文字-->
+    <string name="dialog_loading">正在加载</string>
+
+    <!--登录框的默认文字-->
+    <string name="dialog_login">登录</string>
+    <string name="dialog_register">注册</string>
+    <string name="dialog_username">手机号/邮箱</string>
+    <string name="dialog_password">密码</string>
+    <string name="dialog_verify_code">验证码</string>
+    <string name="dialog_countdown">获取验证码</string>
+    <string name="dialog_reset_countdown">获取验证码</string>
+    <string name="dialog_second">秒</string>
+
+    <!--日期选择框的默认文字-->
+    <string name="dialog_year">年</string>
+    <string name="dialog_month">月</string>
+    <string name="dialog_day">日</string>
+
+    <!--升级对话框的默认文字-->
+    <string name="dialog_version_title">发现新版本</string>
+    <string name="dialog_up_grade">升级</string>
+
+    <!--图片选择对话框的默认文字-->
+    <string name="dialog_graph">拍照</string>
+    <string name="dialog_gallery">图片</string>
+
+    <!--全屏对话框右上角的操作项-->
+    <string name="menu_save">保存</string>
+    <string name="menu_send">发送</string>
+    <string name="menu_insert">添加</string>
+    <string name="menu_share">分享</string>
+    <string name="menu_update">更新</string>
+    <string name="menu_create">创建</string>
+</resources>

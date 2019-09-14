@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_100"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="登录注册dialog"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_101"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="ViewHolder自定义dialog"
+                    android:textColor="@android:color/white" />
+
+
+                <TextView
+                    android:id="@+id/tv_102"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="提示框设置标题"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_103"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="提示框设置按钮文本和颜色"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_104"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="提示框设置按钮"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_105"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="提示框设置圆角"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_106"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="提示框设置margin"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_107"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="提示框设置style"
+                    android:textColor="@android:color/white" />
+
+
+                <TextView
+                    android:id="@+id/tv_1071"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="提示框设置图标"
+                    android:textColor="@android:color/white" />
+
+
+                <TextView
+                    android:id="@+id/tv_108"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="编辑框设置显示位置"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_109"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="编辑框设置style"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_110"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="升级提示框"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_1101"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="原生下载及通知"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_111"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="Photo选择提示框"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_112"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="菜单位置提示框"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_113"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="PopupWindow框"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_114"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="时间选择框"
+                    android:textColor="@android:color/white" />
+
+
+                <TextView
+                    android:id="@+id/tv_120"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="成功提示"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_121"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="错误提示"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_122"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="警告提示"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_123"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="自定义图片文本提示"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_124"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="提示成功回调"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_125"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="预定义小圆点透明度变化"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_126"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="预定义小圆点移动变化"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_127"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="预定义小圆点缩放变化"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_128"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="预定义方形缩放变化"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_129"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="预定义方形透明度变化"
+                    android:textColor="@android:color/white" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@color/colorPrimaryText" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

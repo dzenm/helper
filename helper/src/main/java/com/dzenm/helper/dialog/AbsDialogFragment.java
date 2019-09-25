@@ -3,12 +3,14 @@ package com.dzenm.helper.dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.app.AppCompatDialogFragment;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -363,13 +365,14 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(AppCompatDialogFragment.STYLE_NO_TITLE, R.style.AbsFragmentTheme);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // 去掉dialog的标题，需要在setContentView()之前
-        setStyle(AppCompatDialogFragment.STYLE_NO_TITLE, R.style.AbsFragmentTheme);
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         if (layoutId() != -1) mView = inflater.inflate(layoutId(), null);
         setDefaultTextColor();

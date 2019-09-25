@@ -11,6 +11,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.provider.Settings;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -211,7 +212,8 @@ public class NetHelper {
                 }
             } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {   // 当前使用无线网络
                 @SuppressLint("WifiManagerPotentialLeak") WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                if (wifiManager == null) return null;
+                @SuppressLint("MissingPermission") WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 Logger.d(TAG + "获取Wi-Fi网络IPv4地址: " + wifiInfo.getIpAddress());
                 return intIP2StringIP(wifiInfo.getIpAddress());             // 得到IPV4地址
             }
@@ -225,8 +227,8 @@ public class NetHelper {
     /**
      * 将得到的int类型的IP转换为String类型
      *
-     * @param ip
-     * @return
+     * @param ip 需要转化的int类型的IP
+     * @return 字符串类型的IP
      */
     public static String intIP2StringIP(int ip) {
         return (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + (ip >> 24 & 0xFF);

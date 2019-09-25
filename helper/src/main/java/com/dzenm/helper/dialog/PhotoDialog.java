@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Gravity;
 
-import com.dzenm.helper.file.PhotoHelper;
+import com.dzenm.helper.photo.PhotoHelper;
 
 /**
  * @author dzenm
@@ -61,9 +61,9 @@ public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickLis
     @Override
     public void onItemClick(Object tag) {
         if (tag.equals("拍照")) {
-            PhotoHelper.getInstance().selectCamera();
+            PhotoHelper.getInstance().camera();
         } else if (tag.equals("图片")) {
-            PhotoHelper.getInstance().selectGallery();
+            PhotoHelper.getInstance().gallery();
         }
     }
 }

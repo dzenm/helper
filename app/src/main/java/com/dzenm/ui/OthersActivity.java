@@ -1,8 +1,9 @@
 package com.dzenm.ui;
 
-import androidx.databinding.DataBindingUtil;
 import android.view.Gravity;
 import android.view.View;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityOthersBinding;
@@ -11,8 +12,8 @@ import com.dzenm.helper.dialog.EditDialog;
 import com.dzenm.helper.dialog.InfoDialog;
 import com.dzenm.helper.draw.BackGHelper;
 import com.dzenm.helper.file.FileHelper;
-import com.dzenm.helper.file.PhotoHelper;
 import com.dzenm.helper.os.ScreenHelper;
+import com.dzenm.helper.photo.PhotoHelper;
 import com.dzenm.helper.share.ShareHelper;
 import com.dzenm.helper.toast.Toa;
 
@@ -23,7 +24,7 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
     @Override
     protected void initializeView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_others);
-        setToolbar(binding.toolbar);
+        setToolbarWithTranslucentStatusBar(binding.toolbar, R.color.colorAccent);
 
         setPressedBackground(binding.tv100, android.R.color.holo_blue_dark);
         setRippleBackground(binding.tv101, android.R.color.holo_red_dark);
@@ -78,25 +79,18 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
                         }
                     }).share();
         } else if (view.getId() == R.id.tv_102) {
-            PhotoHelper.getInstance()
-                    .with(this)
-                    .setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
-                        @Override
-                        public boolean onGallery(PhotoHelper helper, String filePath) {
-                            InfoDialog.newInstance(OthersActivity.this)
-                                    .setTitle("图片选择回调")
-                                    .setMessage(filePath)
-                                    .setOnDialogClickListener(null)
-                                    .show();
-                            binding.ivImage.setImageBitmap(FileHelper.getInstance().getPhoto(filePath));
-                            return false;
-                        }
-
-                        @Override
-                        public void onError(String msg) {
-                            super.onError(msg);
-                        }
-                    }).selectGallery();
+            PhotoHelper.getInstance().with(this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+                @Override
+                public boolean onGallery(PhotoHelper helper, String filePath) {
+                    InfoDialog.newInstance(OthersActivity.this)
+                            .setTitle("图片选择回调")
+                            .setMessage(filePath)
+                            .setOnDialogClickListener(null)
+                            .show();
+                    binding.ivImage.setImageBitmap(FileHelper.getInstance().getPhoto(filePath));
+                    return false;
+                }
+            }).gallery();
             ScreenHelper.copy(this, "这是复制的内容");
             Toa.show("复制成功");
         } else if (view.getId() == R.id.tv_103) {

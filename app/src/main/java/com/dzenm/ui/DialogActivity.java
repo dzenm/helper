@@ -1,11 +1,12 @@
 package com.dzenm.ui;
 
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import android.net.Uri;
 import android.os.Environment;
 import android.view.Gravity;
 import android.view.View;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityDialogBinding;
@@ -25,9 +26,9 @@ import com.dzenm.helper.dialog.ViewHolder;
 import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.draw.BackGHelper;
 import com.dzenm.helper.file.FileHelper;
-import com.dzenm.helper.file.PhotoHelper;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.net.NetHelper;
+import com.dzenm.helper.photo.PhotoHelper;
 import com.dzenm.helper.popup.PopupHelper;
 import com.dzenm.helper.toast.Toa;
 
@@ -36,7 +37,8 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
     @Override
     protected void initializeView() {
         ActivityDialogBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_dialog);
-        setToolbar(binding.toolbar);
+        setToolbarWithoutStatusBar(binding.toolbar);
+
         setPressedBackground(binding.tv100, android.R.color.holo_blue_dark);
         setRippleBackground(binding.tv101, android.R.color.holo_red_dark);
         setPressedBackground(binding.tv102, android.R.color.holo_green_dark);
@@ -362,23 +364,17 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setFilePath(Environment.getExternalStorageDirectory().getPath())
                     .startDownload();
         } else if (view.getId() == R.id.tv_111) {
-            PhotoDialog.newInstance(this)
-                    .setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
-                        @Override
-                        public void onError(String msg) {
-                            super.onError(msg);
-                        }
-
-                        @Override
-                        public boolean onCrop(PhotoHelper helper, Uri uri) {
-//                            binding.ivImage.setImageBitmap(helper.getPhoto(uri));
-                            String filePath = helper.getRealFilePath(uri);
-                            String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
-                            Logger.d(TAG + "copy file path: " + file);
-                            FileHelper.getInstance().copyFile(filePath, file);
-                            return false;
-                        }
-                    })
+            PhotoDialog.newInstance(this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+                @Override
+                public boolean onCrop(PhotoHelper helper, Uri uri) {
+//                    binding.ivImage.setImageBitmap(helper.getPhoto(uri));
+                    String filePath = helper.getRealFilePath(uri);
+                    String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
+                    Logger.d(TAG + "copy file path: " + file);
+                    FileHelper.getInstance().copyFile(filePath, file);
+                    return false;
+                }
+            })
                     .show();
         } else if (view.getId() == R.id.tv_112) {
             MenuDialog.newInstance(this)

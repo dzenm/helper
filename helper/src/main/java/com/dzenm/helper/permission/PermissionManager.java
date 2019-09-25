@@ -3,15 +3,16 @@ package com.dzenm.helper.permission;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import androidx.annotation.IntDef;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.dialog.AbsDialogFragment;
@@ -55,7 +56,7 @@ import java.util.List;
  * <p>
  * 权限请求管理工具类
  */
-public final class PermissionManager {
+public final class PermissionManager implements DialogHelper.OnConvertViewClickListener {
 
     private static final String TAG = PermissionManager.class.getSimpleName() + "|";
 
@@ -346,48 +347,46 @@ public final class PermissionManager {
         DialogHelper.newInstance(mActivity)
                 .setLayout(R.layout.dialog_permission_prompt)
                 .setCancel(false)
-                .setOnConvertViewClickListener(new DialogHelper.OnConvertViewClickListener() {
-                    @Override
-                    public void onConvertClick(ViewHolder holder, final AbsDialogFragment dialog) {
-                        ((TextView) holder.getView(R.id.tv_title)).setText("温馨提示");
-                        ((TextView) holder.getView(R.id.tv_message)).setText("程序运行所需以下权限");
-                        String permission = getPermissionPrompt();
-                        ((TextView) holder.getView(R.id.tv_permission)).setText(permission);
-
-                        TextView confirm = holder.getView(R.id.tv_confirm);
-                        confirm.setText("前往授权");
-                        ImageView cancel = holder.getView(R.id.iv_cancel);
-
-                        BackGHelper.radius(10f)
-                                .pressed(R.color.colorLightGray)
-                                .into(cancel);
-
-                        BackGHelper.radiusBL(10f)
-                                .radiusBR(10f)
-                                .pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
-                                .into(confirm);
-
-                        cancel.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                setPromptCancelClick();
-                                dialog.dismiss();
-                            }
-                        });
-                        confirm.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                setPromptConfirmClick();
-                                dialog.dismiss();
-                            }
-                        });
-                    }
-                }).setBackground(
-                BackGHelper.solid(android.R.color.white)
+                .setOnConvertViewClickListener(this)
+                .setBackground(BackGHelper.solid(android.R.color.white)
                         .radius(10)
                         .build())
-                .setCenterWidth((int) (OsHelper.getDisplayWidth() * 0.6))
                 .show();
+    }
+
+    @Override
+    public void onConvertClick(ViewHolder holder, final AbsDialogFragment dialog) {
+        ((TextView) holder.getView(R.id.tv_title)).setText("温馨提示");
+        ((TextView) holder.getView(R.id.tv_message)).setText("程序运行所需以下权限");
+        String permission = getPermissionPrompt();
+        ((TextView) holder.getView(R.id.tv_permission)).setText(permission);
+
+        TextView confirm = holder.getView(R.id.tv_confirm);
+        confirm.setText("前往授权");
+        ImageView cancel = holder.getView(R.id.iv_cancel);
+
+        BackGHelper.radius(10f)
+                .pressed(R.color.colorLightGray)
+                .into(cancel);
+
+        BackGHelper.radiusBL(10f)
+                .radiusBR(10f)
+                .pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
+                .into(confirm);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPromptCancelClick();
+                dialog.dismiss();
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setPromptConfirmClick();
+                dialog.dismiss();
+            }
+        });
     }
 
     /**

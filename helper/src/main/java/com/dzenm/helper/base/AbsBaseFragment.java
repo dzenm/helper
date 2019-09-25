@@ -3,14 +3,18 @@ package com.dzenm.helper.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
+
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,10 +104,13 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
      *
      * @param toolbar 设置toolbar
      */
-    protected void setToolbar(Toolbar toolbar) {
+    protected void setSupportToolbar(Toolbar toolbar) {
         if (toolbar == null) return;
-        ((AppCompatActivity) mActivity).setSupportActionBar(toolbar);
-        ((AppCompatActivity) mActivity).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        AppCompatActivity activity = (AppCompatActivity) mActivity;
+        activity.setSupportActionBar(toolbar);
+        if (activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Nullable

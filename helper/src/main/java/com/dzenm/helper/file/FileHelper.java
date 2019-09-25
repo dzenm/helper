@@ -379,8 +379,17 @@ public class FileHelper {
      * @return 图片的名称
      */
     public String savePhoto(Bitmap bitmap, String path) {
+        return savePhoto(bitmap, new File(path));
+    }
+
+    /**
+     * @param bitmap 保存的图片
+     * @param file   存储的文件
+     * @return 图片的名称
+     */
+    public String savePhoto(Bitmap bitmap, File file) {
         String fileName = DateHelper.getCurrentTimeMillis() + ".jpeg";
-        savePhoto(bitmap, new File(path), fileName);
+        savePhoto(bitmap, new File(file, fileName));
         return fileName;
     }
 
@@ -405,6 +414,15 @@ public class FileHelper {
     }
 
     /**
+     * @param parent    文件所在的父级路径
+     * @param photoName 图片的名称
+     * @return Bitmap 读取到的图片
+     */
+    public Bitmap getPhoto(File parent, String photoName) {
+        return getPhoto(new File(parent, photoName));
+    }
+
+    /**
      * @param parent    存储所在的路径
      * @param photoName 图片的名称
      * @return Bitmap 读取到的图片
@@ -414,11 +432,26 @@ public class FileHelper {
     }
 
     /**
+     * @param uri 存储所在的路径
+     * @return Bitmap 读取到的图片
+     */
+    public Bitmap getPhoto(Uri uri) {
+        return getPhoto(getRealFilePath(uri));
+    }
+
+    /**
      * @param path 存储所在的路径
      * @return Bitmap 读取到的图片
      */
     public Bitmap getPhoto(String path) {
-        File file = new File(path);
+        return getPhoto(new File(path));
+    }
+
+    /**
+     * @param file 文件
+     * @return Bitmap 读取到的图片
+     */
+    public Bitmap getPhoto(File file) {
         if (!isFile(file)) return null;
         Logger.d(TAG + "get the photo's path: " + file.getPath());
         return BitmapFactory.decodeFile(file.getPath());

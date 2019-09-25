@@ -1,4 +1,4 @@
-package com.dzenm.helper.file;
+package com.dzenm.helper.photo;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -10,8 +10,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+
 import androidx.annotation.Nullable;
 
+import com.dzenm.helper.file.FileHelper;
+import com.dzenm.helper.file.FileType;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
 
@@ -53,23 +56,15 @@ import java.util.List;
 public class PhotoHelper {
 
     private final String TAG = PhotoHelper.class.getSimpleName() + "|";
-    public final int PHOTO_GRAPH = 1;                                //  拍照
-    public final int PHOTO_GALLERY = 2;                              //  图库
-    public final int PHOTO_CROP = 3;                                 //  裁剪
 
     @SuppressLint("FieldLeak")
     private static volatile PhotoHelper sPhotoHelper;
     private Activity mActivity;
 
     /**
-     * 拍照后的图片Uri
+     * 拍照后的图片Uri, 裁剪后的图片Uri
      */
-    private Uri mGraphUri;
-
-    /**
-     * 裁剪后的图片Uri
-     */
-    private Uri mCropUri;
+    private Uri mGraphUri, mCropUri;
 
     /**
      * 裁剪比例
@@ -95,6 +90,7 @@ public class PhotoHelper {
 
     public PhotoHelper with(Activity activity) {
         mActivity = activity;
+        mAspectX = mAspectY = mOutputWidth = mOutputHeight = 0;
         return this;
     }
 
@@ -105,7 +101,7 @@ public class PhotoHelper {
      * @param y 裁剪图片的宽度
      * @return this
      */
-    public PhotoHelper setCropRatio(int x, int y) {
+    public PhotoHelper ratio(int x, int y) {
         mAspectX = x;
         mAspectY = y;
         return this;
@@ -118,7 +114,7 @@ public class PhotoHelper {
      * @param height 输出图片的高度
      * @return this
      */
-    public PhotoHelper setOutputSize(int width, int height) {
+    public PhotoHelper size(int width, int height) {
         mOutputWidth = width;
         mOutputHeight = height;
         return this;
@@ -131,58 +127,50 @@ public class PhotoHelper {
 
     /**
      * 打开相机拍照
-     *
-     * @return this
      */
-    public PhotoHelper selectCamera() {
+    public void camera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File file = createTempFile("/photo");
-        if (file == null) return this;
+        if (file == null) return;
         if (intent.resolveActivity(mActivity.getPackageManager()) != null) {
             mGraphUri = FileHelper.getInstance().getUri(file);
             // 添加Uri读取权限
             intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mGraphUri);
-            mActivity.startActivityForResult(intent, PHOTO_GRAPH);
+            mActivity.startActivityForResult(intent, PhotoType.GRAPH);
         } else {
             mOnSelectPhotoListener.onError("打开相机失败");
         }
-        return this;
     }
 
     /**
      * 打开图库选择图片
-     *
-     * @return this
      */
-    public PhotoHelper selectGallery() {
+    public void gallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, FileType.IMAGE);
-        mActivity.startActivityForResult(intent, PHOTO_GALLERY);
-        return this;
+        mActivity.startActivityForResult(intent, PhotoType.GALLERY);
     }
 
     /**
      * 打开图片裁剪
      *
      * @param uri 裁剪图片的Uri
-     * @return this
      */
-    public PhotoHelper selectCrop(Uri uri) {
-        // 打开系统自带的裁剪图片的intent
+    public void crop(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
 
         // 7.0以上进行适配
         if (OsHelper.isNougat()) {
             intent.setDataAndType(uri, FileType.IMAGE);
             // 临时赋予裁剪前图片读写Uri的权限，访问需要裁剪的图片Uri的权限，不添加会提示错误
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         } else {
             intent.setDataAndType(uri, FileType.IMAGE);
         }
         intent.putExtra("scale", true);             // 是否保留比例
         intent.putExtra("circleCrop", true);        // 是否设置圆形裁剪区域
+        intent.putExtra("crop", true);              // 是否设置圆形裁剪区域
 
         intent.putExtra("aspectX", mAspectX);
         intent.putExtra("aspectY", mAspectY);              // 设置裁剪区域的宽高比例
@@ -216,8 +204,7 @@ public class PhotoHelper {
                 mActivity.grantUriPermission(packageName, mCropUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             }
         }
-        mActivity.startActivityForResult(intent, PHOTO_CROP);    //设置裁剪参数显示图片至ImageVie
-        return this;
+        mActivity.startActivityForResult(intent, PhotoType.CROP);    //设置裁剪参数显示图片至ImageVie
     }
 
     /**
@@ -258,26 +245,25 @@ public class PhotoHelper {
      * @param requestCode
      * @param resultCode
      * @param data
-     * @return
      */
-    public PhotoHelper onPhotoResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == PHOTO_GRAPH && resultCode == Activity.RESULT_OK) {
+    public void onPhotoResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == PhotoType.GRAPH && resultCode == Activity.RESULT_OK) {
             Logger.d(TAG + "拍照后的图片uri: " + mGraphUri);
             if (mOnSelectPhotoListener.onGraph(this, mGraphUri)) {
-                selectCrop(mGraphUri);
+                crop(mGraphUri);
             }
-        } else if (requestCode == PHOTO_GALLERY && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == PhotoType.GALLERY && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 String path = getRealFilePath(data.getData());
                 Logger.d(TAG + "选择图库后的图片路径: " + path);
                 if (mOnSelectPhotoListener.onGallery(this, path)) {
                     // 直接使用uri，在小米机型上出现打开直接崩溃
-                    selectCrop(FileHelper.getInstance().getUri(new File(path)));
+                    crop(FileHelper.getInstance().getUri(new File(path)));
                 }
             } else {
                 mOnSelectPhotoListener.onError("图片不存在");
             }
-        } else if (requestCode == PHOTO_CROP && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == PhotoType.CROP && resultCode == Activity.RESULT_OK) {
             Logger.d(TAG + "裁剪后的图片uri: " + mCropUri);
             if (mOnSelectPhotoListener.onCrop(this, mCropUri)) {
                 // 删除文件
@@ -286,8 +272,11 @@ public class PhotoHelper {
                 Logger.d(TAG + "删除裁剪图片的文件路径: " + file.getPath());
                 FileHelper.getInstance().delete(file.getParent());
             }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Logger.d(TAG + "回调失败: " + mGraphUri + mCropUri);
+            mGraphUri = mCropUri = null;
+            Logger.d(TAG + "回调失败: " + mGraphUri + mCropUri);
         }
-        return this;
     }
 
     /**
@@ -364,36 +353,6 @@ public class PhotoHelper {
             File file = new File(getRealFilePath(uri));
             if (file.exists() && file.isFile()) file.delete();
         }
-    }
-
-    /**
-     * 通过路径获取Bitmap图片
-     *
-     * @param path 图片路径
-     * @return Bitmap
-     */
-    public Bitmap getPhoto(String path) {
-        return FileHelper.getInstance().getPhoto(path);
-    }
-
-    /**
-     * 通过Uri获取Bitmap图片
-     *
-     * @param uri 图片Uri
-     * @return Bitmap
-     */
-    public Bitmap getPhoto(Uri uri) {
-        return getPhoto(getRealFilePath(uri));
-    }
-
-    /**
-     * 通过路径获取真实的文件Uri
-     *
-     * @param file 文件
-     * @return Uri
-     */
-    public Uri getRealFileUri(File file) {
-        return FileHelper.getInstance().getUri(file);
     }
 
     /**

@@ -9,6 +9,7 @@ import com.dzenm.R;
 import com.dzenm.databinding.FragmentHomeBinding;
 import com.dzenm.helper.base.AbsBaseFragment;
 import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.os.StatusBarHelper;
 
 /**
  * @author dzenm
@@ -46,6 +47,8 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
         binding.tv105.setOnClickListener(this);
     }
 
+    private boolean dark = false;
+
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.tv_100) {
@@ -55,8 +58,15 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
             Intent intent = new Intent(getActivity(), LoadingActivity.class);
             startActivity(intent);
         } else if (view.getId() == R.id.tv_102) {
-            Intent intent = new Intent(getActivity(), GalleryActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(getActivity(), GalleryActivity.class);
+//            startActivity(intent);
+            if (dark) {
+                StatusBarHelper.setStatusBarTextStyle(mActivity, false);
+                dark = false;
+            } else {
+                StatusBarHelper.setStatusBarTextStyle(mActivity, true);
+                dark = true;
+            }
         } else if (view.getId() == R.id.tv_103) {
             Intent intent = new Intent(getActivity(), PermissionActivity.class);
             startActivity(intent);

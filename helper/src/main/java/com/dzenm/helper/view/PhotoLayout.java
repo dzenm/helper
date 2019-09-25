@@ -1,6 +1,5 @@
 package com.dzenm.helper.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
@@ -8,6 +7,7 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.draw.BackGHelper;
@@ -71,22 +71,17 @@ import java.util.List;
  * @author dzenm
  * @date 2019-09-04 08:27
  */
-public class PhotoLayout extends GridLayout implements View.OnClickListener {
+public class PhotoLayout extends GridLayout {
 
     private static final String TAG = PhotoLayout.class.getSimpleName() + "|";
 
-    private static final int DEFAULT_TOTAL_NUMBER = 9;
-    private static final int DEFAULT_COLUMN_NUMBER = 3;
+    private static final int DEFAULT_TOTAL_NUMBER = 3, DEFAULT_COLUMN_NUMBER = 3, EMPTY_IMAGE = 1001;
 
     /**
      * 容纳ImageView的总数, 默认为 {@link #DEFAULT_TOTAL_NUMBER}, {@link #setTotalNumber(int)}
-     */
-    private int mTotalNumber;
-
-    /**
      * Grid的列数, 默认为 {@link #DEFAULT_COLUMN_NUMBER}, {@link #setColumnNumber(int)}
      */
-    private int mColumnNumber;
+    private int mTotalNumber, mColumnNumber;
 
     /**
      * 提示添加的View
@@ -101,25 +96,27 @@ public class PhotoLayout extends GridLayout implements View.OnClickListener {
     /**
      * 当前应该显示的ImageView的位置, 随着ImageView的增加而增加, 随着ImageView的移除而减少
      */
-    private int mCurrentPosition = 1;
+    private int mCurrentPosition = 0;
 
     /**
      * ImageView的边距, 默认为2dp, {@link #setMargin(int)}
+     * 删除按钮的大小
      */
-    private int mMargin;
-
-    /**
-     * 是否处于第一个或者最后一个
-     */
-    private boolean isHeader = true;
+    private int mMargin, mDeleteSize;
 
     /**
      * 是否是预览图片的形式
      */
     private boolean isPreview;
 
-    private OnAddPhotoListener mOnAddPhotoListener;
+    /**
+     * 默认添加图标, 删除图标
+     */
+    private int mDefaultIcon, mDeleteIcon;
+
+    private OnLoadPhotoListener mOnLoadPhotoListener;
     private OnItemClickListener mOnItemClickListener;
+    private OnItemLongClickListener mOnItemLongClickListener;
     private ImageLoader mImageLoader;
 
     public void setTotalNumber(int totalNumber) {
@@ -128,66 +125,60 @@ public class PhotoLayout extends GridLayout implements View.OnClickListener {
 
     public void setColumnNumber(int columnNumber) {
         mColumnNumber = columnNumber;
+        invalidateGridView();
     }
 
     public void setMargin(int margin) {
         mMargin = OsHelper.dp2px(margin);
+        invalidateGridView();
     }
 
-    public void setOnPhotoListener(OnAddPhotoListener listener) {
-        mOnAddPhotoListener = listener;
+    public void setOnPhotoListener(OnLoadPhotoListener listener) {
+        mOnLoadPhotoListener = listener;
+    }
+
+    public void setPreview(boolean preview) {
+        isPreview = preview;
+        invalidateGridView();
     }
 
     /**
-     * 如果未设置Item点击事件, 默认点击Item时, 移除view
-     *
      * @param onItemClickListener Item点击事件
      */
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
     }
 
-    public void setPreview(boolean preview) {
-        isPreview = preview;
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        mOnItemLongClickListener = onItemLongClickListener;
     }
 
     /**
-     * 图片加载的方式 {@link ImageLoader}, 使用第三方图片加载框架
+     * 图片加载的方式 {@link ImageLoader}, 使用第三方图片加载框架, 如Glide
      *
      * @param imageLoader 图片加载的接口
      */
-    public void loader(ImageLoader imageLoader) {
+    public void setImageLoader(ImageLoader imageLoader) {
         mImageLoader = imageLoader;
     }
 
     public void load(List lists) {
+        setTotalNumber(lists.size());
         for (Object object : lists) load(object);
     }
 
-    public void load(Object object) {
-        loadRatioImageView(object);
-    }
-
-    public RatioImageView load() {
-        return mCurrentPosition <= mTotalNumber ? addRatioImageView() : null;
-    }
-
-    public void remove(View view) {
-        removeRatioImageView(view);
-    }
-
-    /**
-     * 加载图片到RatioImageView
-     *
-     * @param object 图片
-     */
-    private void loadRatioImageView(final Object object) {
-        postDelayed(new Runnable() {
+    public void load(final Object object) {
+        post(new Runnable() {
             @Override
             public void run() {
                 newRatioImageView(object);
             }
-        }, 100);
+        });
+
+    }
+
+    public void remove(View view) {
+        removeRatioImageView(view);
     }
 
     /**
@@ -196,8 +187,10 @@ public class PhotoLayout extends GridLayout implements View.OnClickListener {
      * @param object 图片
      */
     private void newRatioImageView(Object object) {
-        RatioImageView imageView = load();
-        if (imageView != null) mImageLoader.onLoader(imageView, object);
+        if (mCurrentPosition < mTotalNumber) {
+            RatioImageView imageView = addRatioImageView(mCurrentPosition);
+            mImageLoader.onLoader(imageView, object);
+        }
     }
 
     public PhotoLayout(Context context) {
@@ -209,36 +202,57 @@ public class PhotoLayout extends GridLayout implements View.OnClickListener {
     }
 
     public PhotoLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        @SuppressLint("Recycle") TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.PhotoLayout);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public PhotoLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+
+        TypedArray t = context
+                .obtainStyledAttributes(attrs, R.styleable.PhotoLayout, defStyleAttr, defStyleRes);
 
         mTotalNumber = t.getInteger(R.styleable.PhotoLayout_totalNumber, DEFAULT_TOTAL_NUMBER);
         mColumnNumber = t.getInteger(R.styleable.PhotoLayout_columnNumber, DEFAULT_COLUMN_NUMBER);
         mMargin = (int) t.getDimension(R.styleable.PhotoLayout_margin, OsHelper.dp2px(2));
         isPreview = t.getBoolean(R.styleable.PhotoLayout_isPreview, false);
-    }
+        mDeleteSize = (int) t.getDimension(R.styleable.PhotoLayout_deleteSize, OsHelper.dp2px(16));
+        mDeleteIcon = t.getResourceId(R.styleable.PhotoLayout_deleteIcon, R.drawable.ic_delete_picture);
+        mDefaultIcon = t.getResourceId(R.styleable.PhotoLayout_defaultIcon, R.drawable.ic_add);
 
-    private void initialize() {
-        setColumnCount(mColumnNumber);
-        int rowCount = mCurrentPosition / mColumnNumber;
-        setRowCount(mCurrentPosition == mTotalNumber ? rowCount : rowCount + 1);
-        setOrientation(GridLayout.HORIZONTAL);
+        t.recycle();
+
+        setLayoutTransition(LayoutTransitionHelper.scaleViewAnimator(this));
+        invalidateGridView();
     }
 
     /**
-     * 初始化提示View, 初始时 {@link #mCurrentPosition} == 0, 即没有ImageView, 当添加
-     * 新的ImageView作为提示用户点击进行添加的ImageView后, 该值变为1, {@link #isHeader}
-     * 用于判断是否处于需要移除提示View
+     * 初始化View
      */
-    private void initializeEmptyRatioImageView() {
-        if (mCurrentPosition == 1) {
-            if (isHeader) {
-                if (getChildCount() < mTotalNumber) {
-                    addView(createEmptyRatioImageView());
-                    isHeader = false;
-                }
-            }
+    private void initializeView() {
+        if (!isPreview && mEmptyRatioImageView != null) {
+            removeView(mEmptyRatioImageView);
+            mEmptyRatioImageView = null;
         }
+        setColumnCount(mColumnNumber);
+        int rowCount = mCurrentPosition + 1 / mColumnNumber;
+        setRowCount(mCurrentPosition + 1 == mTotalNumber ? rowCount : rowCount + 1);
+        mImageWidth = mImageHeight = (getWidth() - 6 * mMargin) / getColumnCount();
+        if (!isPreview && mEmptyRatioImageView == null && getChildCount() == 0) {
+            mEmptyRatioImageView = createEmptyRatioImageView(mImageWidth, mImageHeight, mMargin);
+            addView(mEmptyRatioImageView);
+        }
+    }
+
+    /**
+     * 重新绘制
+     */
+    private void invalidateGridView() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                initializeView();
+            }
+        });
     }
 
     /**
@@ -246,80 +260,105 @@ public class PhotoLayout extends GridLayout implements View.OnClickListener {
      *
      * @return ImageView
      */
-    private RatioImageView createEmptyRatioImageView() {
-        mEmptyRatioImageView = new RatioImageView(getContext());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(mImageWidth, mImageHeight);
-        layoutParams.setMargins(mMargin, mMargin, mMargin, mMargin);
-        mEmptyRatioImageView.setLayoutParams(layoutParams);
-        BackGHelper.pressed(R.color.colorLightGray, R.color.colorHint).into(mEmptyRatioImageView);
-        mEmptyRatioImageView.setImageResource(R.drawable.ic_add);
-        mEmptyRatioImageView.setScaleType(RatioImageView.ScaleType.CENTER_CROP);
-        mEmptyRatioImageView.setOnClickListener(this);
-        return mEmptyRatioImageView;
-    }
-
-    /**
-     * 为ImageView设置图片, {@link #removeEmptyRatioImageView()} 用于判断添加的ImageView是否
-     * 超出 {@link #mTotalNumber}
-     *
-     * @return ImageView
-     */
-    private RatioImageView addRatioImageView() {
-        RatioImageView imageView = createRatioImageView();
-        // 设置View为实际(mCurrentCount - 1)所在的位置, 防止图片混乱
-        addView(imageView, mCurrentPosition - 1);
-        Logger.d(TAG + "当前ImageView所在的位置: " + mCurrentPosition);
-        mCurrentPosition++;
-        if (!isPreview) removeEmptyRatioImageView();
+    private RatioImageView createEmptyRatioImageView(int width, int height, int margin) {
+        RatioImageView imageView = new RatioImageView(getContext());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, height);
+        layoutParams.setMargins(margin, margin, margin, margin);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setPivotX(0);
+        imageView.setPivotY(0);
+        imageView.setImageResource(mDefaultIcon);
+        imageView.setScaleType(RatioImageView.ScaleType.CENTER_CROP);
+        imageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnLoadPhotoListener != null) mOnLoadPhotoListener.onLoad(PhotoLayout.this);
+            }
+        });
+        BackGHelper.pressed(R.color.colorLightGray, R.color.colorHint).into(imageView);
         return imageView;
     }
 
     /**
-     * 当添加的图片数达到 {@link #mTotalNumber}, 并且处于最后一个时, 移除提示View
+     * 为ImageView设置图片
+     *
+     * @return ImageView
      */
-    private void removeEmptyRatioImageView() {
-        if (mCurrentPosition - 1 == mTotalNumber) {
-            if (!isHeader) {
-                removeView(mEmptyRatioImageView);
-                mCurrentPosition--;
-                isHeader = true;
-            }
+    private RatioImageView addRatioImageView(int position) {
+        // 预览图片时, 隐藏提示View
+        if (isPreview && mEmptyRatioImageView != null && getChildCount() >= 1) {
+            mEmptyRatioImageView.setVisibility(GONE);
         }
+        RatioImageView imageView = createRatioImageView(position);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(mImageWidth, mImageHeight);
+        RelativeLayout relativeLayout = new RelativeLayout(getContext());
+        layoutParams.setMargins(mMargin, mMargin, mMargin, mMargin);
+        relativeLayout.setLayoutParams(layoutParams);
+        // 设置动画起始点
+        relativeLayout.setPivotX(0);
+        relativeLayout.setPivotY(0);
+        relativeLayout.addView(imageView);
+        if (!isPreview) relativeLayout.addView(createDeleteView(relativeLayout, position));
+
+        // 设置View为实际mCurrentCount所在的位置, 防止图片混乱
+        Logger.d(TAG + "当前ImageView所在的位置: " + position);
+        addView(relativeLayout, position);
+        mCurrentPosition++;
+
+        setEmptyRatioImageViewVisible(false);
+        return imageView;
     }
 
     /**
      * 创建显示图片的ImageView
      * * @return ImageView
      */
-    private RatioImageView createRatioImageView() {
+    private RatioImageView createRatioImageView(final int currentPosition) {
         RatioImageView imageView = new RatioImageView(getContext());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(mImageWidth, mImageHeight);
-        layoutParams.setMargins(mMargin, mMargin, mMargin, mMargin);
-        imageView.setLayoutParams(layoutParams);
+        imageView.setLayoutParams(new RelativeLayout.LayoutParams(mImageWidth, mImageHeight));
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        // 设置当前View所在的实际位置, 否则图片加载时会产生混乱
-        setClickToDelete(imageView, mCurrentPosition - 1);
+        imageView.setTag(R.id.photo_layout_image_id, currentPosition);
+        // 设置图片点击事件, 单击预览图片
+        imageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.d(TAG + "click position is " + currentPosition);
+                if (mOnItemClickListener != null)
+                    mOnItemClickListener.onItemClick(view, currentPosition);
+            }
+        });
+        imageView.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Logger.d(TAG + "click position is " + currentPosition);
+                if (mOnItemLongClickListener != null)
+                    mOnItemLongClickListener.onItemLongClick(view, currentPosition);
+                return false;
+            }
+        });
         return imageView;
     }
 
     /**
-     * 设置图片点击事件, 单击删除图片
-     *
-     * @param view     点击的view
-     * @param position 当前view所在的位置
+     * 创建删除按钮
+     * * @return ImageView
      */
-    private void setClickToDelete(View view, final int position) {
-        view.setOnClickListener(new OnClickListener() {
+    private RatioImageView createDeleteView(final RelativeLayout relativeLayout, final int currentPosition) {
+        RatioImageView imageView = new RatioImageView(getContext());
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(mDeleteSize, mDeleteSize);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setImageResource(mDeleteIcon);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        // 设置点击事件, 单击删除
+        imageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Logger.d(TAG + "click position is " + position);
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onItemClick(view, position);
-                } else {
-                    removeRatioImageView(view);
-                }
+                Logger.d(TAG + "click position is " + currentPosition);
+                remove(relativeLayout);
             }
         });
+        return imageView;
     }
 
     /**
@@ -328,42 +367,33 @@ public class PhotoLayout extends GridLayout implements View.OnClickListener {
     private void removeRatioImageView(View view) {
         removeView(view);
         mCurrentPosition--;
-        removeDeleteEmptyRatioImageView();
+        setEmptyRatioImageViewVisible(true);
     }
 
     /**
-     * 当图片全部添加完, 移除提示View
+     * 设置提示View是否可见, 添加的图片数量等于 {@link #mTotalNumber} 时隐藏
+     * 添加完图片时如果删除一张图片时应显示
+     *
+     * @param visible 是否可见
      */
-    private void removeDeleteEmptyRatioImageView() {
-        if (getChildCount() + 1 == mTotalNumber) {
-            if (isHeader) {
-                addView(createEmptyRatioImageView());
-                mCurrentPosition++;
-                isHeader = false;
-            }
+    private void setEmptyRatioImageViewVisible(boolean visible) {
+        int count = visible ? getChildCount() : mCurrentPosition;
+        if (count == mTotalNumber && !isPreview) {
+            mEmptyRatioImageView.setVisibility(visible ? VISIBLE : GONE);
         }
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        initialize();
-        mImageWidth = mImageHeight = (w - 6 * mMargin) / getColumnCount();
-        if (!isPreview) initializeEmptyRatioImageView();
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == mEmptyRatioImageView.getId()) {
-            if (mOnAddPhotoListener != null) mOnAddPhotoListener.onAdd(this);
-        }
-    }
-
-    public interface OnAddPhotoListener {
-        void onAdd(PhotoLayout layout);
+    public interface OnLoadPhotoListener {
+        void onLoad(PhotoLayout layout);
     }
 
     public interface OnItemClickListener {
+
         void onItemClick(View view, int position);
+    }
+
+    public interface OnItemLongClickListener {
+
+        void onItemLongClick(View view, int position);
     }
 }

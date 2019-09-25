@@ -1,32 +1,36 @@
 package com.dzenm.ui;
 
 import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import androidx.annotation.Nullable;
+import android.os.Handler;
 import android.view.View;
 
-import com.dzenm.helper.view.PhotoLayout;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityDrawableBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.draw.BackGHelper;
 import com.dzenm.helper.draw.Orientation;
 import com.dzenm.helper.file.FileHelper;
-import com.dzenm.helper.file.PhotoHelper;
+import com.dzenm.helper.photo.PhotoHelper;
 import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.view.PhotoLayout;
 
 import java.util.Arrays;
 
-public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnAddPhotoListener {
+public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnLoadPhotoListener {
 
-    private PhotoLayout plAdd, plPreview, plTest;
+    private PhotoLayout plAdd, plPreview;
 
     @Override
     protected void initializeView() {
         ActivityDrawableBinding binding =
                 DataBindingUtil.setContentView(this, R.layout.activity_drawable);
-        setToolbar(binding.toolbar);
+        setToolbarWithGradientStatusBar(binding.toolbar,
+                BackGHelper.orientation(Orientation.LEFT_RIGHT)
+                        .gradient(android.R.color.holo_orange_light,
+                                android.R.color.holo_blue_light).build());
 
         BackGHelper.orientation(Orientation.BOTTOM_TOP)
                 .gradient(android.R.color.holo_red_light, android.R.color.holo_blue_light, android.R.color.holo_orange_light)
@@ -46,47 +50,35 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnA
         initPhotoLayout();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        PhotoHelper.getInstance().onPhotoResult(requestCode, resultCode, data);
-    }
-
     private void initPhotoLayout() {
         plAdd = findViewById(R.id.pl_add);
         plPreview = findViewById(R.id.pl_preview);
-        plTest = findViewById(R.id.pl_test);
+        plPreview.setPreview(true);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
 
+            }
+        }, 1000);
         addPhoto();
         previewPhoto();
+
     }
 
     private void addPhoto() {
         plAdd.setOnPhotoListener(this);
-
-        plTest.setTotalNumber(12);
-        plTest.setColumnNumber(4);
-        plTest.setOnPhotoListener(this);
+        plAdd.setImageLoader(new MyImageLoader());
     }
 
     @Override
-    public void onAdd(final PhotoLayout layout) {
-        PhotoHelper.getInstance()
-                .with(DrawableActivity.this)
-                .setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
-                    @Override
-                    public boolean onGallery(PhotoHelper helper, String filePath) {
-                        Bitmap bitmap = FileHelper.getInstance().getPhoto(filePath);
-                        layout.load(bitmap);
-                        layout.loader(new MyImageLoader());
-                        return false;
-                    }
-
-                    @Override
-                    public void onError(String msg) {
-                        super.onError(msg);
-                    }
-                }).selectGallery();
+    public void onLoad(final PhotoLayout layout) {
+        PhotoHelper.getInstance().with(this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+            @Override
+            public boolean onGallery(PhotoHelper helper, String filePath) {
+                layout.load(FileHelper.getInstance().getPhoto(filePath));
+                return false;
+            }
+        }).gallery();
     }
 
     private void previewPhoto() {
@@ -99,11 +91,10 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnA
         plPreview.setOnItemClickListener(new PhotoLayout.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toa.show("点击的是第: " + position);
+                Toa.show("点击预览的是第: " + position);
             }
         });
-        plPreview.setPreview(true);
-        plPreview.loader(new MyImageLoader());
+        plPreview.setImageLoader(new MyImageLoader());
         plPreview.load(Arrays.asList(url));
     }
 }

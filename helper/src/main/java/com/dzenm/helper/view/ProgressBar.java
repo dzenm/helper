@@ -6,11 +6,14 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+
 import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.dzenm.helper.R;
+import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
 
 /**
@@ -87,7 +90,7 @@ public class ProgressBar extends View {
     public ProgressBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         // 获取自定义属性
-        @SuppressLint("Recycle") TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.ProgressBar);
+        TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.ProgressBar);
         mProgressHeight = (int) t.getDimension(R.styleable.ProgressBar_progressHeight, dp2px(4));
         mTextSize = (int) t.getDimension(R.styleable.ProgressBar_textSize, 36);
         mMaxValue = t.getInteger(R.styleable.ProgressBar_maxValue, 100);
@@ -97,6 +100,7 @@ public class ProgressBar extends View {
         mProgressValue = 0;
         mText = mProgressValue + "%";
         mTextPadding = dp2px(4);
+        t.recycle();
     }
 
     {
@@ -240,6 +244,6 @@ public class ProgressBar extends View {
      * @return dp值
      */
     private int dp2px(int value) {
-        return ScreenHelper.dp2px(value);
+        return OsHelper.dp2px(value);
     }
 }

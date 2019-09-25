@@ -29,7 +29,7 @@ public class MainActivity extends AbsBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        setSupportActionBar(binding.toolbar);
+        setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
 
         f1 = new HomeFragment();
         f2 = new PersonalFragment();
@@ -41,7 +41,6 @@ public class MainActivity extends AbsBaseActivity {
         fragmentHelper = new FragmentHelper(this, R.id.frame_layout,
                 fragments.toArray(new Fragment[2]));
         fragmentHelper.show(f1);
-
     }
 
     public void onClick(View view) {

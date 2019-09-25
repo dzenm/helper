@@ -179,11 +179,11 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
         TextView textView = new TextView(mActivity);
         int paddingVertical, paddingHorizontal;
         if (isShowCenter()) {
-            paddingVertical = ScreenHelper.dp2px(16);
-            paddingHorizontal = ScreenHelper.dp2px(32);
+            paddingVertical = OsHelper.dp2px(16);
+            paddingHorizontal = OsHelper.dp2px(32);
         } else {
             textView.setGravity(Gravity.CENTER);
-            paddingVertical = paddingHorizontal = ScreenHelper.dp2px(16);
+            paddingVertical = paddingHorizontal = OsHelper.dp2px(16);
         }
         textView.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
         textView.setLayoutParams(params);

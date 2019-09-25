@@ -1,19 +1,27 @@
 package com.dzenm.helper.base;
 
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.Window;
+
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.Window;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.dialog.PromptDialog;
 import com.dzenm.helper.net.NetHelper;
 import com.dzenm.helper.os.ActivityHelper;
 import com.dzenm.helper.os.ScreenHelper;
+import com.dzenm.helper.os.StatusBarHelper;
+import com.dzenm.helper.permission.PermissionManager;
+import com.dzenm.helper.photo.PhotoHelper;
 
 /**
  * @author dinzhenyan
@@ -28,9 +36,8 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 设置切换页面动画开关
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         ActivityHelper.getInstance().add(this);                         // 添加Activity到Stack管理
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS); // 设置切换页面动画开关
         mPromptDialog = PromptDialog.newInstance(this);
         initializeView();                                               // 初始化View
     }
@@ -39,46 +46,97 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
     }
 
     /**
+     * 设置toolbar及返回按钮
+     *
+     * @param toolbar 设置的toolbar
+     */
+    public void setToolbar(Toolbar toolbar) {
+        if (toolbar == null) return;
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // 设置返回按钮
+        }
+    }
+
+    /**
+     * 设置Toolbar, 并移除StatusBar
+     *
+     * @param toolbar 需要设置的Toolbar
+     */
+    public void setToolbarWithoutStatusBar(Toolbar toolbar) {
+        setToolbar(toolbar);
+        StatusBarHelper.adjustToolbarForHideStatusBar(this, toolbar);
+        StatusBarHelper.setColor(this, true, android.R.color.transparent);
+    }
+
+    /**
+     * 设置toolbar, 并设置沉浸式状态栏
+     *
+     * @param toolbar 需要设置的Toolbar
+     * @param color   设置的颜色
+     */
+    public void setToolbarWithImmersiveStatusBar(Toolbar toolbar, @ColorRes int color) {
+        setToolbar(toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(color));
+        StatusBarHelper.setColor(this, color);
+    }
+
+    /**
+     * 设置toolbar, 并设置半透明状态栏
+     *
+     * @param toolbar 需要设置的Toolbar
+     * @param color   设置的颜色
+     */
+    public void setToolbarWithTranslucentStatusBar(Toolbar toolbar, @ColorRes int color) {
+        setToolbar(toolbar);
+        toolbar.setBackgroundColor(getResources().getColor(color));
+        StatusBarHelper.setTranslucentColor(this, color);
+    }
+
+    /**
+     * 设置toolbar, 并设置渐变式状态栏
+     *
+     * @param toolbar  需要设置的Toolbar
+     * @param drawable 需要设置的drawable
+     */
+    public void setToolbarWithGradientStatusBar(Toolbar toolbar, Drawable drawable) {
+        setToolbar(toolbar);
+        toolbar.setBackground(drawable);
+        StatusBarHelper.setDrawable(this, drawable);
+    }
+
+    /**
      * 设置toolbar,并在左上角添加动画横线按钮
      *
-     * @param drawerLayout
-     * @param toolbar
-     * @param title
+     * @param drawerLayout {@link DrawerLayout} 布局
+     * @param toolbar      设置的Toolbar
+     * @param title        显示的标题
      */
     public void addDrawerLayoutToggle(DrawerLayout drawerLayout, Toolbar toolbar, String title) {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(title);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
 
-    /**
-     * 设置toolbar及返回按钮
-     *
-     * @param toolbar 设置的toolbar
-     */
-    protected void setToolbar(Toolbar toolbar) {
-        if (toolbar == null) return;
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // 设置返回按钮
-    }
-
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // 设置返回按钮的点击事件
-        onHomeOptionSelected(item);
+        onHomeOptionSelected(item.getItemId());
         return super.onOptionsItemSelected(item);
     }
 
     /**
      * Toolbar的Home键点击事件
      *
-     * @param item
+     * @param itemId 设置的item
      */
-    protected void onHomeOptionSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) finish();
+    protected void onHomeOptionSelected(int itemId) {
+        if (itemId == android.R.id.home) finish();
     }
 
     /**
@@ -95,16 +153,6 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
     public void dismissPromptDialog() {
         if (!mPromptDialog.isShowing()) return;
         mPromptDialog.dismiss();
-    }
-
-    @Override
-    public void onNetwork(boolean connect) {
-        mNetworkAvailable = connect;
-        if (connect) {
-            onConnectNetwork();
-        } else {
-            onUnConnectNetWork();
-        }
     }
 
     public boolean isNetworkAvailable() {
@@ -133,6 +181,16 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
     }
 
     @Override
+    public void onNetwork(boolean connect) {
+        mNetworkAvailable = connect;
+        if (connect) {
+            onConnectNetwork();
+        } else {
+            onUnConnectNetWork();
+        }
+    }
+
+    @Override
     public void finish() {
         ScreenHelper.hideSoftInput(this);
         super.finish();
@@ -143,5 +201,18 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
     protected void onDestroy() {
         super.onDestroy();
         ActivityHelper.getInstance().remove(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.getInstance().onPermissionResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        PermissionManager.getInstance().onSettingResult(requestCode, resultCode, data);
+        PhotoHelper.getInstance().onPhotoResult(requestCode, resultCode, data);
     }
 }

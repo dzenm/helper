@@ -1,7 +1,5 @@
 package com.dzenm.helper.os;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -10,15 +8,10 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Build;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -57,7 +50,7 @@ public class ScreenHelper {
     }
 
     /**
-     * @param view
+     * @param view 需要截图的view
      * @return 任意View屏幕截图
      */
     public static Bitmap snapShotWithStatusBar(View view) {
@@ -69,7 +62,7 @@ public class ScreenHelper {
     }
 
     /**
-     * @param activity
+     * @param activity 需要截图的Activity
      * @return 当前屏幕截图，包含状态栏
      */
     public static Bitmap snapShotWithStatusBar(Activity activity) {
@@ -82,7 +75,7 @@ public class ScreenHelper {
     }
 
     /**
-     * @param activity
+     * @param activity 需要截图的Activity
      * @return 当前屏幕截图，不包含状态栏
      */
     public static Bitmap snapShotWithoutStatusBar(Activity activity) {
@@ -99,204 +92,30 @@ public class ScreenHelper {
     }
 
     /**
-     * 修改状态栏颜色，支持4.4以上版本
-     *
-     * @param colorId 颜色
-     */
-    public static void setStatusBarColor(Activity activity, int colorId) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = activity.getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(activity.getResources().getColor(colorId));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //使用SystemBarTintManager,需要先将状态栏设置为透明
-            setTranslucentStatus(activity);
-//            SystemBarTintManager systemBarTintManager = new SystemBarTintManager(activity);
-//            systemBarTintManager.setStatusBarTintEnabled(true);//显示状态栏
-//            systemBarTintManager.setStatusBarTintColor(colorId);//设置状态栏颜色
-        }
-    }
-
-    /**
-     * 设置状态栏透明
-     */
-    @TargetApi(19)
-    public static void setTranslucentStatus(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的浅灰色
-            Window window = activity.getWindow();
-            View decorView = window.getDecorView();
-            //两个 flag 要结合使用，表示让应用的主体内容占用系统状态栏的空间
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            decorView.setSystemUiVisibility(option);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-            //导航栏颜色也可以正常设置
-            window.setNavigationBarColor(Color.TRANSPARENT);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window window = activity.getWindow();
-            WindowManager.LayoutParams attributes = window.getAttributes();
-            int flagTranslucentStatus = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
-            attributes.flags |= flagTranslucentStatus;
-            int flagTranslucentNavigation = WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
-            attributes.flags |= flagTranslucentNavigation;
-            window.setAttributes(attributes);
-        }
-    }
-
-
-    /**
-     * 代码实现android:fitsSystemWindows
-     *
-     * @param activity
-     */
-    public static void setRootViewFitsSystemWindows(Activity activity, boolean fitSystemWindows) {
-        if (!OsHelper.isLollipop()) return;
-        ViewGroup winContent = activity.findViewById(android.R.id.content);
-        if (winContent.getChildCount() <= 0) return;
-        ViewGroup rootView = (ViewGroup) winContent.getChildAt(0);
-        if (rootView != null) rootView.setFitsSystemWindows(fitSystemWindows);
-    }
-
-    /**
-     * 设置状态栏深色浅色切换
-     */
-    public static boolean setStatusBarDarkTheme(Activity activity, boolean dark) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (OsHelper.isLollipop()) {
-                setStatusBarFontIconDark(activity, Rom.ANDROID, dark);
-            } else if (OsHelper.isMiui()) {
-                setStatusBarFontIconDark(activity, Rom.MIUI, dark);
-            } else if (OsHelper.isFlyme()) {
-                setStatusBarFontIconDark(activity, Rom.FLYME, dark);
-            } else {//其他情况
-                return false;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 设置 状态栏深色浅色切换
-     */
-    public static boolean setStatusBarFontIconDark(Activity activity, @Rom String type, boolean dark) {
-        switch (type) {
-            case Rom.MIUI:
-                return setMiuiUI(activity, dark);
-            case Rom.FLYME:
-                return setFlymeUI(activity, dark);
-            case Rom.ANDROID:
-                return setCommonUI(activity, dark);
-        }
-        return false;
-    }
-
-    //设置6.0 状态栏深色浅色切换
-    public static boolean setCommonUI(Activity activity, boolean dark) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            View decorView = activity.getWindow().getDecorView();
-            if (decorView != null) {
-                int vis = decorView.getSystemUiVisibility();
-                if (dark) {
-                    vis |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                } else {
-                    vis &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-                }
-                if (decorView.getSystemUiVisibility() != vis) {
-                    decorView.setSystemUiVisibility(vis);
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //设置Flyme 状态栏深色浅色切换
-    public static boolean setFlymeUI(Activity activity, boolean dark) {
-        try {
-            Window window = activity.getWindow();
-            WindowManager.LayoutParams lp = window.getAttributes();
-            Field darkFlag = WindowManager.LayoutParams.class.getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON");
-            Field meizuFlags = WindowManager.LayoutParams.class.getDeclaredField("meizuFlags");
-            darkFlag.setAccessible(true);
-            meizuFlags.setAccessible(true);
-            int bit = darkFlag.getInt(null);
-            int value = meizuFlags.getInt(lp);
-            if (dark) {
-                value |= bit;
-            } else {
-                value &= ~bit;
-            }
-            meizuFlags.setInt(lp, value);
-            window.setAttributes(lp);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    //设置MIUI 状态栏深色浅色切换
-    public static boolean setMiuiUI(Activity activity, boolean dark) {
-        try {
-            Window window = activity.getWindow();
-            Class<?> clazz = activity.getWindow().getClass();
-            @SuppressLint("PrivateApi") Class<?> layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
-            Field field = layoutParams.getField("EXTRA_FLAG_STATUS_BAR_DARK_MODE");
-            int darkModeFlag = field.getInt(layoutParams);
-            Method extraFlagField = clazz.getDeclaredMethod("setExtraFlags", int.class, int.class);
-            extraFlagField.setAccessible(true);
-            if (dark) {    //状态栏亮色且黑色字体
-                extraFlagField.invoke(window, darkModeFlag, darkModeFlag);
-            } else {
-                extraFlagField.invoke(window, 0, darkModeFlag);
-            }
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * 获取状态栏高度
-     *
-     * @return
-     */
-    public static int getStatusBarHeight() {
-        int statusHeight = -1;
-        int resourceId = Resources.getSystem().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            statusHeight = Resources.getSystem().getDimensionPixelSize(resourceId);
-        }
-        return statusHeight;
-    }
-
-    /**
      * 复制纯文本
      *
-     * @param context
-     * @param text
+     * @param context 获取系统服务的上下文
+     * @param text    复制的文本
      */
     public static void copy(Context context, CharSequence text) {
         // 获取剪切板管理器
         ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         // 创建普通字符clipData
         ClipData clipData = ClipData.newPlainText("text/plain", text);
-        clipboardManager.setPrimaryClip(clipData);
+        if (clipboardManager != null) {
+            clipboardManager.setPrimaryClip(clipData);
+        }
     }
 
     /**
      * 粘贴纯文本
      *
-     * @param context
-     * @return
+     * @param context 获取系统服务的上下文
+     * @return 文本内容
      */
     public static CharSequence paste(Context context) {
         ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (clipboardManager == null) return "";
         ClipData clipData = clipboardManager.getPrimaryClip();
         // 获取 text
         return clipData == null ? "" : clipData.getItemAt(0).coerceToText(context);
@@ -306,8 +125,8 @@ public class ScreenHelper {
     /**
      * 隐藏Activity的焦点
      *
-     * @param activity
-     * @return
+     * @param activity 获取系统服务的上下文
+     * @return 是否隐藏成功
      */
     public static boolean hideSoftInput(Activity activity) {
         View view = activity.getCurrentFocus();
@@ -319,7 +138,7 @@ public class ScreenHelper {
     /**
      * EditText只能获取焦点，不弹出软键盘
      *
-     * @param editText
+     * @param editText 需要设置的EditText
      */
     public static void getFocusAndHideSoftInput(EditText editText) {
         if (OsHelper.isLollipop()) {
@@ -330,11 +149,7 @@ public class ScreenHelper {
                 Method method = editClass.getMethod("setShowSoftInputOnFocus", boolean.class);
                 method.setAccessible(true);
                 method.invoke(editText, editClass);
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
@@ -343,8 +158,8 @@ public class ScreenHelper {
     /**
      * 显示输入框的软键盘
      *
-     * @param editText
-     * @return
+     * @param editText 需要设置的EditText
+     * @return 是否显示成功
      */
     public static boolean showSoftInput(EditText editText) {
         return ((InputMethodManager) editText.getContext().getSystemService(
@@ -354,8 +169,8 @@ public class ScreenHelper {
     /**
      * 隐藏输入框的软键盘
      *
-     * @param editText
-     * @return
+     * @param editText 需要设置的EditText
+     * @return 是否隐藏成功
      */
     public static boolean hideSoftInput(EditText editText) {
         return ((InputMethodManager) editText.getContext().getSystemService(
@@ -417,10 +232,10 @@ public class ScreenHelper {
     /**
      * 获取textView一行最大能显示几个字
      *
-     * @param text
-     * @param textPaint
-     * @param maxWidth
-     * @return
+     * @param text      textView的文本内容
+     * @param textPaint 截断字符
+     * @param maxWidth  最大的宽度
+     * @return 一行最大能显示几个字
      */
     public static int getLineMaxNumber(String text, TextPaint textPaint, int maxWidth) {
         if (null == text || "".equals(text)) return 0;
@@ -428,16 +243,6 @@ public class ScreenHelper {
                 1.0f, 0, false);
         // 获取第一行最后显示的字符下标
         return sl.getLineEnd(0);
-    }
-
-    /**
-     * dp转px
-     *
-     * @param value
-     * @return
-     */
-    public static int dp2px(float value) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, Resources.getSystem().getDisplayMetrics());
     }
 
 }

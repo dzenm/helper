@@ -45,7 +45,7 @@ class NetBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // 如果相等的话就说明网络状态发生了变化
-        if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+        if (intent.getAction() != null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
             boolean isConnected = NetHelper.isConnected(context);
             // 当网络发生变化，判断当前网络状态，并通过NetEvent回调当前网络状态
             if (mOnNetworkChangeListener != null) {
@@ -58,7 +58,7 @@ class NetBroadcast extends BroadcastReceiver {
     /**
      * 注册广播
      *
-     * @param context
+     * @param context 上下文
      */
     void registerNetwork(Context context) {
         if (mRegister) return;
@@ -78,7 +78,7 @@ class NetBroadcast extends BroadcastReceiver {
     /**
      * 取消注册广播
      *
-     * @param context
+     * @param context 上下文
      */
     void unregisterNetwork(Context context) {
         if (!mRegister) return;

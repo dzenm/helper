@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
 
 import java.lang.annotation.Retention;
@@ -283,11 +284,11 @@ public class Toa {
             mTextView.setLayoutParams(textParams);
 
             // 图标的尺寸
-            int size = ScreenHelper.dp2px(16);
+            int size = OsHelper.dp2px(16);
             LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(size, size);
 
             // 显示的图片
-            imgParams.setMargins(0, 0, ScreenHelper.dp2px(8), 0);
+            imgParams.setMargins(0, 0, OsHelper.dp2px(8), 0);
             mImageView = new ImageView(context);
             mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             mImageView.setLayoutParams(imgParams);
@@ -295,8 +296,8 @@ public class Toa {
             // ViewGroup
             mLinearLayout = new LinearLayout(context);
             mLinearLayout.setGravity(Gravity.CENTER);
-            int paddingVertical = ScreenHelper.dp2px(12);
-            int paddingHorizontal = ScreenHelper.dp2px(16);
+            int paddingVertical = OsHelper.dp2px(12);
+            int paddingHorizontal = OsHelper.dp2px(16);
             mLinearLayout.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical);
             mLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
 

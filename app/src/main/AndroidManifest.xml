@@ -24,7 +24,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.DrawableActivity"></activity>
+        <activity
+            android:name=".ui.DrawActivity"
+            android:label="@string/title_activity_draw"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".ui.DrawableActivity" />
         <activity android:name=".ui.GalleryActivity" />
         <activity android:name=".ui.OthersActivity" />
         <activity android:name=".ui.LoadingActivity" />

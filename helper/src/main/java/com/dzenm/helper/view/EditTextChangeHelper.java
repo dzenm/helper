@@ -1,6 +1,7 @@
 package com.dzenm.helper.view;
 
 import androidx.annotation.NonNull;
+
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -131,9 +132,7 @@ public class EditTextChangeHelper implements OnTextChangeListener, View.OnFocusC
     }
 
     /**
-     * 设置背景的状态
-     *
-     * @param state
+     * @param state    设置背景的状态
      * @param editText
      */
     private void setBackgroundState(boolean state, EditText editText) {

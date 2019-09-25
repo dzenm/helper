@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.dzenm.helper.R;
+import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
 
 /**
@@ -752,9 +753,8 @@ public class ShapeHelper implements IBackG<Drawable, View> {
         return orientation;
     }
 
-
     private int dp2px(float value) {
-        return ScreenHelper.dp2px(value);
+        return OsHelper.dp2px(value);
     }
 
     private int getColor(int id) {

@@ -8,13 +8,14 @@ import com.dzenm.R;
 import com.dzenm.databinding.ActivityLoadingBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.os.StatusBarHelper;
 
 public class LoadingActivity extends AbsBaseActivity implements View.OnClickListener {
 
     @Override
     protected void initializeView() {
         ActivityLoadingBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_loading);
-        setToolbar(binding.toolbar);
+        setToolbarWithoutStatusBar(binding.toolbar);
 
         setPressedBackground(binding.tv131, android.R.color.holo_blue_dark);
         setRippleBackground(binding.tv132, android.R.color.holo_red_dark);

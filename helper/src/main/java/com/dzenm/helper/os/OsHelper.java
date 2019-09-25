@@ -426,7 +426,7 @@ public final class OsHelper {
      * @param value 转换的值
      * @return 转换的dip值
      */
-    public static int dp2px(int value) {
+    public static int dp2px(float value) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, Resources.getSystem().getDisplayMetrics());
     }
 

@@ -272,7 +272,7 @@ public class PromptDialog extends AbsDialog {
         LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout linearLayout = new LinearLayout(getContext());
-        int padding = ScreenHelper.dp2px(16);
+        int padding = OsHelper.dp2px(16);
         linearLayout.setPadding(padding, padding, padding, padding);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(viewParams);
@@ -297,11 +297,11 @@ public class PromptDialog extends AbsDialog {
         // 创建一个TextView
         LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        textParams.topMargin = ScreenHelper.dp2px(8);
+        textParams.topMargin = OsHelper.dp2px(8);
 
         tvLoadText = new TextView(getContext());
-        tvLoadText.setMaxWidth(ScreenHelper.dp2px(100));
-        tvLoadText.setMinWidth(ScreenHelper.dp2px(90));
+        tvLoadText.setMaxWidth(OsHelper.dp2px(100));
+        tvLoadText.setMinWidth(OsHelper.dp2px(90));
         tvLoadText.setMaxLines(2);
         tvLoadText.setGravity(Gravity.CENTER_HORIZONTAL);
         tvLoadText.setTextColor(Color.WHITE);

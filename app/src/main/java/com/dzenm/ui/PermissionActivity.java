@@ -1,11 +1,9 @@
 package com.dzenm.ui;
 
 import android.Manifest;
-import android.content.Intent;
-import androidx.databinding.DataBindingUtil;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.View;
+
+import androidx.databinding.DataBindingUtil;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityPermissionBinding;
@@ -27,7 +25,8 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
     @Override
     protected void initializeView() {
         ActivityPermissionBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_permission);
-        setToolbar(binding.toolbar);
+        setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
+
         setPressedBackground(binding.tv100);
         setRippleBackground(binding.tv101);
         setPressedBackground(binding.tv102);
@@ -107,17 +106,4 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
             Toa.show("未请求成功权限", com.dzenm.helper.R.drawable.prompt_error);
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        PermissionManager.getInstance().onSettingResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PermissionManager.getInstance().onPermissionResult(requestCode, permissions, grantResults);
-    }
-
 }

@@ -68,12 +68,11 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
     private View inflaterView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (isDataBinding()) {
             ViewDataBinding v = DataBindingUtil.inflate(inflater, layoutId(), container, false);
-            initializeView(v);
             mRootView = v.getRoot();
+            initializeView(v);
         } else {
-            View v = inflater.inflate(layoutId(), container, false);
+            mRootView = inflater.inflate(layoutId(), container, false);
             initializeView();
-            mRootView = v;
         }
         return mRootView;
     }

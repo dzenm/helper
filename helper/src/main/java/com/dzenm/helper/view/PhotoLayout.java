@@ -174,7 +174,6 @@ public class PhotoLayout extends GridLayout {
                 newRatioImageView(object);
             }
         });
-
     }
 
     public void remove(View view) {

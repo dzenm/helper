@@ -1,14 +1,17 @@
 package com.dzenm.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.View;
 
 import androidx.databinding.ViewDataBinding;
 
+import com.bumptech.glide.Glide;
 import com.dzenm.R;
 import com.dzenm.databinding.FragmentPersonalBinding;
 import com.dzenm.helper.base.AbsBaseFragment;
 import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.os.ScreenHelper;
 
 /**
  * @author dzenm
@@ -31,6 +34,7 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
     @Override
     public void initializeView(ViewDataBinding viewDataBinding) {
         binding = (FragmentPersonalBinding) viewDataBinding;
+
         BackGHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
                 .into(binding.tvDraw);
         BackGHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
@@ -46,6 +50,8 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
             Intent intent = new Intent(getActivity(), DrawActivity.class);
             startActivity(intent);
         } else if (v.getId() == R.id.tv_preview) {
+            Bitmap bitmap = ScreenHelper.snapShotWithStatusBar(mActivity);
+            Glide.with(this).load(bitmap).into(binding.ivImage);
         }
     }
 }

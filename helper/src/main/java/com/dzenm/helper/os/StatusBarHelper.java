@@ -17,7 +17,6 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -35,6 +34,16 @@ public class StatusBarHelper {
     private static final int FAKE_STATUS_BAR_VIEW_ID = R.id.fake_status_bar_view_id;
 
     /**
+     * 设置状态栏完全透明
+     *
+     * @param activity      需要设置的 activity
+     * @param hideStatusBar 是否隐藏StatusBar
+     */
+    public static void setColor(Activity activity, boolean hideStatusBar) {
+        setTranslucentColor(activity, hideStatusBar, android.R.color.white);
+    }
+
+    /**
      * 设置状态栏纯色 不加半透明效果
      *
      * @param activity 需要设置的 activity
@@ -47,8 +56,9 @@ public class StatusBarHelper {
     /**
      * 设置状态栏纯色 不加半透明效果
      *
-     * @param activity 需要设置的 activity
-     * @param color    状态栏颜色值
+     * @param activity      需要设置的 activity
+     * @param hideStatusBar 是否隐藏StatusBar
+     * @param color         状态栏颜色值
      */
     public static void setColor(Activity activity, boolean hideStatusBar, @ColorRes int color) {
         setTranslucentColor(activity, hideStatusBar, color, 0);
@@ -67,8 +77,9 @@ public class StatusBarHelper {
     /**
      * 设置状态栏颜色
      *
-     * @param activity 需要设置的 activity
-     * @param color    状态栏颜色值
+     * @param activity      需要设置的 activity
+     * @param hideStatusBar 是否隐藏StatusBar
+     * @param color         状态栏颜色值
      */
     public static void setTranslucentColor(Activity activity, boolean hideStatusBar, @ColorRes int color) {
         setTranslucentColor(activity, hideStatusBar, color, DEFAULT_STATUS_BAR_ALPHA);
@@ -83,12 +94,11 @@ public class StatusBarHelper {
      */
     public static void setTranslucentColor(@NonNull Activity activity, boolean hideStatusBar,
                                            @ColorRes int color, @IntRange(from = 0, to = 255) int statusBarAlpha) {
-        int calculateColor = calculateColorByAlpha(activity.getResources().getColor(color), statusBarAlpha);
+        int calculateColor = calculateColorByAlpha(getColor(activity, color), statusBarAlpha);
         if (hideStatusBar) {
             setStatusBarColor(activity, true, calculateColor);
         } else {
-            setStatusBarColor(activity, false,
-                    activity.getResources().getColor(android.R.color.transparent));
+            setStatusBarColor(activity, false, getColor(activity, android.R.color.transparent));
             ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
             getStatusBarView(activity, decorView).setBackgroundColor(calculateColor);
         }
@@ -111,25 +121,39 @@ public class StatusBarHelper {
      * @param drawable 需要设置的drawable
      */
     public static void setDrawable(Activity activity, Drawable drawable) {
-        setStatusBarColor(activity, false, activity.getResources().getColor(android.R.color.transparent));
+        setStatusBarColor(activity, false, getColor(activity, android.R.color.transparent));
         ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
         getStatusBarView(activity, decorView).setBackground(drawable);
     }
 
     /**
-     * 设置DrawLayout为根布局时的状态栏颜色
+     * 设置DrawLayout为根布局时的状态栏颜色, 去除状态栏半透明阴影
      *
      * @param activity 需要设置的activity
      * @param drawer   需要设置的DrawLayout
      * @param color    需要设置的颜色
      */
-    public static void setDrawLayoutColor(Activity activity, DrawerLayout drawer, int color) {
-        setStatusBarColor(activity, true,
-                activity.getResources().getColor(android.R.color.transparent));
+    public static void setDrawLayoutColor(Activity activity, @NonNull DrawerLayout drawer, int color) {
+        setDrawLayoutColor(activity, drawer, color, false);
+    }
+
+    /**
+     * 设置DrawLayout为根布局时的状态栏颜色
+     *
+     * @param activity      需要设置的activity
+     * @param drawer        需要设置的DrawLayout
+     * @param color         需要设置的颜色
+     * @param isTranslucent 是否设置状态栏半透明的灰色阴影
+     */
+    public static void setDrawLayoutColor(Activity activity, @NonNull DrawerLayout drawer,
+                                          int color, boolean isTranslucent) {
+        setStatusBarColor(activity, true, getColor(activity, android.R.color.transparent));
         // 创建一个和StatusBar高度相同的View, 然后设置背景颜色
         ViewGroup decorViewLayout = (ViewGroup) drawer.getChildAt(0);
         View contentView = getStatusBarView(activity, decorViewLayout);
-        contentView.setBackgroundColor(color);
+        contentView.setBackgroundColor(getColor(activity, color));
+        if (!isTranslucent) contentView.setFitsSystemWindows(true);
+
         // 为DrawerLayout设置高度和StatusBar相同的PaddingTop
         if (!(decorViewLayout instanceof LinearLayout) && decorViewLayout.getChildAt(1) != null) {
             decorViewLayout.getChildAt(1).setPadding(decorViewLayout.getPaddingLeft(),
@@ -146,7 +170,7 @@ public class StatusBarHelper {
      * @param decorView 这个View的ViewGroup
      * @return 状态栏View
      */
-    private static View getStatusBarView(Activity activity, ViewGroup decorView) {
+    private static View getStatusBarView(Activity activity, @NonNull ViewGroup decorView) {
         View fakeStatusBarView = decorView.findViewById(FAKE_STATUS_BAR_VIEW_ID);
         if (fakeStatusBarView == null) {
             // decorView 中添加一个与状态栏大小的 view
@@ -204,6 +228,12 @@ public class StatusBarHelper {
         setColor(activity, false, android.R.color.transparent);
     }
 
+    /**
+     * 设置StatusBar文本样式
+     *
+     * @param activity 上下文
+     * @param dark     是否设置为暗色, false为白色, true为黑色
+     */
     public static void setStatusBarTextStyle(Activity activity, boolean dark) {
         if (OsHelper.isMarshmallow()) {
             activity.getWindow().getDecorView().setSystemUiVisibility(dark ?
@@ -230,7 +260,7 @@ public class StatusBarHelper {
                 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
             }
             window.setStatusBarColor(color);
-            window.setNavigationBarColor(activity.getResources().getColor(android.R.color.transparent));
+            window.setNavigationBarColor(getColor(activity, android.R.color.transparent));
         } else {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
@@ -265,20 +295,15 @@ public class StatusBarHelper {
     }
 
     /**
-     * 设置Toolbar高度
+     * 设置Toolbar高度, 除了使用Toolbar之外, 还可以使用其它类型的View, 因需要引入第三方依赖
+     * 为了减少第三方依赖的使用, 因此不支持ViewGroup为ConstraintLayout的布局
      *
-     * @param toolbar 需要设置的Toolbar
-     * @param height  需要设置的高度
+     * @param activity 上下文
+     * @param toolbar  需要设置的View
      */
-    public static void setToolbarHeight(@NonNull Toolbar toolbar, int height) {
+    public static void adjustToolbarForHideStatusBar(Activity activity, @NonNull View toolbar) {
         ViewGroup.LayoutParams params = toolbar.getLayoutParams();
-        params.height = height;
-        toolbar.setLayoutParams(params);
-    }
-
-    public static void adjustToolbarForHideStatusBar(Context context, @NonNull Toolbar toolbar) {
-        ViewGroup.LayoutParams params = toolbar.getLayoutParams();
-        int height = getStatusBarHeight(context);
+        int height = getStatusBarHeight(activity);
         if (params instanceof LinearLayout.LayoutParams) {
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) params;
             layoutParams.topMargin = height;
@@ -319,5 +344,9 @@ public class StatusBarHelper {
         green = (int) (green * a + 0.5);
         blue = (int) (blue * a + 0.5);
         return 0xff << 24 | red << 16 | green << 8 | blue;
+    }
+
+    private static int getColor(@NonNull Activity activity, @ColorRes int color) {
+        return activity.getResources().getColor(color);
     }
 }

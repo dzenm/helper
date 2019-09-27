@@ -328,7 +328,7 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
      * 打开未授予权限的对话框
      */
     private void openFailedDialog() {
-        getInfoDialog("未授予软件运行需要的权限, 可能会出现不可预料的错误")
+        getInfoDialog("拒绝授予程序运行需要的权限, 将出现不可预知的错误, 请授予权限后继续操作")
                 .setButtonText("确定")
                 .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
                     @Override

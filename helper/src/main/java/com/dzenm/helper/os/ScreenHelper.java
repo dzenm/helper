@@ -54,9 +54,9 @@ public class ScreenHelper {
      * @return 任意View屏幕截图
      */
     public static Bitmap snapShotWithStatusBar(View view) {
-        view.setDrawingCacheEnabled(true);
-        view.buildDrawingCache();
-        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache(), 0, 0, getWidth(), getHeight());
+        setDrawingCacheView(view);
+        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache(), 0, 0,
+                view.getWidth(), view.getHeight());
         view.destroyDrawingCache();
         return bitmap;
     }
@@ -67,8 +67,7 @@ public class ScreenHelper {
      */
     public static Bitmap snapShotWithStatusBar(Activity activity) {
         View view = activity.getWindow().getDecorView();
-        view.setDrawingCacheEnabled(true);
-        view.buildDrawingCache();
+        setDrawingCacheView(view);
         Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache(), 0, 0, getWidth(), getHeight());
         view.destroyDrawingCache();
         return bitmap;
@@ -80,8 +79,7 @@ public class ScreenHelper {
      */
     public static Bitmap snapShotWithoutStatusBar(Activity activity) {
         View view = activity.getWindow().getDecorView();
-        view.setDrawingCacheEnabled(true);
-        view.buildDrawingCache();
+        setDrawingCacheView(view);
         Rect frame = new Rect();
         view.getWindowVisibleDisplayFrame(frame);
         int statusBarHeight = frame.top;
@@ -89,6 +87,11 @@ public class ScreenHelper {
                 getWidth(), getHeight() - statusBarHeight);
         view.destroyDrawingCache();
         return bitmap;
+    }
+
+    private static void setDrawingCacheView(View view) {
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
     }
 
     /**

@@ -9,7 +9,6 @@ import com.dzenm.R;
 import com.dzenm.databinding.FragmentHomeBinding;
 import com.dzenm.helper.base.AbsBaseFragment;
 import com.dzenm.helper.draw.BackGHelper;
-import com.dzenm.helper.os.StatusBarHelper;
 
 /**
  * @author dzenm
@@ -32,6 +31,7 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
     @Override
     public void initializeView(ViewDataBinding viewDataBinding) {
         binding = (FragmentHomeBinding) viewDataBinding;
+
         BackGHelper.radius(8).pressed(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv100);
         BackGHelper.radius(8).ripple(android.R.color.holo_blue_light, R.color.colorDivide).into(binding.tv101);
         BackGHelper.radius(8).pressed(android.R.color.holo_orange_light, R.color.colorDivide).into(binding.tv102);
@@ -47,8 +47,6 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
         binding.tv105.setOnClickListener(this);
     }
 
-    private boolean dark = false;
-
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.tv_100) {
@@ -58,15 +56,8 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
             Intent intent = new Intent(getActivity(), LoadingActivity.class);
             startActivity(intent);
         } else if (view.getId() == R.id.tv_102) {
-//            Intent intent = new Intent(getActivity(), GalleryActivity.class);
-//            startActivity(intent);
-            if (dark) {
-                StatusBarHelper.setStatusBarTextStyle(mActivity, false);
-                dark = false;
-            } else {
-                StatusBarHelper.setStatusBarTextStyle(mActivity, true);
-                dark = true;
-            }
+            Intent intent = new Intent(getActivity(), GalleryActivity.class);
+            startActivity(intent);
         } else if (view.getId() == R.id.tv_103) {
             Intent intent = new Intent(getActivity(), PermissionActivity.class);
             startActivity(intent);

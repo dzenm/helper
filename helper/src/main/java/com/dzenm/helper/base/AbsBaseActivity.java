@@ -180,6 +180,12 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
         NetHelper.setNetworkSetting(this);
     }
 
+    protected void moveTaskToBack() {
+        if (!moveTaskToBack(false)) {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     public void onNetwork(boolean connect) {
         mNetworkAvailable = connect;

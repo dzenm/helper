@@ -25,11 +25,8 @@ public class DrawActivity extends AbsBaseActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        setToolbarWithImmersiveStatusBar(toolbar, R.color.colorPrimary);
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        StatusBarHelper.setDrawLayoutColor(this, drawer,
-                getResources().getColor(R.color.colorPrimary));
+        StatusBarHelper.setDrawLayoutColor(this, drawer, R.color.colorPrimary);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each

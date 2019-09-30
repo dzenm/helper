@@ -111,17 +111,6 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
     }
 
     /**
-     * 设置Toolbar, 并移除StatusBar, 使用自定义的StatusBar
-     *
-     * @param toolbar 需要设置的Toolbar
-     */
-    public void setToolbarWithoutStatusBar(Toolbar toolbar) {
-        setToolbar(toolbar);
-        StatusBarHelper.adjustViewHeightForHideStatusBar(mActivity, toolbar);
-        StatusBarHelper.setColor(mActivity, true, android.R.color.transparent);
-    }
-
-    /**
      * 设置toolbar, 并设置沉浸式状态栏
      *
      * @param toolbar 需要设置的Toolbar

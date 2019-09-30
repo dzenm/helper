@@ -21,10 +21,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.dzenm.helper.R;
 
 /**
- * Created by Jaeger on 16/2/14.
+ * @author dinzhenyan
+ * @date 2019-04-30 20:03
  * <p>
- * Email: chjie.jaeger@gmail.com
- * GitHub: https://github.com/laobie
+ * 状态栏工具类
  */
 public class StatusBarHelper {
 
@@ -32,24 +32,39 @@ public class StatusBarHelper {
     private static final int FAKE_STATUS_BAR_VIEW_ID = R.id.fake_status_bar_view_id;
 
     /**
-     * 设置状态栏纯色, 不加半透明效果
+     * 设置状态栏和Toolbar颜色
      *
-     * @param activity      需要设置的 activity
-     * @param hideStatusBar 是否隐藏StatusBar
-     * @param color         状态栏颜色值
+     * @param activity 需要设置的activity
+     * @param view     需要设置的Toolbar
+     * @param color    状态栏和Toolbar颜色值
      */
-    public static void setColor(Activity activity, boolean hideStatusBar, @ColorRes int color) {
-        setTranslucentColor(activity, hideStatusBar, color, 0);
+    public static void setStatusBarWithToolbarStyle(Activity activity, @NonNull View view, @ColorRes int color) {
+        StatusBarHelper.setColor(activity, color);
+        StatusBarHelper.adjustViewHeightForHideStatusBar(activity, view);
+        view.setBackgroundColor(getColor(activity, color));
     }
 
     /**
-     * 设置状态栏颜色, 添加半透明效果
+     * 设置Fragment中的Toolbar状态栏和Toolbar的颜色
      *
-     * @param activity 需要设置的 activity
+     * @param activity 需要设置的activity
+     * @param toolbar  需要设置的Toolbar
+     * @param color    需要设置的颜色
+     */
+    public static void setFragmentToolbarColor(Activity activity, @NonNull Toolbar toolbar, int color) {
+        adjustToolbarHeightForHideStatusBar(activity, toolbar);
+        toolbar.setBackgroundColor(getColor(activity, color));
+        setColor(activity, color);
+    }
+
+    /**
+     * 设置状态栏纯色, 不加半透明效果
+     *
+     * @param activity 需要设置的activity
      * @param color    状态栏颜色值
      */
-    public static void setTranslucentColor(Activity activity, @ColorRes int color) {
-        setTranslucentColor(activity, false, color, DEFAULT_STATUS_BAR_ALPHA);
+    public static void setColor(Activity activity, @ColorRes int color) {
+        setTranslucentColor(activity, color, 0);
     }
 
     /**
@@ -59,16 +74,25 @@ public class StatusBarHelper {
      * @param color          状态栏颜色值
      * @param statusBarAlpha 状态栏透明度
      */
-    public static void setTranslucentColor(@NonNull Activity activity, boolean hideStatusBar, @ColorRes
-            int color, @IntRange(from = 0, to = 255) int statusBarAlpha) {
+    public static void setTranslucentColor(@NonNull Activity activity, @ColorRes int color,
+                                           @IntRange(from = 0, to = 255) int statusBarAlpha) {
         int calculateColor = calculateColorByAlpha(getColor(activity, color), statusBarAlpha);
-        if (hideStatusBar) {
-            setStatusBarColor(activity, true, calculateColor);
-        } else {
-            setStatusBarColor(activity, false, getColor(activity, android.R.color.transparent));
-            ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
-            getStatusBarView(activity, decorView).setBackgroundColor(calculateColor);
-        }
+        setStatusBarColor(activity, getColor(activity, android.R.color.transparent));
+
+        setRootViewFitsSystemWindows(activity);
+
+        ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
+        getStatusBarView(activity, decorView).setBackgroundColor(calculateColor);
+    }
+
+    /**
+     * 设置Root View延伸到状态栏
+     *
+     * @param activity 需要设置的activity
+     */
+    private static void setRootViewFitsSystemWindows(@NonNull Activity activity) {
+        View content = activity.findViewById(android.R.id.content);
+        content.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
     /**
@@ -78,7 +102,7 @@ public class StatusBarHelper {
      * @param drawable 需要设置的drawable
      */
     public static void setDrawable(Activity activity, Drawable drawable) {
-        setStatusBarColor(activity, false, getColor(activity, android.R.color.transparent));
+        setStatusBarColor(activity, getColor(activity, android.R.color.transparent));
         ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
         getStatusBarView(activity, decorView).setBackground(drawable);
     }
@@ -104,12 +128,14 @@ public class StatusBarHelper {
      */
     public static void setDrawLayoutColor(Activity activity, @NonNull DrawerLayout drawer,
                                           int color, boolean isTranslucent) {
-        setStatusBarColor(activity, true, getColor(activity, android.R.color.transparent));
+        setStatusBarColor(activity, getColor(activity, android.R.color.transparent));
         // 创建一个和StatusBar高度相同的View, 然后设置背景颜色
         ViewGroup decorViewLayout = (ViewGroup) drawer.getChildAt(0);
         View contentView = getStatusBarView(activity, decorViewLayout);
         contentView.setBackgroundColor(getColor(activity, color));
         if (!isTranslucent) contentView.setFitsSystemWindows(true);
+
+        setRootViewFitsSystemWindows(activity);
 
         // 为DrawerLayout设置高度和StatusBar相同的PaddingTop
         if (!(decorViewLayout instanceof LinearLayout) && decorViewLayout.getChildAt(1) != null) {
@@ -117,20 +143,6 @@ public class StatusBarHelper {
                     decorViewLayout.getPaddingTop() + getStatusBarHeight(activity),
                     decorViewLayout.getPaddingRight(), decorViewLayout.getPaddingBottom());
         }
-        drawer.setFitsSystemWindows(false);
-    }
-
-    /**
-     * 设置Fragment中的Toolbar状态栏和Toolbar的颜色
-     *
-     * @param activity 需要设置的activity
-     * @param toolbar  需要设置的Toolbar
-     * @param color    需要设置的颜色
-     */
-    public static void setFragmentToolbarColor(Activity activity, @NonNull Toolbar toolbar, int color) {
-        adjustToolbarHeightForHideStatusBar(activity, toolbar);
-        toolbar.setBackgroundColor(getColor(activity, color));
-        setColor(activity, true, color);
     }
 
     /**
@@ -196,7 +208,7 @@ public class StatusBarHelper {
             contentView.setPadding(0, statusBarHeight, 0, 0);
             contentView.setBackgroundColor(calculateColorByAlpha(color, statusBarAlpha));
         }
-        setColor(activity, false, android.R.color.transparent);
+        setColor(activity, android.R.color.transparent);
     }
 
     /**
@@ -219,19 +231,14 @@ public class StatusBarHelper {
      * @param activity 需要设置的Activity
      * @param color    设置的颜色
      */
-    public static void setStatusBarColor(@NonNull Activity activity, boolean hideStatusBar, int color) {
+    public static void setStatusBarColor(@NonNull Activity activity, int color) {
         Window window = activity.getWindow();
         if (OsHelper.isLollipop()) {
             // 添加状态栏背景可绘制模式
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             // 清除原有的状态栏半透明状态
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            if (hideStatusBar) {
-                // 状态栏不可见, 清除状态栏高度
-                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            }
             window.setStatusBarColor(color);
-            window.setNavigationBarColor(getColor(activity, android.R.color.transparent));
         } else {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }

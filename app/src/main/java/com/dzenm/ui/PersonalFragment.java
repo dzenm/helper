@@ -34,7 +34,7 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
     @Override
     public void initializeView(Bundle savedInstanceState, ViewDataBinding viewDataBinding) {
         binding = (FragmentPersonalBinding) viewDataBinding;
-        setToolbarWithoutStatusBar(binding.toolbar);
+        setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
 
         BackGHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
                 .into(binding.tvDraw);

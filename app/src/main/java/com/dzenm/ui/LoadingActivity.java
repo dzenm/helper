@@ -1,6 +1,7 @@
 package com.dzenm.ui;
 
 import androidx.databinding.DataBindingUtil;
+
 import android.view.View;
 
 import com.dzenm.LottieDialog;
@@ -15,7 +16,7 @@ public class LoadingActivity extends AbsBaseActivity implements View.OnClickList
     @Override
     protected void initializeView() {
         ActivityLoadingBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_loading);
-        setToolbarWithoutStatusBar(binding.toolbar);
+        setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
 
         setPressedBackground(binding.tv131, android.R.color.holo_blue_dark);
         setRippleBackground(binding.tv132, android.R.color.holo_red_dark);

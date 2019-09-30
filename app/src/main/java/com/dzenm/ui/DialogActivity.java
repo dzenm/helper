@@ -37,7 +37,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
     @Override
     protected void initializeView() {
         ActivityDialogBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_dialog);
-        setToolbarWithoutStatusBar(binding.toolbar);
+        setToolbarWithImmersiveStatusBar(binding.toolbar,android.R.color.transparent);
 
         setPressedBackground(binding.tv100, android.R.color.holo_blue_dark);
         setRippleBackground(binding.tv101, android.R.color.holo_red_dark);

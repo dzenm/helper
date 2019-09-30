@@ -65,17 +65,6 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
     }
 
     /**
-     * 设置Toolbar, 并移除StatusBar
-     *
-     * @param toolbar 需要设置的Toolbar
-     */
-    public void setToolbarWithoutStatusBar(Toolbar toolbar) {
-        setToolbar(toolbar);
-        StatusBarHelper.adjustViewHeightForHideStatusBar(this, toolbar);
-        StatusBarHelper.setColor(this, true, android.R.color.transparent);
-    }
-
-    /**
      * 设置toolbar, 并设置沉浸式状态栏
      *
      * @param toolbar 需要设置的Toolbar
@@ -83,20 +72,7 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
      */
     public void setToolbarWithImmersiveStatusBar(Toolbar toolbar, @ColorRes int color) {
         setToolbar(toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(color));
-        StatusBarHelper.setColor(this, false, color);
-    }
-
-    /**
-     * 设置toolbar, 并设置半透明状态栏
-     *
-     * @param toolbar 需要设置的Toolbar
-     * @param color   设置的颜色
-     */
-    public void setToolbarWithTranslucentStatusBar(Toolbar toolbar, @ColorRes int color) {
-        setToolbar(toolbar);
-        toolbar.setBackgroundColor(getResources().getColor(color));
-        StatusBarHelper.setTranslucentColor(this, color);
+        StatusBarHelper.setStatusBarWithToolbarStyle(this, toolbar, color);
     }
 
     /**

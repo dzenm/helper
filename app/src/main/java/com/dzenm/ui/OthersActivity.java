@@ -24,7 +24,7 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
     @Override
     protected void initializeView() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_others);
-        setToolbarWithTranslucentStatusBar(binding.toolbar, R.color.colorAccent);
+        setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorAccent);
 
         setPressedBackground(binding.tv100, android.R.color.holo_blue_dark);
         setRippleBackground(binding.tv101, android.R.color.holo_red_dark);

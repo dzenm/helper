@@ -22,20 +22,11 @@
         <attr name="ratio" format="float" />
         <attr name="foregroundColor" format="color|reference" />
         <attr name="isCircle" format="boolean" />
-        <attr name="isCoverImage" format="boolean" />
-
-        <attr name="borderWidth" format="dimension|reference" />
-        <attr name="borderColor" format="color|reference" />
-        <attr name="innerBorderWidth" format="dimension|reference" />
-        <attr name="innerBorderColor" format="color|reference" />
-
         <attr name="cornerRadius" format="dimension|reference" />
-        <attr name="topLeftCornerRadius" format="dimension|reference" />
-        <attr name="topRightCornerRadius" format="dimension|reference" />
-        <attr name="bottomLeftCornerRadius" format="dimension|reference" />
-        <attr name="bottomRightCornerRadius" format="dimension|reference" />
-
-        <attr name="maskColor" format="color|reference" />
+        <attr name="top_left_cornerRadius" format="dimension|reference" />
+        <attr name="top_right_cornerRadius" format="dimension|reference" />
+        <attr name="bottom_left_cornerRadius" format="dimension|reference" />
+        <attr name="bottom_right_cornerRadius" format="dimension|reference" />
     </declare-styleable>
 
     <declare-styleable name="GridPhotoLayout">

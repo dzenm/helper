@@ -1,17 +1,17 @@
 package com.dzenm.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.view.View;
 
 import androidx.databinding.ViewDataBinding;
 
-import com.bumptech.glide.Glide;
 import com.dzenm.R;
 import com.dzenm.databinding.FragmentPersonalBinding;
 import com.dzenm.helper.base.AbsBaseFragment;
 import com.dzenm.helper.draw.BackGHelper;
-import com.dzenm.helper.os.ScreenHelper;
+import com.dzenm.helper.os.StatusBarHelper;
+import com.dzenm.helper.toast.Toa;
 
 /**
  * @author dzenm
@@ -32,8 +32,9 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
     }
 
     @Override
-    public void initializeView(ViewDataBinding viewDataBinding) {
+    public void initializeView(Bundle savedInstanceState, ViewDataBinding viewDataBinding) {
         binding = (FragmentPersonalBinding) viewDataBinding;
+        setToolbarWithoutStatusBar(binding.toolbar);
 
         BackGHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
                 .into(binding.tvDraw);
@@ -42,6 +43,7 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
 
         binding.tvDraw.setOnClickListener(this);
         binding.tvPreview.setOnClickListener(this);
+        binding.rivImage.setOnClickListener(this);
     }
 
     @Override
@@ -49,9 +51,10 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
         if (v.getId() == R.id.tv_draw) {
             Intent intent = new Intent(getActivity(), DrawActivity.class);
             startActivity(intent);
-        } else if (v.getId() == R.id.tv_preview) {
-            Bitmap bitmap = ScreenHelper.snapShotWithStatusBar(mActivity);
-            Glide.with(this).load(bitmap).into(binding.ivImage);
+        } else if (v.getId() == R.id.riv_image) {
+//            Bitmap bitmap = ScreenHelper.snapShotWithStatusBar(mActivity);
+//            Glide.with(this).load(bitmap).into(binding.ivImage);
+            Toa.show("点击");
         }
     }
 }

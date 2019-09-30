@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.ColorRes;
@@ -46,16 +47,21 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
     }
 
     /**
-     * 设置toolbar及返回按钮
+     * 设置toolbar
      *
      * @param toolbar 设置的toolbar
      */
     public void setToolbar(Toolbar toolbar) {
         if (toolbar == null) return;
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // 设置返回按钮
-        }
+        if (getSupportActionBar() == null) return;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // 设置返回按钮
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onHomeClick();
+            }
+        });
     }
 
     /**
@@ -65,7 +71,7 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
      */
     public void setToolbarWithoutStatusBar(Toolbar toolbar) {
         setToolbar(toolbar);
-        StatusBarHelper.adjustToolbarForHideStatusBar(this, toolbar);
+        StatusBarHelper.adjustViewHeightForHideStatusBar(this, toolbar);
         StatusBarHelper.setColor(this, true, android.R.color.transparent);
     }
 
@@ -78,7 +84,7 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
     public void setToolbarWithImmersiveStatusBar(Toolbar toolbar, @ColorRes int color) {
         setToolbar(toolbar);
         toolbar.setBackgroundColor(getResources().getColor(color));
-        StatusBarHelper.setColor(this, color);
+        StatusBarHelper.setColor(this, false, color);
     }
 
     /**
@@ -125,18 +131,14 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // 设置返回按钮的点击事件
-        onHomeOptionSelected(item.getItemId());
         return super.onOptionsItemSelected(item);
     }
 
     /**
      * Toolbar的Home键点击事件
-     *
-     * @param itemId 设置的item
      */
-    protected void onHomeOptionSelected(int itemId) {
-        if (itemId == android.R.id.home) finish();
+    protected void onHomeClick() {
+        finish();
     }
 
     /**

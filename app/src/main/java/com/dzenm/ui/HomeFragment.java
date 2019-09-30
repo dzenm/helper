@@ -1,6 +1,7 @@
 package com.dzenm.ui;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 
 import androidx.databinding.ViewDataBinding;
@@ -29,8 +30,9 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
     }
 
     @Override
-    public void initializeView(ViewDataBinding viewDataBinding) {
+    public void initializeView(Bundle savedInstanceState, ViewDataBinding viewDataBinding) {
         binding = (FragmentHomeBinding) viewDataBinding;
+        setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
 
         BackGHelper.radius(8).pressed(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv100);
         BackGHelper.radius(8).ripple(android.R.color.holo_blue_light, R.color.colorDivide).into(binding.tv101);

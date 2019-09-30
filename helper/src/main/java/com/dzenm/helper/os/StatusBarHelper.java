@@ -8,15 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -34,27 +32,7 @@ public class StatusBarHelper {
     private static final int FAKE_STATUS_BAR_VIEW_ID = R.id.fake_status_bar_view_id;
 
     /**
-     * 设置状态栏完全透明
-     *
-     * @param activity      需要设置的 activity
-     * @param hideStatusBar 是否隐藏StatusBar
-     */
-    public static void setColor(Activity activity, boolean hideStatusBar) {
-        setTranslucentColor(activity, hideStatusBar, android.R.color.white);
-    }
-
-    /**
-     * 设置状态栏纯色 不加半透明效果
-     *
-     * @param activity 需要设置的 activity
-     * @param color    状态栏颜色值
-     */
-    public static void setColor(Activity activity, @ColorRes int color) {
-        setTranslucentColor(activity, false, color, 0);
-    }
-
-    /**
-     * 设置状态栏纯色 不加半透明效果
+     * 设置状态栏纯色, 不加半透明效果
      *
      * @param activity      需要设置的 activity
      * @param hideStatusBar 是否隐藏StatusBar
@@ -65,7 +43,7 @@ public class StatusBarHelper {
     }
 
     /**
-     * 设置状态栏颜色
+     * 设置状态栏颜色, 添加半透明效果
      *
      * @param activity 需要设置的 activity
      * @param color    状态栏颜色值
@@ -77,23 +55,12 @@ public class StatusBarHelper {
     /**
      * 设置状态栏颜色
      *
-     * @param activity      需要设置的 activity
-     * @param hideStatusBar 是否隐藏StatusBar
-     * @param color         状态栏颜色值
-     */
-    public static void setTranslucentColor(Activity activity, boolean hideStatusBar, @ColorRes int color) {
-        setTranslucentColor(activity, hideStatusBar, color, DEFAULT_STATUS_BAR_ALPHA);
-    }
-
-    /**
-     * 设置状态栏颜色
-     *
      * @param activity       需要设置的activity
      * @param color          状态栏颜色值
      * @param statusBarAlpha 状态栏透明度
      */
-    public static void setTranslucentColor(@NonNull Activity activity, boolean hideStatusBar,
-                                           @ColorRes int color, @IntRange(from = 0, to = 255) int statusBarAlpha) {
+    public static void setTranslucentColor(@NonNull Activity activity, boolean hideStatusBar, @ColorRes
+            int color, @IntRange(from = 0, to = 255) int statusBarAlpha) {
         int calculateColor = calculateColorByAlpha(getColor(activity, color), statusBarAlpha);
         if (hideStatusBar) {
             setStatusBarColor(activity, true, calculateColor);
@@ -102,16 +69,6 @@ public class StatusBarHelper {
             ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
             getStatusBarView(activity, decorView).setBackgroundColor(calculateColor);
         }
-    }
-
-    /**
-     * 设置状态栏 Drawable,比如渐变色
-     *
-     * @param activity 需要设置的activity
-     * @param resId    资源Id
-     */
-    public static void setDrawable(Activity activity, @DrawableRes int resId) {
-        setDrawable(activity, activity.getResources().getDrawable(resId));
     }
 
     /**
@@ -164,6 +121,19 @@ public class StatusBarHelper {
     }
 
     /**
+     * 设置Fragment中的Toolbar状态栏和Toolbar的颜色
+     *
+     * @param activity 需要设置的activity
+     * @param toolbar  需要设置的Toolbar
+     * @param color    需要设置的颜色
+     */
+    public static void setFragmentToolbarColor(Activity activity, @NonNull Toolbar toolbar, int color) {
+        adjustToolbarHeightForHideStatusBar(activity, toolbar);
+        toolbar.setBackgroundColor(getColor(activity, color));
+        setColor(activity, true, color);
+    }
+
+    /**
      * 获取和StatusBar高度相同的View
      *
      * @param activity  需要设置的activity
@@ -191,6 +161,7 @@ public class StatusBarHelper {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, getStatusBarHeight(activity));
         statusBarView.setLayoutParams(params);
+        statusBarView.setTag(FAKE_STATUS_BAR_VIEW_ID);
         statusBarView.setId(FAKE_STATUS_BAR_VIEW_ID);
         return statusBarView;
     }
@@ -295,36 +266,29 @@ public class StatusBarHelper {
     }
 
     /**
-     * 设置Toolbar高度, 除了使用Toolbar之外, 还可以使用其它类型的View, 因需要引入第三方依赖
-     * 为了减少第三方依赖的使用, 因此不支持ViewGroup为ConstraintLayout的布局
+     * 设置View的margin高度
      *
      * @param activity 上下文
-     * @param toolbar  需要设置的View
+     * @param view     需要设置的View
      */
-    public static void adjustToolbarForHideStatusBar(Activity activity, @NonNull View toolbar) {
-        ViewGroup.LayoutParams params = toolbar.getLayoutParams();
-        int height = getStatusBarHeight(activity);
-        if (params instanceof LinearLayout.LayoutParams) {
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) params;
-            layoutParams.topMargin = height;
-            toolbar.setLayoutParams(layoutParams);
-        } else if (params instanceof RelativeLayout.LayoutParams) {
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) params;
-            layoutParams.topMargin = height;
-            toolbar.setLayoutParams(layoutParams);
-        } else if (params instanceof CoordinatorLayout.LayoutParams) {
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) params;
-            layoutParams.topMargin = height;
-            toolbar.setLayoutParams(layoutParams);
-        } else if (params instanceof FrameLayout.LayoutParams) {
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) params;
-            layoutParams.topMargin = height;
-            toolbar.setLayoutParams(layoutParams);
-        } else if (params instanceof DrawerLayout.LayoutParams) {
-            DrawerLayout.LayoutParams layoutParams = (DrawerLayout.LayoutParams) params;
-            layoutParams.topMargin = height;
-            toolbar.setLayoutParams(layoutParams);
-        }
+    public static void adjustViewHeightForHideStatusBar(Activity activity, @NonNull View view) {
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        params.topMargin += getStatusBarHeight(activity);
+        view.setLayoutParams(params);
+    }
+
+    /**
+     * 设置Toolbar的高度, 添加一个高度和StatusBar高度一样的padding top
+     *
+     * @param activity 上下文
+     * @param view     需要设置的View
+     */
+    public static void adjustToolbarHeightForHideStatusBar(Activity activity, @NonNull View view) {
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        params.height = getStatusBarHeight(activity) + getActionBarHeight(activity);
+        view.setLayoutParams(params);
+        view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + getStatusBarHeight(activity),
+                view.getPaddingRight(), view.getPaddingBottom());
     }
 
     /**

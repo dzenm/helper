@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityGalleryBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
+import com.dzenm.helper.view.RatioImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +43,11 @@ public class GalleryActivity extends AbsBaseActivity {
 
     class ViewPagerAdapter extends PagerAdapter {
 
-        private List<ImageView> mViews = new ArrayList<>();
+        private List<RatioImageView> mViews = new ArrayList<>();
 
         ViewPagerAdapter(Context context, int[] images) {
             for (int i = 0; i < images.length; i++) {
-                ImageView imageView = (ImageView) View.inflate(context, R.layout.image_view, null);
+                RatioImageView imageView = (RatioImageView) View.inflate(context, R.layout.image_view, null);
                 imageView.setImageResource(images[i]);
                 mViews.add(imageView);
             }

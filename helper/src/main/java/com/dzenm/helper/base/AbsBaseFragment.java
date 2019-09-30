@@ -3,23 +3,23 @@ package com.dzenm.helper.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
-
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.Fragment;
+
 import com.dzenm.helper.log.Logger;
+import com.dzenm.helper.os.StatusBarHelper;
 
 /**
  * @author dinzhenyan
@@ -65,14 +65,15 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
      * @param savedInstanceState 重建View时获取保存的数据
      * @return root view
      */
-    private View inflaterView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    private View inflaterView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                              @Nullable Bundle savedInstanceState) {
         if (isDataBinding()) {
             ViewDataBinding v = DataBindingUtil.inflate(inflater, layoutId(), container, false);
             mRootView = v.getRoot();
-            initializeView(v);
+            initializeView(savedInstanceState, v);
         } else {
             mRootView = inflater.inflate(layoutId(), container, false);
-            initializeView();
+            initializeView(savedInstanceState);
         }
         return mRootView;
     }
@@ -89,27 +90,58 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
      *
      * @param viewDataBinding 提供给子类使用
      */
-    public void initializeView(ViewDataBinding viewDataBinding) {
+    public void initializeView(Bundle savedInstanceState, ViewDataBinding viewDataBinding) {
     }
 
     /**
      * 初始化控件, 不使用dataBinding, 重写该方法初始化控件
      */
-    public void initializeView() {
+    public void initializeView(Bundle savedInstanceState) {
     }
 
     /**
-     * 设置toolbar及左上角的返回按钮
+     * 设置toolbar
      *
-     * @param toolbar 设置toolbar
+     * @param toolbar 设置的toolbar
      */
-    protected void setSupportToolbar(Toolbar toolbar) {
+    public void setToolbar(Toolbar toolbar) {
         if (toolbar == null) return;
         AppCompatActivity activity = (AppCompatActivity) mActivity;
         activity.setSupportActionBar(toolbar);
-        if (activity.getSupportActionBar() != null) {
-            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+    }
+
+    /**
+     * 设置Toolbar, 并移除StatusBar, 使用自定义的StatusBar
+     *
+     * @param toolbar 需要设置的Toolbar
+     */
+    public void setToolbarWithoutStatusBar(Toolbar toolbar) {
+        setToolbar(toolbar);
+        StatusBarHelper.adjustViewHeightForHideStatusBar(mActivity, toolbar);
+        StatusBarHelper.setColor(mActivity, true, android.R.color.transparent);
+    }
+
+    /**
+     * 设置toolbar, 并设置沉浸式状态栏
+     *
+     * @param toolbar 需要设置的Toolbar
+     * @param color   设置的颜色
+     */
+    public void setToolbarWithImmersiveStatusBar(Toolbar toolbar, @ColorRes int color) {
+        setToolbar(toolbar);
+        StatusBarHelper.setFragmentToolbarColor(mActivity, toolbar, color);
+    }
+
+    /**
+     * 设置toolbar, 并设置渐变式状态栏
+     *
+     * @param toolbar  需要设置的Toolbar
+     * @param drawable 需要设置的drawable
+     */
+    public void setToolbarWithGradientStatusBar(Toolbar toolbar, Drawable drawable) {
+        setToolbar(toolbar);
+        toolbar.setBackground(drawable);
+        StatusBarHelper.setDrawable(mActivity, drawable);
     }
 
     @Nullable

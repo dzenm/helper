@@ -18,6 +18,7 @@ import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.download.NotificationType;
 import com.dzenm.helper.draw.BackGHelper;
 import com.dzenm.helper.os.OsHelper;
+import com.dzenm.helper.toast.Toa;
 import com.dzenm.helper.view.ProgressBar;
 
 /**
@@ -158,7 +159,11 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
      */
     public void update() {
         if (!isCanCancel) setCancel(false);
-        if (isUpdate) show();
+        if (isUpdate) {
+            show();
+        } else {
+            Toa.show("当前已是最新版本");
+        }
     }
 
     /**

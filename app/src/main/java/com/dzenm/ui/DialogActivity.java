@@ -1,10 +1,12 @@
 package com.dzenm.ui;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 
@@ -24,20 +26,20 @@ import com.dzenm.helper.dialog.PromptDialog;
 import com.dzenm.helper.dialog.UpGradeDialog;
 import com.dzenm.helper.dialog.ViewHolder;
 import com.dzenm.helper.download.DownloadHelper;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.net.NetHelper;
 import com.dzenm.helper.photo.PhotoHelper;
 import com.dzenm.helper.popup.PopupHelper;
-import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.toast.ToastHelper;
 
 public class DialogActivity extends AbsBaseActivity implements View.OnClickListener {
 
     @Override
-    protected void initializeView() {
+    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
         ActivityDialogBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_dialog);
-        setToolbarWithImmersiveStatusBar(binding.toolbar,android.R.color.transparent);
+        setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
 
         setPressedBackground(binding.tv100, android.R.color.holo_blue_dark);
         setRippleBackground(binding.tv101, android.R.color.holo_red_dark);
@@ -77,17 +79,17 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setOnClickListener(new LoginDialog.OnClickListener() {
                         @Override
                         public void onLoginClick(LoginDialog dialog) {
-                            Toa.show("登录成功", R.drawable.ic_prompt_success);
+                            ToastHelper.show("登录成功", R.drawable.ic_prompt_success);
                         }
 
                         @Override
                         public void onRegisterClick(LoginDialog dialog) {
-                            Toa.show("注册成功", R.drawable.ic_prompt_success);
+                            ToastHelper.show("注册成功", R.drawable.ic_prompt_success);
                         }
 
                         @Override
                         public void onVerifyClick() {
-                            Toa.show("请求验证码", R.drawable.ic_prompt_success);
+                            ToastHelper.show("请求验证码", R.drawable.ic_prompt_success);
                         }
                     }).show();
         } else if (view.getId() == R.id.tv_101) {
@@ -155,7 +157,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         .setTitle("设置按钮文本")
                                         .setMessage("本机IP地址: " + NetHelper.getIPAddress(DialogActivity.this))
                                         .setButtonText("这是确定按钮", "这是取消按钮")
-                                        .setBackground(BackGHelper.solid(android.R.color.holo_blue_bright).radius(8).build())
+                                        .setBackground(DrawableHelper.solid(android.R.color.holo_blue_bright).radius(8).build())
                                         .setTouchInOutSideCancel(true)
                                         .setGravity(Gravity.BOTTOM)
                                         .show();
@@ -165,7 +167,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         .setMessage("本机IP地址: " + NetHelper.getIPAddress(DialogActivity.this))
                                         .setButtonTextColor(R.color.colorDarkBlue,
                                                 android.R.color.holo_red_dark)
-                                        .setBackground(BackGHelper.solid(android.R.color.holo_orange_light)
+                                        .setBackground(DrawableHelper.solid(android.R.color.holo_orange_light)
                                                 .radius(8).build())
                                         .setTouchInOutSideCancel(true)
                                         .setGravity(Gravity.TOP)
@@ -221,7 +223,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                 InfoDialog.newInstance(DialogActivity.this)
                                         .setMessage("这是Material Design样式下的单按钮效果")
                                         .setMaterialDesign(true)
-                                        .setBackground(BackGHelper.solid(android.R.color.holo_green_light).radius(20f).build())
+                                        .setBackground(DrawableHelper.solid(android.R.color.holo_green_light).radius(20f).build())
                                         .setRadiusCard(20f)
                                         .show();
                             }
@@ -243,7 +245,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         .setTitle("温馨提示")
                                         .setMessage("显示在底部,无边距,可以取消")
                                         .setGravity(Gravity.BOTTOM)
-                                        .setBackground(BackGHelper.solid(android.R.color.holo_orange_light).radius(0).build())
+                                        .setBackground(DrawableHelper.solid(android.R.color.holo_orange_light).radius(0).build())
                                         .setMargin(0)
                                         .setTouchInOutSideCancel(true)
                                         .show();
@@ -252,7 +254,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         .setTitle("温馨提示")
                                         .setMessage("显示在底部,有边距,可以取消")
                                         .setGravity(Gravity.BOTTOM)
-                                        .setBackground(BackGHelper.solid(android.R.color.holo_blue_light).radius(20).build())
+                                        .setBackground(DrawableHelper.solid(android.R.color.holo_blue_light).radius(20).build())
                                         .setMargin(20)
                                         .setRadiusCard(20)
                                         .setTouchInOutSideCancel(true)
@@ -275,7 +277,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                 InfoDialog.newInstance(DialogActivity.this)
                                         .setTitle("设置样式")
                                         .setMessage("类IOS风格, 无分割线")
-                                        .setBackground(BackGHelper.solid(android.R.color.holo_purple).radius(8).build())
+                                        .setBackground(DrawableHelper.solid(android.R.color.holo_purple).radius(8).build())
                                         .setTouchInOutSideCancel(true)
                                         .show();
                             } else {
@@ -283,7 +285,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         .setTitle("设置样式")
                                         .setMessage("这是一个Material Design样式的dialog")
                                         .setMaterialDesign(true)
-                                        .setBackground(BackGHelper.solid(android.R.color.holo_blue_bright).radius(8).build())
+                                        .setBackground(DrawableHelper.solid(android.R.color.holo_blue_bright).radius(8).build())
                                         .setTouchInOutSideCancel(true)
                                         .show();
                             }
@@ -308,7 +310,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                 EditDialog.newInstance(DialogActivity.this)
                                         .setTitle("测试")
                                         .setMessage("底部编辑框")
-                                        .setBackground(BackGHelper.solid(android.R.color.holo_green_dark).radius(8).build())
+                                        .setBackground(DrawableHelper.solid(android.R.color.holo_green_dark).radius(8).build())
                                         .setTouchInOutSideCancel(true)
                                         .setGravity(Gravity.BOTTOM)
                                         .show();
@@ -333,7 +335,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                             if (confirm) {
                                 EditDialog.newInstance(DialogActivity.this)
                                         .setMessage("无边框")
-                                        .setBackground(BackGHelper.solid(android.R.color.holo_orange_dark).radius(8).build())
+                                        .setBackground(DrawableHelper.solid(android.R.color.holo_orange_dark).radius(8).build())
                                         .setTouchInOutSideCancel(true)
                                         .setGravity(Gravity.BOTTOM)
                                         .show();
@@ -358,7 +360,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .update();
         } else if (view.getId() == R.id.tv_1101) {
             String url = "https://downpack.baidu.com/appsearch_AndroidPhone_v8.0.3(1.0.65.172)_1012271b.apk";
-            Toa.show("开始下载...");
+            ToastHelper.show("开始下载...");
             DownloadHelper.newInstance(this)
                     .setUrl(url)
                     .setFilePath(Environment.getExternalStorageDirectory().getPath())
@@ -370,7 +372,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
 //                    binding.ivImage.setImageBitmap(helper.getPhoto(uri));
                     String filePath = helper.getRealFilePath(uri);
                     String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
-                    Logger.d(TAG + "copy file path: " + file);
+                    logD("copy file path: " + file);
                     FileHelper.getInstance().copyFile(filePath, file);
                     return false;
                 }
@@ -384,9 +386,9 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                         @Override
                         public void onItemClick(Object tag) {
                             if (tag.equals("测试")) {
-                                Toa.show("测试");
+                                ToastHelper.show("测试");
                             } else if (tag.equals("取消")) {
-                                Toa.show("取消");
+                                ToastHelper.show("取消");
                             }
                         }
                     }).show();
@@ -407,7 +409,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                                 holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {
-                                                        Toa.show("登录成功");
+                                                        ToastHelper.show("登录成功");
                                                         popupWindow.dismiss();
                                                     }
                                                 });
@@ -454,7 +456,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         .setOnSelectedCallback(new DatePickerDialog.OnSelectedCallback() {
                                             @Override
                                             public void onSelect(String date) {
-                                                Toa.show(date);
+                                                ToastHelper.show(date);
                                             }
                                         }).show();
                             }
@@ -467,7 +469,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .showSuccess("登录成功");
         } else if (view.getId() == R.id.tv_121) {
             PromptDialog.newInstance(this)
-                    .setBackground(BackGHelper.solid(android.R.color.holo_purple).radius(8).build())
+                    .setBackground(DrawableHelper.solid(android.R.color.holo_purple).radius(8).build())
                     .showError("禁止访问");
         } else if (view.getId() == R.id.tv_122) {
             PromptDialog.newInstance(this)
@@ -482,8 +484,8 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setOnCountListener(new PromptDialog.OnCountDownListener() {
                         @Override
                         public void onFinish() {
-                            Logger.i(TAG + "回掉完成");
-                            Toa.show("回掉完成");
+                            logD("回掉完成");
+                            ToastHelper.show("回掉完成");
                         }
                     }).showSuccess("完成");
         } else if (view.getId() == R.id.tv_125) {
@@ -505,10 +507,10 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
     }
 
     private void setPressedBackground(View viewBackground, int color) {
-        BackGHelper.radius(20).pressed(color, R.color.colorGray).into(viewBackground);
+        DrawableHelper.radius(20).pressed(color, R.color.colorGray).into(viewBackground);
     }
 
     private void setRippleBackground(View viewBackground, int color) {
-        BackGHelper.radius(20).ripple(color).into(viewBackground);
+        DrawableHelper.radius(20).ripple(color).into(viewBackground);
     }
 }

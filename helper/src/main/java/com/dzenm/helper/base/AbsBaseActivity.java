@@ -13,10 +13,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.dialog.PromptDialog;
+import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.net.NetHelper;
 import com.dzenm.helper.os.ActivityHelper;
 import com.dzenm.helper.os.ScreenHelper;
@@ -30,9 +33,9 @@ import com.dzenm.helper.photo.PhotoHelper;
  */
 public abstract class AbsBaseActivity extends AppCompatActivity implements NetHelper.OnNetworkChangeListener {
 
-    protected final String TAG = this.getClass().getSimpleName() + "|";
-    protected PromptDialog mPromptDialog;
+    private final String TAG = this.getClass().getSimpleName() + "| ";
     private boolean mNetworkAvailable = false;                          // 判断网络是否可用
+    private PromptDialog mPromptDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,10 +43,29 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
         ActivityHelper.getInstance().add(this);                         // 添加Activity到Stack管理
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS); // 设置切换页面动画开关
         mPromptDialog = PromptDialog.newInstance(this);
-        initializeView();                                               // 初始化View
+        if (layoutId() != -1) {
+            if (isDataBinding()) {
+                ViewDataBinding v = DataBindingUtil.setContentView(this, layoutId());
+                initializeView(savedInstanceState, v);                  // 使用DataBinding, 初始化View
+            } else {
+                setContentView(layoutId());
+                initializeView(savedInstanceState, null);// 不使用DataBinding, 初始化View
+            }
+        }
     }
 
-    protected void initializeView() {
+    protected int layoutId() {
+        return -1;
+    }
+
+    /**
+     * @return 是否使用DataBinding
+     */
+    protected boolean isDataBinding() {
+        return false;
+    }
+
+    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
     }
 
     /**
@@ -119,18 +141,21 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
 
     /**
      * 显示提示框
+     *
+     * @param isShow 是否显示提示框
      */
-    public void showPromptDialog() {
-        if (mPromptDialog.isShowing()) return;
-        mPromptDialog.showLoading(PromptDialog.LOADING_POINT_SCALE);
+    public void show(boolean isShow) {
+        if (isShow) {
+            if (mPromptDialog.isShowing()) return;
+            mPromptDialog.showLoading(PromptDialog.LOADING_POINT_SCALE);
+        } else {
+            if (!mPromptDialog.isShowing()) return;
+            mPromptDialog.dismiss();
+        }
     }
 
-    /**
-     * 隐藏提示框
-     */
-    public void dismissPromptDialog() {
-        if (!mPromptDialog.isShowing()) return;
-        mPromptDialog.dismiss();
+    public PromptDialog getPromptDialog() {
+        return mPromptDialog;
     }
 
     public boolean isNetworkAvailable() {
@@ -179,6 +204,26 @@ public abstract class AbsBaseActivity extends AppCompatActivity implements NetHe
         ScreenHelper.hideSoftInput(this);
         super.finish();
         ActivityHelper.getInstance().finish(this);
+    }
+
+    public void logV(String msg) {
+        Logger.v(TAG + msg);
+    }
+
+    public void logD(String msg) {
+        Logger.d(TAG + msg);
+    }
+
+    public void logI(String msg) {
+        Logger.i(TAG + msg);
+    }
+
+    public void logW(String msg) {
+        Logger.w(TAG + msg);
+    }
+
+    public void logE(String msg) {
+        Logger.e(TAG + msg);
     }
 
     @Override

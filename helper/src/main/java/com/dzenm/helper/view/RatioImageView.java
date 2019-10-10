@@ -105,22 +105,19 @@ public class RatioImageView extends AppCompatImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                Drawable drawable = getDrawable();
-                if (drawable != null && isClickable()) {
+        Drawable drawable = getDrawable();
+        if (drawable != null && isClickable()) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
                     drawable.mutate().setColorFilter(mForegroundColor, PorterDuff.Mode.MULTIPLY);
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                Drawable drawableUp = getDrawable();
-                if (drawableUp != null && isClickable()) {
-                    drawableUp.mutate().clearColorFilter();
-                }
-                break;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    break;
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_UP:
+                    drawable.mutate().clearColorFilter();
+                    break;
+            }
         }
         return super.onTouchEvent(event);
     }

@@ -14,11 +14,13 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.PermissionChecker;
-import android.text.TextUtils;
-import android.util.TypedValue;
 
 import com.dzenm.helper.file.FileType;
 
@@ -64,7 +66,7 @@ public final class OsHelper {
     }
 
     public static boolean is360() {
-        return check(Rom.QIKU) || check("360");
+        return check(Rom.QIKU) || check(Rom.THREE_NINE_ZERO);
     }
 
     public static boolean isSmartisan() {
@@ -77,7 +79,7 @@ public final class OsHelper {
      * @return
      */
     public static String getName() {
-        if (sName == null) check("");
+        if (sName == null) check(Rom.NONE);
         return sName;
     }
 
@@ -87,7 +89,7 @@ public final class OsHelper {
      * @return
      */
     public static String getVersion() {
-        if (sVersion == null) check("");
+        if (sVersion == null) check(Rom.NONE);
         return sVersion;
     }
 
@@ -386,9 +388,18 @@ public final class OsHelper {
     }
 
     /**
+     * 判断当前系统版本是否大于Android 4.4(target 19)
+     *
+     * @return 是否大于Android 4.4
+     */
+    public static boolean isKitkat() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    }
+
+    /**
      * 判断当前系统版本是否大于Android 5.0(target 21)
      *
-     * @return
+     * @return 是否大于Android 5.0
      */
     public static boolean isLollipop() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
@@ -397,7 +408,7 @@ public final class OsHelper {
     /**
      * 判断当前系统版本是否大于Android 6.0(target 23)
      *
-     * @return
+     * @return 是否大于Android 6.0
      */
     public static boolean isMarshmallow() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
@@ -406,7 +417,7 @@ public final class OsHelper {
     /**
      * 判断当前系统版本是否大于Android 7.0(target 24)
      *
-     * @return
+     * @return 是否大于Android 7.0
      */
     public static boolean isNougat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
@@ -415,12 +426,11 @@ public final class OsHelper {
     /**
      * 判断当前系统版本是否大于Android 8.0(target 26)
      *
-     * @return
+     * @return 是否大于Android 8.0
      */
     public static boolean isOreo() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
-
 
     /**
      * @param value 转换的值
@@ -431,16 +441,42 @@ public final class OsHelper {
     }
 
     /**
-     * @return 屏幕宽度
+     * @return 屏幕宽度, 不包含NavigatorBar
      */
     public static int getDisplayWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
     /**
-     * @return 屏幕高度
+     * @return 屏幕宽度, 不包含NavigatorBar
      */
     public static int getDisplayHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+    /**
+     * @return 屏幕宽度, 包含NavigatorBar
+     */
+    public static int getDisplayWidth(Activity activity) {
+        return getDisplayMetrics(activity).widthPixels;
+    }
+
+    /**
+     * @return 屏幕高度, 包含NavigatorBar
+     */
+    public static int getDisplayHeight(Activity activity) {
+        return getDisplayMetrics(activity).heightPixels;
+    }
+
+    /**
+     * 获取屏幕指标工具
+     *
+     * @param activity 获取WindowManager
+     * @return 屏幕指标
+     */
+    public static DisplayMetrics getDisplayMetrics(Activity activity) {
+        DisplayMetrics metric = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getRealMetrics(metric);
+        return metric;
     }
 }

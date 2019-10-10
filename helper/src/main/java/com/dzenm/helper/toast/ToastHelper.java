@@ -16,9 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
-import com.dzenm.helper.os.ScreenHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,21 +27,21 @@ import java.lang.annotation.RetentionPolicy;
  * @date 2019-06-07 10:46
  * <pre>
  * 在Application里初始化
- * Toa.getInstance(this);
+ * ToastHelper.getInstance(this);
  *
  * 弹出一个文本Toast
- * Toa.show("自定义Toast");
+ * ToastHelper.show("自定义Toast");
  *
  * 弹一个带图标和背景颜色的Toast
- * Toa.setBackground(GradientHelper.get(getResources()
+ * ToastHelper.setBackground(GradientHelper.get(getResources()
  *                     .getColor(android.R.color.holo_blue_bright), 12))
  *                     .show("带图标的toast", R.drawable.prompt_success);
  * </pre>
  */
-public class Toa {
+public class ToastHelper {
 
     @SuppressLint("StaticFieldLeak")
-    private static Toa sToast;
+    private static ToastHelper sToast;
     @SuppressLint("StaticFieldLeak")
     private static Context sContext;
     @SuppressLint("StaticFieldLeak")
@@ -58,23 +57,23 @@ public class Toa {
 
     private static boolean isCustomize = false;
 
-    private Toa() {
+    private ToastHelper() {
 
     }
 
-    public static Toa getInstance() {
-        if (sToast == null) synchronized (Toa.class) {
-            if (sToast == null) sToast = new Toa();
+    public static ToastHelper getInstance() {
+        if (sToast == null) synchronized (ToastHelper.class) {
+            if (sToast == null) sToast = new ToastHelper();
         }
         return sToast;
     }
 
-    public Toa init(Context context) {
+    public ToastHelper init(Context context) {
         sContext = context;
         return this;
     }
 
-    public static Toa customize() {
+    public static ToastHelper customize() {
         isCustomize = true;
         return sToast;
     }
@@ -83,7 +82,7 @@ public class Toa {
      * @param background Toast背景drawable资源文件
      * @return this
      */
-    public Toa setBackground(Drawable background) {
+    public ToastHelper setBackground(Drawable background) {
         if (isCustomize) {
             sCustomizeBackground = background;
         } else {
@@ -97,7 +96,7 @@ public class Toa {
      * @param offset  垂直方向偏移量
      * @return this
      */
-    public Toa setGravity(int gravity, int offset) {
+    public ToastHelper setGravity(int gravity, int offset) {
         if (isCustomize) {
             sCustomizeGravity = gravity;
             sCustomizeOffset = offset;
@@ -112,7 +111,7 @@ public class Toa {
      * @param once true显示一次， false显示多次
      * @return this
      */
-    public Toa setOnce(boolean once) {
+    public ToastHelper setOnce(boolean once) {
         isShowRepeat = !once;
         return sToast;
     }
@@ -219,7 +218,7 @@ public class Toa {
          */
         private Prompt(Context context) {
             super(context);
-            mBackground = BackGHelper.solid(R.color.colorTranslucentDarkGray)
+            mBackground = DrawableHelper.solid(R.color.colorTranslucentDarkGray)
                     .radius(16)
                     .build();
         }

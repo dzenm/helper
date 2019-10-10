@@ -11,21 +11,21 @@ import java.util.Set;
  * @author dzenm
  * @date 2019-07-27 17:10
  */
-public class SharedPrefHelper {
+public class SPHelper {
 
     /************************************* 需要在Application中初始化 *********************************/
     private Context mContext;
     @SuppressLint("StaticFieldLeak")
-    private static SharedPrefHelper sSharedPrefHelper;
+    private static SPHelper sSPHelper;
 
-    private SharedPrefHelper() {
+    private SPHelper() {
     }
 
-    public static SharedPrefHelper getInstance() {
-        if (sSharedPrefHelper == null) synchronized (SharedPrefHelper.class) {
-            if (sSharedPrefHelper == null) sSharedPrefHelper = new SharedPrefHelper();
+    public static SPHelper getInstance() {
+        if (sSPHelper == null) synchronized (SPHelper.class) {
+            if (sSPHelper == null) sSPHelper = new SPHelper();
         }
-        return sSharedPrefHelper;
+        return sSPHelper;
     }
 
     /************************************* 方式一：自定义SharedPreferences文件名 *********************************/

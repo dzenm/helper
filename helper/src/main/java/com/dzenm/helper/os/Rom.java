@@ -9,9 +9,11 @@ import java.lang.annotation.RetentionPolicy;
  * @author dzenm
  * @date 2019-07-31 23:28
  */
-@StringDef({Rom.MIUI, Rom.EMUI, Rom.FLYME, Rom.OPPO, Rom.SMARTISAN, Rom.VIVO, Rom.QIKU, Rom.ANDROID})
+@StringDef({Rom.NONE, Rom.MIUI, Rom.EMUI, Rom.FLYME, Rom.OPPO, Rom.SMARTISAN,
+        Rom.VIVO, Rom.QIKU, Rom.THREE_NINE_ZERO, Rom.ANDROID})
 @Retention(RetentionPolicy.SOURCE)
 public @interface Rom {
+    String NONE = "";
     String MIUI = "MIUI";
     String EMUI = "EMUI";
     String FLYME = "FLYME";
@@ -19,5 +21,6 @@ public @interface Rom {
     String SMARTISAN = "SMARTISAN";
     String VIVO = "VIVO";
     String QIKU = "QIKU";
+    String THREE_NINE_ZERO = "360";
     String ANDROID = "ANDROID";
 }

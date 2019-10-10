@@ -1,20 +1,22 @@
 package com.dzenm.ui;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
+import android.os.Bundle;
 import android.view.View;
 
 import com.dzenm.LottieDialog;
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityLoadingBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
-import com.dzenm.helper.draw.BackGHelper;
-import com.dzenm.helper.os.StatusBarHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 
 public class LoadingActivity extends AbsBaseActivity implements View.OnClickListener {
 
     @Override
-    protected void initializeView() {
+    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
         ActivityLoadingBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_loading);
         setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
 
@@ -102,10 +104,10 @@ public class LoadingActivity extends AbsBaseActivity implements View.OnClickList
     }
 
     private void setPressedBackground(View viewBackground, int color) {
-        BackGHelper.radius(8).pressed(color, R.color.colorDivide).into(viewBackground);
+        DrawableHelper.radius(8).pressed(color, R.color.colorDivide).into(viewBackground);
     }
 
     private void setRippleBackground(View viewBackground, int color) {
-        BackGHelper.radius(8).ripple(color).into(viewBackground);
+        DrawableHelper.radius(8).ripple(color).into(viewBackground);
     }
 }

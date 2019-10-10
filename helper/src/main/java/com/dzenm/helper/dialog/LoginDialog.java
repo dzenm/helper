@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.view.EditTextChangeHelper;
 
 import java.lang.annotation.Retention;
@@ -27,17 +27,17 @@ import java.lang.annotation.RetentionPolicy;
  *        .setOnClickListener(new LoginDialog.OnClickListener() {
  *            @Override
  *            public void onLoginClick(LoginDialog dialog) {
- *                Toa.show("登录成功", R.drawable.ic_prompt_success);
+ *                ToastHelper.show("登录成功", R.drawable.ic_prompt_success);
  *            }
  *
  *            @Override
  *            public void onRegisterClick(LoginDialog dialog) {
- *                Toa.show("注册成功", R.drawable.ic_prompt_success);
+ *                ToastHelper.show("注册成功", R.drawable.ic_prompt_success);
  *            }
  *
  *            @Override
  *            public void onVerifyClick() {
- *                Toa.show("请求验证码", R.drawable.ic_prompt_success);
+ *                ToastHelper.show("请求验证码", R.drawable.ic_prompt_success);
  *            }
  *        }).show();
  * </pre>
@@ -234,8 +234,8 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
         tvCountdown.setOnClickListener(this);
 
         // 登陆按钮和取消按钮点击颜色效果
-        BackGHelper.radiusBR(mRadiusCard).pressed(mPressedColor).into(tvConfirm);
-        BackGHelper.radiusBL(mRadiusCard).pressed(mPressedColor).into(tvCancel);
+        DrawableHelper.radiusBR(mRadiusCard).pressed(mPressedColor).into(tvConfirm);
+        DrawableHelper.radiusBL(mRadiusCard).pressed(mPressedColor).into(tvCancel);
 
         // 默认Tab及Tab文本点击颜色样式
         setClickChangeTabStyle(tvLogin, tvRegister, mRadiusCard, 0f);
@@ -269,7 +269,7 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
             line_2.setBackgroundColor(getColor(R.color.colorDivideDark));
         }
         // 验证码按钮点击颜色效果
-        BackGHelper.radiusTL(4f)
+        DrawableHelper.radiusTL(4f)
                 .radiusTR(4f)
                 .pressed(mPrimaryColor, mSecondaryColor)
                 .into(tvCountdown);
@@ -303,7 +303,7 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
                 setTagSelected(TYPE_REGISTER);
             } else if (view.getId() == R.id.tv_countdown) {    // 倒计时按钮
                 // 倒计时按钮变灰并不可点击
-                BackGHelper.solid(mSecondaryColor)
+                DrawableHelper.solid(mSecondaryColor)
                         .radiusTR(4)
                         .radiusBR(4)
                         .into(tvCountdown);
@@ -346,12 +346,12 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
      */
     private void setClickChangeTabStyle(TextView selectView, TextView unSelectView, float leftRadius, float rightRadius) {
         // 选中的Tab, 白色背景、主色边框, 点击显示灰色背景、副色边框,
-        BackGHelper.pressed(BackGHelper.solid(android.R.color.white)
+        DrawableHelper.pressed(DrawableHelper.solid(android.R.color.white)
                         .radiusTL(rightRadius)
                         .radiusTR(leftRadius)
                         .stroke(1, mPrimaryColor)
                         .build(),
-                BackGHelper.solid(mPressedColor)
+                DrawableHelper.solid(mPressedColor)
                         .radiusTL(rightRadius)
                         .radiusTR(leftRadius)
                         .stroke(1, mSecondaryColor)
@@ -360,7 +360,7 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
         unSelectView.setTextColor(getColor(mPrimaryColor));
 
         // 未选中的Tab, 主色背景, 点击显示副色背景
-        BackGHelper.radiusTL(leftRadius)
+        DrawableHelper.radiusTL(leftRadius)
                 .radiusTR(rightRadius)
                 .pressed(mPrimaryColor, mSecondaryColor)
                 .into(selectView);
@@ -406,7 +406,7 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
         // 倒计时结束时可重新点击获取并设置显式的可点击的颜色以及提示文字
         tvCountdown.setText(getString(R.string.dialog_reset_countdown));
         tvCountdown.setEnabled(true);
-        BackGHelper.radiusTL(4f)
+        DrawableHelper.radiusTL(4f)
                 .radiusTR(4f)
                 .pressed(mPrimaryColor, mSecondaryColor)
                 .into(tvCountdown);

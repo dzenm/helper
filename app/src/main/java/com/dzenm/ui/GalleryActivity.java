@@ -1,9 +1,14 @@
 package com.dzenm.ui;
 
 import android.content.Context;
+
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.annotation.NonNull;
+import androidx.databinding.ViewDataBinding;
 import androidx.viewpager.widget.PagerAdapter;
+
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +27,7 @@ public class GalleryActivity extends AbsBaseActivity {
     private ActivityGalleryBinding binding;
 
     @Override
-    protected void initializeView() {
+    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_gallery);
         setToolbar(binding.toolbar);
 

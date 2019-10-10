@@ -11,9 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
-import com.dzenm.helper.os.ScreenHelper;
 
 /**
  * @author dzenm
@@ -25,9 +24,9 @@ import com.dzenm.helper.os.ScreenHelper;
  *            @Override
  *            public void onItemClick(Object tag) {
  *                if (tag.equals("测试")) {
- *                    Toa.show("测试");
+ *                    ToastHelper.show("测试");
  *                } else if (tag.equals("取消")) {
- *                    Toa.show("取消");
+ *                    ToastHelper.show("取消");
  *                }
  *            }
  *        })
@@ -166,7 +165,7 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
             textView.setTag(items[position]);
             textView.setOnClickListener(this);
             int color = isDefaultBackground ? R.color.colorDivideDark : R.color.colorDivideLight;
-            BackGHelper.radius(setPressedRadius(mItems, position))
+            DrawableHelper.radius(setPressedRadius(mItems, position))
                     .ripple(android.R.color.white, color)
                     .into(textView);
         }

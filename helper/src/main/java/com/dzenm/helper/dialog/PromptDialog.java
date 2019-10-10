@@ -14,9 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
-import com.dzenm.helper.os.ScreenHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -40,7 +39,7 @@ import java.lang.annotation.RetentionPolicy;
  *                  @Override
  *                  public void onFinish() {
  *                      Logger.d(TAG + "回掉完成");
- *                      Toa.show("回掉完成");
+ *                      ToastHelper.show("回掉完成");
  *                  }
  *              }).showSuccess("登录成功");
  *     PromptDialog.newInstance(this).showError("禁止访问");
@@ -222,7 +221,7 @@ public class PromptDialog extends AbsDialog {
     protected PromptDialog(@NonNull Context context) {
         super(context);
         // 圆角，背景透明灰
-        mBackground = BackGHelper.solid(R.color.colorTranslucentDarkGray)
+        mBackground = DrawableHelper.solid(R.color.colorTranslucentDarkGray)
                 .radius(8)
                 .build();
         mAnimator = AnimatorHelper.alpha();

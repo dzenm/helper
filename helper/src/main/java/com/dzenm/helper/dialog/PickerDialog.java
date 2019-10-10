@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.view.PickerView;
 
 import java.util.ArrayList;
@@ -159,10 +159,10 @@ public class PickerDialog extends AbsDialogFragment implements View.OnClickListe
         if (mTitle != null) tvTitle.setText(mTitle);
 
         // 设置按钮背景
-        BackGHelper.radiusTL(mRadiusCard)
+        DrawableHelper.radiusTL(mRadiusCard)
                 .pressed(android.R.color.transparent, mPressedColor)
                 .into(tvCancel);
-        BackGHelper.radiusBR(mRadiusCard)
+        DrawableHelper.radiusBR(mRadiusCard)
                 .pressed(android.R.color.transparent, mPressedColor)
                 .into(tvConfirm);
 

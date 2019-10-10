@@ -1,10 +1,11 @@
 package com.dzenm.helper.dialog;
 
 import android.graphics.drawable.Drawable;
-import androidx.annotation.IdRes;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.IdRes;
 
 /**
  * @author dinzhenyan
@@ -27,9 +28,9 @@ public class ViewHolder {
     /**
      * 获取View
      *
-     * @param viewId
-     * @param <T>
-     * @return
+     * @param viewId 通过View id获取View
+     * @param <T>    获取的类型
+     * @return 获取View的子类
      */
     public <T extends View> T getView(@IdRes int viewId) {
         View view = mViews.get(viewId);
@@ -80,7 +81,6 @@ public class ViewHolder {
     public int getVisible(int viewId) {
         return getView(viewId).getVisibility();
     }
-
 
     /**
      * @param viewId

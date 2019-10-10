@@ -15,7 +15,7 @@ import android.os.Environment;
 import com.dzenm.helper.file.FileType;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
-import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.toast.ToastHelper;
 
 import java.io.File;
 
@@ -131,7 +131,7 @@ public class DownloadFileHelper {
         if (mOnDownloadListener != null) {
             mOnDownloadListener.onFailed(msg);
         } else {
-            Toa.show(msg);
+            ToastHelper.show(msg);
         }
     }
 

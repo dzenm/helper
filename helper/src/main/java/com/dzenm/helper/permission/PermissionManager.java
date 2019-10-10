@@ -19,7 +19,7 @@ import com.dzenm.helper.dialog.AbsDialogFragment;
 import com.dzenm.helper.dialog.DialogHelper;
 import com.dzenm.helper.dialog.InfoDialog;
 import com.dzenm.helper.dialog.ViewHolder;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
 
@@ -348,7 +348,7 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
                 .setLayout(R.layout.dialog_permission_prompt)
                 .setCancel(false)
                 .setOnConvertViewClickListener(this)
-                .setBackground(BackGHelper.solid(android.R.color.white)
+                .setBackground(DrawableHelper.solid(android.R.color.white)
                         .radius(10)
                         .build())
                 .show();
@@ -365,11 +365,11 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
         confirm.setText("前往授权");
         ImageView cancel = holder.getView(R.id.iv_cancel);
 
-        BackGHelper.radius(10f)
+        DrawableHelper.radius(10f)
                 .pressed(R.color.colorLightGray)
                 .into(cancel);
 
-        BackGHelper.radiusBL(10f)
+        DrawableHelper.radiusBL(10f)
                 .radiusBR(10f)
                 .pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
                 .into(confirm);

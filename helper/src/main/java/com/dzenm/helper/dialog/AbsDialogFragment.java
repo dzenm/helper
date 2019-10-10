@@ -1,8 +1,15 @@
 package com.dzenm.helper.dialog;
 
+import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -11,15 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
 
 /**
@@ -42,7 +42,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      * dialog显示的背景, 通过设置根布局的背景mView.setBackground(mBackground)设置dialog的背景
      * 默认白色背景和圆角, 自定义背景调用 {@link #setBackground(Drawable)}
      */
-    protected Drawable mBackground = BackGHelper
+    protected Drawable mBackground = DrawableHelper
             .solid(android.R.color.white)
             .radius(DEFAULT_RADIUS)
             .build();
@@ -199,7 +199,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      * @return this
      */
     public <T extends AbsDialogFragment> T setBackgroundRectangle() {
-        setBackground(BackGHelper.solid(android.R.color.white).build());
+        setBackground(DrawableHelper.solid(android.R.color.white).build());
         return (T) this;
     }
 
@@ -300,7 +300,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     public <T extends AbsDialogFragment> T setRadiusCard(float radiusCard) {
         mRadiusCard = radiusCard;
         if (isDefaultBackground) {
-            mBackground = BackGHelper
+            mBackground = DrawableHelper
                     .solid(android.R.color.white)
                     .radius(radiusCard)
                     .build();
@@ -365,7 +365,13 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(AppCompatDialogFragment.STYLE_NO_TITLE, R.style.AbsFragmentTheme);
+        // 必须在onCreate方法设置才有效
+        setStyle(AppCompatDialogFragment.STYLE_NO_TITLE, isFullScreen() ? R.style.FullScreenTheme :
+                R.style.AbsFragmentTheme);
+    }
+
+    protected boolean isFullScreen() {
+        return false;
     }
 
     @Nullable
@@ -379,7 +385,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
         if (isMaterialDesign) {
             mRadiusCard = MATERIAL_RADIUS;
-            if (isDefaultBackground) mBackground = BackGHelper
+            if (isDefaultBackground) mBackground = DrawableHelper
                     .solid(android.R.color.white)
                     .radius(mRadiusCard)
                     .build();
@@ -438,38 +444,41 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      * 初始化dialog参数
      */
     private void initializeDialogParams() {
-        setDialogMargin();
-        setStyle();
-        setWindowProperty();
+        setDialogMargin(mView);
+        setAnimatorStyle();
+        setWindowProperty(getWindow());
     }
 
     /**
      * 初始化dialog的大小
      */
-    private void setDialogMargin() {
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mView.getLayoutParams();
+    private void setDialogMargin(View decorView) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) decorView.getLayoutParams();
         setLayoutParams(layoutParams);
-        mView.setLayoutParams(layoutParams);
+        decorView.setLayoutParams(layoutParams);
     }
 
     /**
      * @param layoutParams 通过rootView的LayoutParams设定margin
      */
     protected void setLayoutParams(ViewGroup.MarginLayoutParams layoutParams) {
-        if (isShowCenter()) {
-            layoutParams.width = mCenterWidth;
+        if (isFullScreen()) {
+            layoutParams.width = OsHelper.getDisplayWidth();
         } else {
-            layoutParams.topMargin = 2 * mMargin;
-            layoutParams.bottomMargin = mMargin;
-            layoutParams.width = OsHelper.getDisplayWidth() - 2 * mMargin;
+            if (isShowCenter()) {
+                layoutParams.width = mCenterWidth;
+            } else {
+                layoutParams.topMargin = 2 * mMargin;
+                layoutParams.bottomMargin = mMargin;
+                layoutParams.width = OsHelper.getDisplayWidth() - 2 * mMargin;
+            }
         }
-        mView.setLayoutParams(layoutParams);
     }
 
     /**
-     * 设置默认的效果
+     * 设置默认的动画效果
      */
-    protected void setStyle() {
+    protected void setAnimatorStyle() {
         if (isDefaultAnimator) {
             if (mGravity == Gravity.TOP) {
                 mAnimator = AnimatorHelper.top();
@@ -482,9 +491,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     /**
      * 设置Windows的属性
      */
-    protected void setWindowProperty() {
-        Window window = getDialog().getWindow();
-
+    protected void setWindowProperty(Window window) {
         // 设置是否可以通过点击dialog之外的区域取消显示dialog
         getDialog().setCanceledOnTouchOutside(isTouchInOutSideCancel);
 
@@ -506,9 +513,20 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
                 WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         // 收起键盘
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
+        if (isFullScreen()) {
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                    OsHelper.getDisplayHeight(mActivity));
+        }
         // 消除Dialog内容区域外围的灰色
         if (mDimAccount != -1f) window.setDimAmount(mDimAccount);
+    }
+
+    protected Window getWindow() {
+        Dialog dialog = getDialog();
+        if (dialog == null) return mActivity.getWindow();
+        Window window = getDialog().getWindow();
+        if (window == null) return mActivity.getWindow();
+        return window;
     }
 
     /**

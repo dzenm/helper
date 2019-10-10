@@ -1,28 +1,31 @@
 package com.dzenm.ui;
 
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityOthersBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.dialog.EditDialog;
 import com.dzenm.helper.dialog.InfoDialog;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.photo.PhotoHelper;
 import com.dzenm.helper.share.ShareHelper;
-import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.toast.ToastHelper;
 
 public class OthersActivity extends AbsBaseActivity implements View.OnClickListener {
 
     private ActivityOthersBinding binding;
 
     @Override
-    protected void initializeView() {
+    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_others);
         setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorAccent);
 
@@ -54,9 +57,9 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
                                             @Override
                                             public void onResult(boolean isShare) {
                                                 if (isShare) {
-                                                    Toa.show("分享成功");
+                                                    ToastHelper.show("分享成功");
                                                 } else {
-                                                    Toa.show("分享失败");
+                                                    ToastHelper.show("分享失败");
                                                 }
                                             }
                                         }).share();
@@ -72,9 +75,9 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
                         @Override
                         public void onResult(boolean isShare) {
                             if (isShare) {
-                                Toa.show("分享成功");
+                                ToastHelper.show("分享成功");
                             } else {
-                                Toa.show("分享失败");
+                                ToastHelper.show("分享失败");
                             }
                         }
                     }).share();
@@ -92,20 +95,20 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
                 }
             }).gallery();
             ScreenHelper.copy(this, "这是复制的内容");
-            Toa.show("复制成功");
+            ToastHelper.show("复制成功");
         } else if (view.getId() == R.id.tv_103) {
             String s = ScreenHelper.paste(this).toString();
-            Toa.show("获取剪贴板内容： " + s);
+            ToastHelper.show("获取剪贴板内容： " + s);
         } else if (view.getId() == R.id.tv_104) {
-            Toa.show("自定义Toast");
+            ToastHelper.show("自定义Toast");
         } else if (view.getId() == R.id.tv_105) {
-            Toa.show("带图标的toast", R.drawable.prompt_success);
+            ToastHelper.show("带图标的toast", R.drawable.prompt_success);
         } else if (view.getId() == R.id.tv_106) {
-            Toa.customize()
-                    .setBackground(BackGHelper.solid(android.R.color.holo_green_light).radius(8).build())
+            ToastHelper.customize()
+                    .setBackground(DrawableHelper.solid(android.R.color.holo_green_light).radius(8).build())
                     .show("自定义背景Toast");
         } else if (view.getId() == R.id.tv_107) {
-            Toa.customize()
+            ToastHelper.customize()
                     .setGravity(Gravity.BOTTOM, 0)
                     .show("自定义背景Toast");
         } else if (view.getId() == R.id.tv_108) {
@@ -116,10 +119,10 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
     }
 
     private void setPressedBackground(View viewBackground, int color) {
-        BackGHelper.radius(10).pressed(color, R.color.colorGray).into(viewBackground);
+        DrawableHelper.radius(10).pressed(color, R.color.colorGray).into(viewBackground);
     }
 
     private void setRippleBackground(View viewBackground, int color) {
-        BackGHelper.radius(10).ripple(color).into(viewBackground);
+        DrawableHelper.radius(10).ripple(color).into(viewBackground);
     }
 }

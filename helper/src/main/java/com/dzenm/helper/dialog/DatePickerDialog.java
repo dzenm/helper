@@ -24,7 +24,7 @@ import java.util.List;
  *             .setOnSelectedCallback(new DatePickerDialog.OnSelectedCallback() {
  *                 @Override
  *                 public void onSelect(String date) {
- *                     Toa.show(date);
+ *                     ToastHelper.show(date);
  *                 }
  *             }).show();
  * </pre>

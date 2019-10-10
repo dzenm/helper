@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
 
@@ -32,7 +32,7 @@ import java.util.List;
  * plPreview.setOnItemClickListener(new PhotoLayout.OnItemClickListener() {
  *             @Override
  *             public void onItemClick(View view, int position) {
- *                 Toa.show("点击的是第: " + position);
+ *                 ToastHelper.show("点击的是第: " + position);
  *             }
  *         });
  * plPreview.setPreview(true);
@@ -274,7 +274,7 @@ public class PhotoLayout extends GridLayout {
                 if (mOnLoadPhotoListener != null) mOnLoadPhotoListener.onLoad(PhotoLayout.this);
             }
         });
-        BackGHelper.pressed(R.color.colorLightGray, R.color.colorHint).into(imageView);
+        DrawableHelper.pressed(R.color.colorLightGray, R.color.colorHint).into(imageView);
         return imageView;
     }
 

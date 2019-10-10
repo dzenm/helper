@@ -9,7 +9,7 @@ import android.widget.PopupWindow;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.dialog.ViewHolder;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 
 /**
  * @author dinzhenyan
@@ -23,7 +23,7 @@ import com.dzenm.helper.draw.BackGHelper;
  *                 holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
  *                     @Override
  *                     public void onClick(View v) {
- *                         Toa.show("登录成功");
+ *                         ToastHelper.show("登录成功");
  *                         popupWindow.dismiss();
  *                     }
  *                 });
@@ -68,7 +68,7 @@ public class PopupHelper extends PopupWindow {
             params = new PopupController.Params(activity);
 
             // 默认设置
-            params.mBackground = BackGHelper.solid(android.R.color.white).radius(8).build();
+            params.mBackground = DrawableHelper.solid(android.R.color.white).radius(8).build();
             params.parentBackgroundAlpha = 0.6f;
             params.mTouchable = true;
             params.mAnimationStyle = R.style.BasePopup_Fade_Vertical_Animator;

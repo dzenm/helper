@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +11,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.dzenm.helper.R;
 import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.download.NotificationType;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
-import com.dzenm.helper.toast.Toa;
 import com.dzenm.helper.view.ProgressBar;
 
 /**
@@ -159,11 +159,7 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
      */
     public void update() {
         if (!isCanCancel) setCancel(false);
-        if (isUpdate) {
-            show();
-        } else {
-            Toa.show("当前已是最新版本");
-        }
+        if (isUpdate) show();
     }
 
     /**
@@ -251,7 +247,7 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
 
     public UpGradeDialog(AppCompatActivity activity) {
         super(activity);
-        mBackground = BackGHelper.solid(android.R.color.transparent).build();
+        mBackground = DrawableHelper.solid(android.R.color.transparent).build();
         mHeadImage = R.drawable.ic_upgrade_top;
         mStyleColor = android.R.color.holo_red_light;
         mAnimator = AnimatorHelper.overshoot();
@@ -293,12 +289,12 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
             tvDesc.setTextColor(mSecondaryTextColor);
         }
 
-        BackGHelper.solid(android.R.color.white).radiusBR(mRadiusCard).radiusBL(mRadiusCard).into(llContent);
+        DrawableHelper.solid(android.R.color.white).radiusBR(mRadiusCard).radiusBL(mRadiusCard).into(llContent);
 
         // 升级按钮
         tvUpgrade = findViewById(R.id.tv_upgrade);
         tvUpgrade.setOnClickListener(this);
-        BackGHelper.radius(mRadiusCard)
+        DrawableHelper.radius(mRadiusCard)
                 .pressed(mStyleColor, mPressedColor)
                 .textColor(android.R.color.white, mStyleColor)
                 .into(tvUpgrade);
@@ -310,7 +306,8 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
     }
 
     @Override
-    protected void setLayoutParams(ViewGroup.MarginLayoutParams layoutParams) { // 设置dialog的宽度
+    protected void setLayoutParams(ViewGroup.MarginLayoutParams layoutParams) {
+        // 设置dialog的宽度
         layoutParams.width = (int) (OsHelper.getDisplayWidth() * 0.7);
     }
 

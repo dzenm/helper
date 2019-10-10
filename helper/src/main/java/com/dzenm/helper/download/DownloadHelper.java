@@ -18,11 +18,11 @@ import android.text.TextUtils;
 
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.file.FileType;
-import com.dzenm.helper.file.SharedPrefHelper;
+import com.dzenm.helper.file.SPHelper;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.task.WeakHandler;
-import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.toast.ToastHelper;
 
 import java.io.File;
 
@@ -208,7 +208,7 @@ public class DownloadHelper {
                 mFilePath = mFilePath + File.separator + mVersionName;
             }
 
-            String filePath = (String) SharedPrefHelper.getInstance().get(DOWNLOAD_PREF, mVersionName, "");
+            String filePath = (String) SPHelper.getInstance().get(DOWNLOAD_PREF, mVersionName, "");
             if (!TextUtils.isEmpty(filePath)) {
                 File file = new File(filePath);
                 if (file.exists() && file.isFile()) {
@@ -527,7 +527,7 @@ public class DownloadHelper {
      */
     private void setDownloadFailed(String msg) {
         if (mOnDownloadListener == null) {
-            Toa.show(msg);
+            ToastHelper.show(msg);
         } else {
             mOnDownloadListener.onFailed(msg);
         }
@@ -566,8 +566,8 @@ public class DownloadHelper {
         if (uri != null) {
             String type = downloadManager.getMimeTypeForDownloadedFile(id);    // 下载文件的ID
             // 保存文件的ID和存储路径
-            SharedPrefHelper.getInstance().put(DOWNLOAD_PREF, mFileName, id);
-            SharedPrefHelper.getInstance().put(DOWNLOAD_PREF, mVersionName,
+            SPHelper.getInstance().put(DOWNLOAD_PREF, mFileName, id);
+            SPHelper.getInstance().put(DOWNLOAD_PREF, mVersionName,
                     FileHelper.getInstance().getRealFilePath(uri));
 
             // 当下载文件类型为安装版类型时, 进入安装APK界面

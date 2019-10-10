@@ -2,6 +2,8 @@ package com.dzenm.helper.draw;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+
 import androidx.annotation.ColorRes;
 
 /**
@@ -9,17 +11,17 @@ import androidx.annotation.ColorRes;
  * @date 2019-07-19 17:01
  * <pre>
  * 点击产生交互的背景
- * BackGHelper.pressed(R.color.colorLightGray, new float[]{0, 0, 8, 8}).into(tvPositive);
+ * DrawableHelper.pressed(R.color.colorLightGray, new float[]{0, 0, 8, 8}).into(tvPositive);
  * 给etMessage设置一个透明圆角带边框的背景
- * BackGHelper.solid(android.R.color.transparent)
+ * DrawableHelper.solid(android.R.color.transparent)
  *            .radius(2)
  *            .stroke(0.5f, divideColor)
  *            .into(etMessage);
  * </pre>
  */
-public class BackGHelper {
+public class DrawableHelper {
 
-    private BackGHelper() {
+    private DrawableHelper() {
     }
 
     public static ShapeHelper init(Context context) {
@@ -29,10 +31,10 @@ public class BackGHelper {
     /**
      * 设置形状
      *
-     * @param shape 可选项为圆形和矩形
+     * @param shape 可选值参考 {@link GradientDrawable Shape}
      * @return ShapeHelper
      */
-    public static ShapeHelper shape(@Shape int shape) {
+    public static ShapeHelper shape(int shape) {
         return ShapeHelper.getInstance().shape(shape);
     }
 
@@ -204,12 +206,12 @@ public class BackGHelper {
     }
 
     /**
-     * 线性渐变方向
+     * 渐变方向
      *
-     * @param orientation 线性渐变方向
+     * @param orientation 渐变方向, 可选值 参考{@link GradientDrawable.Orientation}
      * @return ShapeHelper
      */
-    public static ShapeHelper orientation(@Orientation String orientation) {
+    public static ShapeHelper orientation(GradientDrawable.Orientation orientation) {
         return ShapeHelper.getInstance().orientation(orientation);
     }
 

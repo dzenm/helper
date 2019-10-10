@@ -9,7 +9,7 @@ import androidx.databinding.ViewDataBinding;
 import com.dzenm.R;
 import com.dzenm.databinding.FragmentHomeBinding;
 import com.dzenm.helper.base.AbsBaseFragment;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 
 /**
  * @author dzenm
@@ -34,12 +34,12 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
         binding = (FragmentHomeBinding) viewDataBinding;
         setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
 
-        BackGHelper.radius(8).pressed(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv100);
-        BackGHelper.radius(8).ripple(android.R.color.holo_blue_light, R.color.colorDivide).into(binding.tv101);
-        BackGHelper.radius(8).pressed(android.R.color.holo_orange_light, R.color.colorDivide).into(binding.tv102);
-        BackGHelper.radius(8).ripple(android.R.color.holo_green_light, R.color.colorDivide).into(binding.tv103);
-        BackGHelper.radius(8).pressed(android.R.color.holo_purple, R.color.colorDivide).into(binding.tv104);
-        BackGHelper.radius(8).ripple(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv105);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv100);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_light, R.color.colorDivide).into(binding.tv101);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.color.colorDivide).into(binding.tv102);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_green_light, R.color.colorDivide).into(binding.tv103);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_purple, R.color.colorDivide).into(binding.tv104);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv105);
 
         binding.tv100.setOnClickListener(this);
         binding.tv101.setOnClickListener(this);

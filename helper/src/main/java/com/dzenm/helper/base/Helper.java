@@ -2,12 +2,12 @@ package com.dzenm.helper.base;
 
 import android.content.Context;
 
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.file.FileHelper;
-import com.dzenm.helper.file.SharedPrefHelper;
+import com.dzenm.helper.file.SPHelper;
 import com.dzenm.helper.log.CrashHelper;
 import com.dzenm.helper.log.Logger;
-import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.toast.ToastHelper;
 
 /**
  * @author dzenm
@@ -23,10 +23,10 @@ public class Helper {
         // 初始化Logger工具, 将打印的log保存文件, 依赖FileHelper
         Logger.getInstance().init();
         // 初始化背景Drawable工具
-        BackGHelper.init(context);
+        DrawableHelper.init(context);
         // 初始化Toa工具, 依赖BackGHelper
-        Toa.getInstance().init(context);
+        ToastHelper.getInstance().init(context);
         // 初始化SharedPreferences工具
-        SharedPrefHelper.getInstance().init(context);
+        SPHelper.getInstance().init(context);
     }
 }

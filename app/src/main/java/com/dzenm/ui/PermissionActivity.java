@@ -1,18 +1,21 @@
 package com.dzenm.ui;
 
 import android.Manifest;
+import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityPermissionBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.dialog.InfoDialog;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.permission.PermissionManager;
-import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.toast.ToastHelper;
 
 public class PermissionActivity extends AbsBaseActivity implements View.OnClickListener, PermissionManager.OnPermissionListener {
 
@@ -23,7 +26,7 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
             Manifest.permission.WRITE_CALENDAR};
 
     @Override
-    protected void initializeView() {
+    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
         ActivityPermissionBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_permission);
         setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
 
@@ -60,7 +63,7 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
                     .request();
         } else if (view.getId() == R.id.tv_103) {
             if (OsHelper.isNotificationEnabled(this)) {
-                Toa.show("已打开通知权限");
+                ToastHelper.show("已打开通知权限");
             } else {
                 InfoDialog.newInstance(this)
                         .setTitle("提示")
@@ -77,33 +80,33 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
             }
         } else if (view.getId() == R.id.tv_104) {
             if (OsHelper.isInstallPermission(this)) {
-                Toa.show("已打开安装权限");
+                ToastHelper.show("已打开安装权限");
             } else {
-                Toa.show("未打开安装权限");
+                ToastHelper.show("未打开安装权限");
             }
         } else if (view.getId() == R.id.tv_105) {
             if (OsHelper.isOverlaysPermission(this)) {
-                Toa.show("已打开悬浮窗权限");
+                ToastHelper.show("已打开悬浮窗权限");
             } else {
-                Toa.show("未打开悬浮窗权限");
+                ToastHelper.show("未打开悬浮窗权限");
             }
         }
     }
 
     private void setPressedBackground(View viewBackground) {
-        BackGHelper.radius(10).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue).into(viewBackground);
+        DrawableHelper.radius(10).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue).into(viewBackground);
     }
 
     private void setRippleBackground(View viewBackground) {
-        BackGHelper.radius(10).ripple(R.color.colorDarkBlue).into(viewBackground);
+        DrawableHelper.radius(10).ripple(R.color.colorDarkBlue).into(viewBackground);
     }
 
     @Override
     public void onPermit(boolean isGrant) {
         if (isGrant) {
-            Toa.show("请求成功", com.dzenm.helper.R.drawable.prompt_success);
+            ToastHelper.show("请求成功", com.dzenm.helper.R.drawable.prompt_success);
         } else {
-            Toa.show("未请求成功权限", com.dzenm.helper.R.drawable.prompt_error);
+            ToastHelper.show("未请求成功权限", com.dzenm.helper.R.drawable.prompt_error);
         }
     }
 }

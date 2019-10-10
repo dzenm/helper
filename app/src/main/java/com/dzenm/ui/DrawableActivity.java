@@ -1,20 +1,21 @@
 package com.dzenm.ui;
 
-import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityDrawableBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
-import com.dzenm.helper.draw.BackGHelper;
-import com.dzenm.helper.draw.Orientation;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.photo.PhotoHelper;
-import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.toast.ToastHelper;
 import com.dzenm.helper.view.PhotoLayout;
 
 import java.util.Arrays;
@@ -24,26 +25,26 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnL
     private PhotoLayout plAdd, plPreview;
 
     @Override
-    protected void initializeView() {
+    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
         ActivityDrawableBinding binding =
                 DataBindingUtil.setContentView(this, R.layout.activity_drawable);
         setToolbarWithGradientStatusBar(binding.toolbar,
-                BackGHelper.orientation(Orientation.LEFT_RIGHT)
+                DrawableHelper.orientation(GradientDrawable.Orientation.LEFT_RIGHT)
                         .gradient(android.R.color.holo_orange_light,
                                 android.R.color.holo_blue_light).build());
 
-        BackGHelper.orientation(Orientation.BOTTOM_TOP)
+        DrawableHelper.orientation(GradientDrawable.Orientation.BOTTOM_TOP)
                 .gradient(android.R.color.holo_red_light, android.R.color.holo_blue_light, android.R.color.holo_orange_light)
                 .into(binding.linearGradient);
-        BackGHelper.radialRadius(80)
+        DrawableHelper.radialRadius(80)
                 .gradient(android.R.color.holo_red_light, android.R.color.holo_blue_light, android.R.color.holo_orange_light)
                 .into(binding.orgialGradient);
-        BackGHelper.gradient(android.R.color.holo_red_light, android.R.color.holo_blue_light, android.R.color.holo_orange_light)
+        DrawableHelper.gradient(android.R.color.holo_red_light, android.R.color.holo_blue_light, android.R.color.holo_orange_light)
                 .into(binding.sweepGradient);
         FileHelper.getInstance().setPersonFolder("/dinzhenyan").getPersonFolder("/personalAccount");
 
         binding.ripple.setOnClickListener(null);
-        BackGHelper.radius(20).ripple(android.R.color.white,
+        DrawableHelper.radius(20).ripple(android.R.color.white,
                 android.R.color.holo_red_dark
         ).into(binding.ripple);
 
@@ -91,7 +92,7 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnL
         plPreview.setOnItemClickListener(new PhotoLayout.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toa.show("点击预览的是第: " + position);
+                ToastHelper.show("点击预览的是第: " + position);
             }
         });
         plPreview.setImageLoader(new MyImageLoader());

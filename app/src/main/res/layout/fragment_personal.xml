@@ -19,6 +19,7 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <ImageView
+                    android:id="@+id/iv_header"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:scaleType="centerCrop"
@@ -61,45 +62,9 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="20dp"
                     android:gravity="center"
-                    android:text="测试drawlayout"
+                    android:text="预览图片dialog"
                     android:textColor="@android:color/white" />
 
-                <com.dzenm.helper.view.RatioImageView
-                    android:id="@+id/riv_image"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/one"
-                    app:cornerRadius="20dp" />
-
-                <com.dzenm.helper.view.RatioImageView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/one"
-                    app:cornerRadius="20dp" />
-
-                <com.dzenm.helper.view.RatioImageView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/one"
-                    app:cornerRadius="20dp" />
-
-                <com.dzenm.helper.view.RatioImageView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="20dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/one"
-                    app:cornerRadius="20dp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

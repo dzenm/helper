@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
 
 /**
@@ -22,14 +22,14 @@ import com.dzenm.helper.os.OsHelper;
  * InfoDialog.newInstance(this)
  *      .setTitle("标题")
  *      .setMessage("红色背景提示框")
- *      .setBackground(BackGHelper.solid(android.R.color.holo_red_light).radius(8).build())
+ *      .setBackground(DrawableHelper.solid(android.R.color.holo_red_light).radius(8).build())
  *      .setOnDialogClickListener(new InfoDialog.OnDialogClickListener<InfoDialog>() {
  *          @Override
  *          public boolean onClick(InfoDialog dialog, boolean confirm) {
  *              if (confirm) {
- *                  Toa.show("点击了确定", R.drawable.prompt_warming);
+ *                  ToastHelper.show("点击了确定", R.drawable.prompt_warming);
  *              } else {
- *                  Toa.show("点击了取消", R.drawable.prompt_warming);
+ *                  ToastHelper.show("点击了取消", R.drawable.prompt_warming);
  *              }
  *              return true;
  *          }
@@ -326,8 +326,8 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
         tvNegative.setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
         tvNegative.setGravity(Gravity.CENTER);
 
-        BackGHelper.radius(2f).pressed(mPressedColor).into(tvPositive);
-        BackGHelper.radius(2f).pressed(mPressedColor).into(tvNegative);
+        DrawableHelper.radius(2f).pressed(mPressedColor).into(tvPositive);
+        DrawableHelper.radius(2f).pressed(mPressedColor).into(tvNegative);
 
         tvTitle.setGravity(Gravity.START);
         tvMessage.setGravity(Gravity.START);
@@ -346,10 +346,10 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
     protected void setUnMaterialDesignStyle(TextView tvTitle, TextView tvPositive, TextView tvNegative) {
         tvTitle.setGravity(Gravity.CENTER);
         tvMessage.post(mRunnable);
-        BackGHelper.radiusBR(mRadiusCard)
+        DrawableHelper.radiusBR(mRadiusCard)
                 .pressed(mPressedColor)
                 .into(tvPositive);
-        BackGHelper.radiusBL(mRadiusCard)
+        DrawableHelper.radiusBL(mRadiusCard)
                 .pressed(mPressedColor)
                 .into(tvNegative);
         setTitleMargin(tvTitle, 24);
@@ -432,7 +432,7 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
             tvNegative.setVisibility(View.GONE);
             if (!isMaterialDesign) {
                 tvNegative.setVisibility(View.GONE);
-                BackGHelper.radiusBL(mRadiusCard)
+                DrawableHelper.radiusBL(mRadiusCard)
                         .radiusBR(mRadiusCard)
                         .pressed(mPrimaryColor, mSecondaryColor)
                         .textColor(android.R.color.white, android.R.color.white)

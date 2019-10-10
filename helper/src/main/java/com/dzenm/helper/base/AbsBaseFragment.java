@@ -27,13 +27,12 @@ import com.dzenm.helper.os.StatusBarHelper;
  */
 public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
 
-    protected final String TAG = this.getClass().getSimpleName() + "|";
-    protected boolean isViewCreated = false;
+    private final String TAG = this.getClass().getSimpleName() + "| ";
 
     protected A mActivity;
 
     /**
-     * 根布局, 用于获取布局的id
+     * 根布局
      */
     protected View mRootView;
 
@@ -43,7 +42,7 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
      * @return layout id
      */
     protected int layoutId() {
-        return 0;
+        return -1;
     }
 
     @Override
@@ -65,15 +64,16 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
      * @param savedInstanceState 重建View时获取保存的数据
      * @return root view
      */
-    private View inflaterView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                              @Nullable Bundle savedInstanceState) {
-        if (isDataBinding()) {
-            ViewDataBinding v = DataBindingUtil.inflate(inflater, layoutId(), container, false);
-            mRootView = v.getRoot();
-            initializeView(savedInstanceState, v);
-        } else {
-            mRootView = inflater.inflate(layoutId(), container, false);
-            initializeView(savedInstanceState);
+    private View inflaterView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (layoutId() != -1 && inflater != null) {
+            if (isDataBinding()) {
+                ViewDataBinding v = DataBindingUtil.inflate(inflater, layoutId(), container, false);
+                mRootView = v.getRoot();
+                initializeView(savedInstanceState, v);
+            } else {
+                mRootView = inflater.inflate(layoutId(), container, false);
+                initializeView(savedInstanceState, null);
+            }
         }
         return mRootView;
     }
@@ -86,17 +86,12 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
     }
 
     /**
-     * 初始化控件, 使用dataBinding, 重写该方法初始化控件
+     * 初始化控件
      *
-     * @param viewDataBinding 提供给子类使用
+     * @param savedInstanceState 保存数据
+     * @param viewDataBinding    提供给子类使用
      */
-    public void initializeView(Bundle savedInstanceState, ViewDataBinding viewDataBinding) {
-    }
-
-    /**
-     * 初始化控件, 不使用dataBinding, 重写该方法初始化控件
-     */
-    public void initializeView(Bundle savedInstanceState) {
+    public void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
     }
 
     /**
@@ -135,21 +130,20 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
 
     @Nullable
     public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Logger.d(TAG + "onCreateView");
+        logD(TAG + "onCreateView");
         return inflaterView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        isViewCreated = true;
-        Logger.d(TAG + "onViewCreated");
+        logD(TAG + "onViewCreated");
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Logger.d(TAG + "onActivityCreated");
+        logD(TAG + "onActivityCreated");
     }
 
     protected <T extends View> T findViewById(int id) {
@@ -161,10 +155,29 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
         startActivity(intent);
     }
 
+    public void logV(String msg) {
+        Logger.v(TAG + msg);
+    }
+
+    public void logD(String msg) {
+        Logger.d(TAG + msg);
+    }
+
+    public void logI(String msg) {
+        Logger.i(TAG + msg);
+    }
+
+    public void logW(String msg) {
+        Logger.w(TAG + msg);
+    }
+
+    public void logE(String msg) {
+        Logger.e(TAG + msg);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        isViewCreated = false;
         mRootView = null;
     }
 }

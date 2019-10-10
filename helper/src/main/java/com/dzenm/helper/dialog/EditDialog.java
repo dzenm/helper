@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.view.EditText;
 
@@ -24,14 +24,14 @@ import com.dzenm.helper.view.EditText;
  *      .setTitle("测试")
  *      .setMessage("是否打开")
  *      .setDivide(false)
- *      .setBackground(BackGHelper.solid(android.R.color.holo_green_light).radius(8).build())
+ *      .setBackground(DrawableHelper.solid(android.R.color.holo_green_light).radius(8).build())
  *      .setOnDialogClickListener(new EditDialog.OnDialogClickListener<EditDialog>() {
  *          @Override
  *          public boolean onClick(EditDialog dialog, boolean confirm) {
  *              if (confirm) {
- *                   Toa.show("点击了确定", R.drawable.prompt_warming);
+ *                   ToastHelper.show("点击了确定", R.drawable.prompt_warming);
  *              } else {
- *                   Toa.show("点击了取消", R.drawable.prompt_warming);
+ *                   ToastHelper.show("点击了取消", R.drawable.prompt_warming);
  *              }
  *              return true;
  *          }
@@ -79,7 +79,7 @@ public class EditDialog extends InfoDialog implements TextWatcher {
         if (isMaterialDesign || !isDivide) {
             setEditUnderLineStyle(editText, getColor(color));
         } else {
-            BackGHelper.solid(android.R.color.transparent).radius(2f).stroke(0.5f, color).into(editText);
+            DrawableHelper.solid(android.R.color.transparent).radius(2f).stroke(0.5f, color).into(editText);
         }
         setEditCursorDrawable(editText, getColor(color));
 

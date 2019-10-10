@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Message;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,13 +23,14 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.dzenm.helper.dialog.EditDialog;
 import com.dzenm.helper.dialog.InfoDialog;
-import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.share.ShareHelper;
-import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.toast.ToastHelper;
 
 /**
  * @author dinzhenyan
@@ -73,7 +73,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
         mWebView.setLayoutParams(params);
         viewGroup.addView(mWebView);
 
-        Logger.d(TAG + "load url: " + url);
+        logD("load url: " + url);
         // 方式一：加载一个网页
         mWebView.loadUrl(url);
 
@@ -376,7 +376,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
         // User-Agent相关设置
         String userAgent = webSettings.getUserAgentString();
 //        webSettings.setUserAgentString("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0");
-        Logger.d(TAG + "userAgent: " + userAgent);
+        logD("userAgent: " + userAgent);
 
         // 5.1以上默认禁止了https和http混用，以下方式是开启
         if (OsHelper.isLollipop())
@@ -465,7 +465,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
      */
     protected void copy() {
         ScreenHelper.copy(this, mWebView.getUrl());
-        Toa.show("复制成功");
+        ToastHelper.show("复制成功");
     }
 
     /**
@@ -491,7 +491,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
 
         // 这个api仅仅清除自动完成填充的表单数据，并不会清除WebView存储到本地的数据
         mWebView.clearFormData();
-        Toa.show("清除缓存成功");
+        ToastHelper.show("清除缓存成功");
     }
 
     /**

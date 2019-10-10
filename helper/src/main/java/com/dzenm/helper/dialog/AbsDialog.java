@@ -16,7 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.dzenm.helper.R;
-import com.dzenm.helper.draw.BackGHelper;
+import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
 
@@ -39,7 +39,7 @@ public abstract class AbsDialog extends AppCompatDialog {
      * dialog显示的背景, 通过设置根布局的背景mView.setBackground(mBackground)设置dialog的背景
      * 默认白色背景和圆角, 自定义背景调用 {@link #setBackground(Drawable)}
      */
-    protected Drawable mBackground = BackGHelper.radius(DEFAULT_RADIUS).build();
+    protected Drawable mBackground = DrawableHelper.radius(DEFAULT_RADIUS).build();
 
     /**
      * dialog上下左右的边距值, 默认值为10, 由于不能直接通过WindowManager属性设置, 需要通过
@@ -168,7 +168,7 @@ public abstract class AbsDialog extends AppCompatDialog {
      * @return this
      */
     public <T extends AbsDialog> T setBackgroundRectangle() {
-        setBackground(BackGHelper.solid(android.R.color.white).build());
+        setBackground(DrawableHelper.solid(android.R.color.white).build());
         return (T) this;
     }
 
@@ -265,12 +265,12 @@ public abstract class AbsDialog extends AppCompatDialog {
             if (mGravity == Gravity.TOP) {
                 if (isDefaultBackground) {
                     // 底部圆角，白色背景
-                    mBackground = BackGHelper.radiusBR(8).radiusBL(8).build();
+                    mBackground = DrawableHelper.radiusBR(8).radiusBL(8).build();
                 }
             } else if (mGravity == Gravity.BOTTOM) {
                 if (isDefaultBackground) {
                     // 顶部圆角，白色背景
-                    mBackground = BackGHelper.radiusTL(8).radiusTR(8).build();
+                    mBackground = DrawableHelper.radiusTL(8).radiusTR(8).build();
                 }
             }
         }

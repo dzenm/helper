@@ -1,127 +1,94 @@
 package com.dzenm.helper.base;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.dzenm.helper.log.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author dzenm
- * @date 2019-09-12 14:54
- */
 public class FragmentHelper {
 
-    private static final String TAG = FragmentHelper.class.getSimpleName() + "|";
     private AppCompatActivity mActivity;
     private Fragment mFragment;
     private List<Fragment> mFragments;
-    private int mLayoutId;
+    private int mResourceID;
 
-    /**
-     * 适用于在Activity里添加Fragment
-     *
-     * @param activity
-     * @param layoutId
-     * @param fragments
-     */
-    public FragmentHelper(AppCompatActivity activity, int layoutId, Fragment[] fragments) {
+    public static FragmentHelper newInstance() {
+        return new FragmentHelper();
+    }
+
+    public FragmentHelper with(AppCompatActivity activity) {
         mActivity = activity;
-        mLayoutId = layoutId;
-        mFragments = new ArrayList<>();
-        for (int i = 0; i < fragments.length; i++) {
-            mFragments.add(fragments[i]);
-        }
+        return this;
     }
 
-    /**
-     * 适用于在Fragment里添加Fragment
-     *
-     * @param fragment
-     * @param layoutID
-     * @param fragments
-     */
-    public FragmentHelper(Fragment fragment, int layoutID, Fragment[] fragments) {
+    public FragmentHelper with(Fragment fragment) {
         mFragment = fragment;
-        mLayoutId = layoutID;
+        return this;
+    }
+
+    public FragmentHelper container(int resourceID) {
+        mResourceID = resourceID;
+        return this;
+    }
+
+    public void addToStack(@NonNull List<Fragment> fragments) {
         mFragments = new ArrayList<>();
-        for (int i = 0; i < fragments.length; i++) {
-            mFragments.add(fragments[i]);
-        }
-    }
-
-    /**
-     * 隐藏Activity里所有的Fragment
-     *
-     * @return
-     */
-    public FragmentHelper hideAll() {
         FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
-        for (int i = 0; i < mFragments.size(); i++) {
-            if (mFragments.get(i).isVisible()) {
-                transaction.hide(mFragments.get(i));
+        for (Fragment f : fragments) {
+            if (!f.isAdded()) {
+                mFragments.add(f);
+                transaction.add(mResourceID, f).hide(f);
             }
         }
         transaction.commitAllowingStateLoss();
-        return this;
     }
 
-    /**
-     * 隐藏Fragment里所有的Fragment
-     *
-     * @return
-     */
-    public FragmentHelper hideChildAll() {
-        FragmentTransaction transaction = mFragment.getChildFragmentManager().beginTransaction();
-        for (int i = 0; i < mFragments.size(); i++) {
-            if (mFragments.get(i).isVisible()) {
-                transaction.hide(mFragments.get(i));
+    public int size() {
+        return mFragments.size();
+    }
+
+    public Fragment get(int position) {
+        return mFragments.get(position);
+    }
+
+    public void show(Fragment currentFragment) {
+        FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
+        for (int i = 0; i < size(); i++) {
+            if (isShow(i) && get(i) != currentFragment) {
+                transaction.hide(get(i));
+            } else {
+                transaction.show(currentFragment);
             }
         }
         transaction.commitAllowingStateLoss();
-        return this;
     }
 
-    /**
-     * 显示Activity里的一个Fragment
-     *
-     * @param fragment
-     * @return
-     */
-    public FragmentHelper show(Fragment fragment) {
-        hideAll();
-        FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
-        if (fragment.isAdded()) {
-            transaction.show(fragment);
-            Logger.d(TAG + mActivity.getClass().getSimpleName() + " show fragment: " + fragment.getClass().getSimpleName());
-        } else {
-            transaction.add(mLayoutId, fragment);
-            mFragments.add(fragment);
-            Logger.d(TAG + mActivity.getClass().getSimpleName() + " add and show fragment: " + fragment.getClass().getSimpleName());
+    public void showChild(Fragment currentFragment) {
+        FragmentTransaction transaction = mFragment.getChildFragmentManager().beginTransaction();
+        for (int i = 0; i < size(); i++) {
+            if (isShow(i) && get(i) != currentFragment) {
+                transaction.hide(get(i));
+            } else {
+                transaction.show(currentFragment);
+            }
         }
         transaction.commitAllowingStateLoss();
-        return this;
     }
 
-    /**
-     * 显示Fragment里的一个Fragment
-     *
-     * @param fragment
-     * @return
-     */
-    public FragmentHelper showChild(Fragment fragment) {
-        hideChildAll();
-        FragmentTransaction transaction = mFragment.getChildFragmentManager().beginTransaction();
-        if (fragment.isAdded()) {
-            transaction.show(fragment);
-            Logger.d(TAG + mFragment.getClass().getSimpleName() + " show fragment: " + fragment.getClass().getSimpleName());
-        } else {
-            transaction.add(mLayoutId, fragment);
-            mFragments.add(fragment);
-            Logger.d(TAG + mFragment.getClass().getSimpleName() + " add and show fragment: " + fragment.getClass().getSimpleName());
+    private boolean isShow(int position) {
+        return get(position).isAdded() && (get(position).isVisible() ||
+                !get(position).isHidden());
+    }
+
+    public FragmentHelper hide() {
+        FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
+        for (int i = 0; i < size(); i++) {
+            if (isShow(i)) {
+                transaction.hide(get(i));
+            }
         }
         transaction.commitAllowingStateLoss();
         return this;

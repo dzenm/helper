@@ -8,19 +8,19 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.StateListDrawable;
-import androidx.annotation.ColorRes;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.ColorRes;
+
 import com.dzenm.helper.R;
 import com.dzenm.helper.os.OsHelper;
-import com.dzenm.helper.os.ScreenHelper;
 
 /**
  * @author dzenm
  * @date 2019-07-19 16:08
  */
-public class ShapeHelper implements IBackG<Drawable, View> {
+public class ShapeHelper implements IDrawable<Drawable, View> {
 
     @SuppressLint("StaticFieldLeak")
     private static volatile ShapeHelper sShapeHelper;
@@ -31,8 +31,7 @@ public class ShapeHelper implements IBackG<Drawable, View> {
     int mDrawableStyle = DrawableStyle.NONE;
 
     // 样式形状, 默认矩形
-    private @Shape
-    int mShape;
+    private int mShape;
 
     // Shape的宽度, 不设置为默认宽度
     private int mWidth = -1;
@@ -74,8 +73,7 @@ public class ShapeHelper implements IBackG<Drawable, View> {
     private float mGradientRadius;
 
     // 渐变方向
-    private @Orientation
-    String mGradientOrientation = Orientation.TOP_BOTTOM;
+    private GradientDrawable.Orientation mGradientOrientation = GradientDrawable.Orientation.TOP_BOTTOM;
 
     // Selector状态
     private @SelectorState
@@ -124,10 +122,10 @@ public class ShapeHelper implements IBackG<Drawable, View> {
     /**
      * 设置形状
      *
-     * @param shape 可选项为圆形和矩形
+     * @param shape 可选值参考 {@link GradientDrawable Shape}
      * @return ShapeHelper
      */
-    public ShapeHelper shape(@Shape int shape) {
+    public ShapeHelper shape(int shape) {
         mShape = shape;
         mDrawableStyle = DrawableStyle.GRADIENT;
         return this;
@@ -343,12 +341,12 @@ public class ShapeHelper implements IBackG<Drawable, View> {
     }
 
     /**
-     * 线性渐变方向
+     * 渐变方向
      *
-     * @param orientation 线性渐变方向
+     * @param orientation 渐变方向, 可选值 参考{@link GradientDrawable.Orientation}
      * @return ShapeHelper
      */
-    public ShapeHelper orientation(@Orientation String orientation) {
+    public ShapeHelper orientation(GradientDrawable.Orientation orientation) {
         mGradientOrientation = orientation;
         mGradientType = GradientDrawable.LINEAR_GRADIENT;
         mDrawableStyle = DrawableStyle.GRADIENT;
@@ -634,7 +632,7 @@ public class ShapeHelper implements IBackG<Drawable, View> {
         mBounds = new int[]{0, 0, 0, 0};
         mGradientType = GradientDrawable.SWEEP_GRADIENT;
         mGradientRadius = 0f;
-        mGradientOrientation = Orientation.TOP_BOTTOM;
+        mGradientOrientation = GradientDrawable.Orientation.TOP_BOTTOM;
         isCustomizeColor = false;
         isCustomizeRadius = false;
         isCustomizeStroke = false;
@@ -652,7 +650,7 @@ public class ShapeHelper implements IBackG<Drawable, View> {
     private GradientDrawable createShape() {
         GradientDrawable drawable = new GradientDrawable();
         // 设置形状
-        drawable.setShape(mShape == Shape.OVAL ? GradientDrawable.OVAL : GradientDrawable.RECTANGLE);
+        drawable.setShape(mShape);
 
         // 设置背景颜色
         if (isCustomizeColor) drawable.setColor(mColor);
@@ -678,7 +676,7 @@ public class ShapeHelper implements IBackG<Drawable, View> {
 
         if (isCustomizeGradient) {
             if (mGradientType == GradientDrawable.LINEAR_GRADIENT) {
-                drawable.setOrientation(createGradientOrientation());   // 设置线性渐变方向
+                drawable.setOrientation(mGradientOrientation);   // 设置线性渐变方向
             } else if (mGradientType == GradientDrawable.RADIAL_GRADIENT) {
                 drawable.setGradientRadius(dp2px(mGradientRadius));     // 设置辐射渐变的辐射渐变范围半径
             }
@@ -715,42 +713,6 @@ public class ShapeHelper implements IBackG<Drawable, View> {
                 mRippleDrawable, null);
         reset();
         return rd;
-    }
-
-    /**
-     * 创建线性方向渐变
-     *
-     * @return 线性方向渐变
-     */
-    private GradientDrawable.Orientation createGradientOrientation() {
-        GradientDrawable.Orientation orientation = GradientDrawable.Orientation.TOP_BOTTOM;
-        switch (mGradientOrientation) {
-            case Orientation.TOP_BOTTOM:
-                orientation = GradientDrawable.Orientation.TOP_BOTTOM;
-                break;
-            case Orientation.TR_BL:
-                orientation = GradientDrawable.Orientation.TR_BL;
-                break;
-            case Orientation.RIGHT_LEFT:
-                orientation = GradientDrawable.Orientation.RIGHT_LEFT;
-                break;
-            case Orientation.BR_TL:
-                orientation = GradientDrawable.Orientation.BR_TL;
-                break;
-            case Orientation.BOTTOM_TOP:
-                orientation = GradientDrawable.Orientation.BOTTOM_TOP;
-                break;
-            case Orientation.BL_TR:
-                orientation = GradientDrawable.Orientation.BL_TR;
-                break;
-            case Orientation.LEFT_RIGHT:
-                orientation = GradientDrawable.Orientation.LEFT_RIGHT;
-                break;
-            case Orientation.TL_BR:
-                orientation = GradientDrawable.Orientation.TL_BR;
-                break;
-        }
-        return orientation;
     }
 
     private int dp2px(float value) {

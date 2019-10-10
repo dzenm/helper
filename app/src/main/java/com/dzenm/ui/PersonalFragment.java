@@ -9,9 +9,8 @@ import androidx.databinding.ViewDataBinding;
 import com.dzenm.R;
 import com.dzenm.databinding.FragmentPersonalBinding;
 import com.dzenm.helper.base.AbsBaseFragment;
-import com.dzenm.helper.draw.BackGHelper;
-import com.dzenm.helper.os.StatusBarHelper;
-import com.dzenm.helper.toast.Toa;
+import com.dzenm.helper.dialog.PreviewDialog;
+import com.dzenm.helper.draw.DrawableHelper;
 
 /**
  * @author dzenm
@@ -36,14 +35,15 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
         binding = (FragmentPersonalBinding) viewDataBinding;
         setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
 
-        BackGHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
+        DrawableHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
                 .into(binding.tvDraw);
-        BackGHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
+        DrawableHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
                 .into(binding.tvPreview);
 
+        logD("test log");
         binding.tvDraw.setOnClickListener(this);
         binding.tvPreview.setOnClickListener(this);
-        binding.rivImage.setOnClickListener(this);
+        binding.ivHeader.setOnClickListener(this);
     }
 
     @Override
@@ -51,10 +51,16 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
         if (v.getId() == R.id.tv_draw) {
             Intent intent = new Intent(getActivity(), DrawActivity.class);
             startActivity(intent);
-        } else if (v.getId() == R.id.riv_image) {
-//            Bitmap bitmap = ScreenHelper.snapShotWithStatusBar(mActivity);
-//            Glide.with(this).load(bitmap).into(binding.ivImage);
-            Toa.show("点击");
+        } else if (v.getId() == R.id.tv_preview) {
+            PreviewDialog.newInstance(mActivity)
+                    .loader(new MyImageLoader())
+                    .load(R.drawable.one)
+                    .show();
+        } else if (v.getId() == R.id.iv_header) {
+            PreviewDialog.newInstance(mActivity)
+                    .loader(new MyImageLoader())
+                    .load(binding.ivHeader.getDrawable())
+                    .show();
         }
     }
 }

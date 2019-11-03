@@ -27,6 +27,11 @@ public class GalleryActivity extends AbsBaseActivity {
     private ActivityGalleryBinding binding;
 
     @Override
+    protected int layoutId() {
+        return R.layout.activity_gallery;
+    }
+
+    @Override
     protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_gallery);
         setToolbar(binding.toolbar);

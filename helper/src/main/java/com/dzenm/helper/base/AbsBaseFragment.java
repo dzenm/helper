@@ -27,14 +27,14 @@ import com.dzenm.helper.os.StatusBarHelper;
  */
 public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
 
-    private final String TAG = this.getClass().getSimpleName() + "| ";
+    private String mTag = this.getClass().getSimpleName() + "| ";
 
     protected A mActivity;
 
     /**
      * 根布局
      */
-    protected View mRootView;
+    protected View mDecorView;
 
     /**
      * 设定布局
@@ -48,7 +48,7 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Logger.d(TAG + "onAttach");
+        Logger.d(mTag + "onAttach");
         mActivity = (A) requireActivity();
     }
 
@@ -68,21 +68,21 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
         if (layoutId() != -1 && inflater != null) {
             if (isDataBinding()) {
                 ViewDataBinding v = DataBindingUtil.inflate(inflater, layoutId(), container, false);
-                mRootView = v.getRoot();
+                mDecorView = v.getRoot();
                 initializeView(savedInstanceState, v);
             } else {
-                mRootView = inflater.inflate(layoutId(), container, false);
+                mDecorView = inflater.inflate(layoutId(), container, false);
                 initializeView(savedInstanceState, null);
             }
         }
-        return mRootView;
+        return mDecorView;
     }
 
     /**
      * @return 是否使用DataBinding
      */
     protected boolean isDataBinding() {
-        return false;
+        return true;
     }
 
     /**
@@ -130,24 +130,24 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
 
     @Nullable
     public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        logD(TAG + "onCreateView");
+        logD("onCreateView");
         return inflaterView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        logD(TAG + "onViewCreated");
+        logD("onViewCreated");
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        logD(TAG + "onActivityCreated");
+        logD("onActivityCreated");
     }
 
     protected <T extends View> T findViewById(int id) {
-        return mRootView.findViewById(id);
+        return mDecorView.findViewById(id);
     }
 
     protected void startActivity(Class clazz) {
@@ -156,28 +156,37 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
     }
 
     public void logV(String msg) {
-        Logger.v(TAG + msg);
+        Logger.v(mTag + msg);
     }
 
     public void logD(String msg) {
-        Logger.d(TAG + msg);
+        Logger.d(mTag + msg);
     }
 
     public void logI(String msg) {
-        Logger.i(TAG + msg);
+        Logger.i(mTag + msg);
     }
 
     public void logW(String msg) {
-        Logger.w(TAG + msg);
+        Logger.w(mTag + msg);
     }
 
     public void logE(String msg) {
-        Logger.e(TAG + msg);
+        Logger.e(mTag + msg);
+    }
+
+    public String getLogTag() {
+        return mTag;
+    }
+
+    public void setLogTag(String tag) {
+        mTag = tag;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mRootView = null;
+        logD("onDestroyView");
+        mDecorView = null;
     }
 }

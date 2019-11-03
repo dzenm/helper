@@ -5,7 +5,6 @@ import android.view.Gravity;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
@@ -25,8 +24,18 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
     private ActivityOthersBinding binding;
 
     @Override
+    protected boolean isDataBinding() {
+        return true;
+    }
+
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_others;
+    }
+
+    @Override
     protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_others);
+        binding = (ActivityOthersBinding) viewDataBinding;
         setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorAccent);
 
         setPressedBackground(binding.tv100, android.R.color.holo_blue_dark);

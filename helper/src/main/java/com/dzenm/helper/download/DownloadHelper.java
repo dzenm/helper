@@ -31,7 +31,6 @@ import java.io.File;
  * @date 2019-07-01 14:46
  *
  * <pre>
- * DownloadHelper mDownloadHelper = new DownloadHelper(activity);
  * DownloadHelper.newInstance(this)
  *        .setUrl(url)
  *        .setFilePath(Environment.getExternalStorageDirectory().getPath())
@@ -213,7 +212,7 @@ public class DownloadHelper {
                 File file = new File(filePath);
                 if (file.exists() && file.isFile()) {
                     Logger.d(TAG + "已下载过文件, 版本号: " + mVersionName + ", 文件路径" + filePath);
-                    apkFileDownloadSuccessCallback(mContext, FileHelper.getInstance().getUri(file));
+                    downloadApkFileSuccessCallback(mContext, FileHelper.getInstance().getUri(file));
                 } else {
                     downloadFile();
                 }
@@ -572,9 +571,9 @@ public class DownloadHelper {
 
             // 当下载文件类型为安装版类型时, 进入安装APK界面
             if (FileType.MIME_TYPE.equals(type)) {
-                apkFileDownloadSuccessCallback(context, uri);
+                downloadApkFileSuccessCallback(context, uri);
             } else {
-                fileDownloadSuccessCallback(uri);
+                downloadFileSuccessCallback(uri);
             }
         } else {
             setDownloadFailed("下载失败, 网络错误");
@@ -590,14 +589,14 @@ public class DownloadHelper {
      * @param context Context, 安装APK
      * @param uri     下载文件的uri
      */
-    private void apkFileDownloadSuccessCallback(Context context, Uri uri) {
+    private void downloadApkFileSuccessCallback(Context context, Uri uri) {
         if (!OsHelper.install((Activity) context, uri)) {
             Logger.d(TAG + "安装失败");
             setDownloadFailed("安装失败");
         } else {
             Logger.d(TAG + "进入安装APK");
         }
-        fileDownloadSuccessCallback(uri);
+        downloadFileSuccessCallback(uri);
     }
 
     /**
@@ -605,7 +604,7 @@ public class DownloadHelper {
      *
      * @param uri 下载文件的uri
      */
-    private void fileDownloadSuccessCallback(Uri uri) {
+    private void downloadFileSuccessCallback(Uri uri) {
         if (mOnDownloadListener != null) {
             mOnDownloadListener.onSuccess(uri, FileType.MIME_TYPE);
         }

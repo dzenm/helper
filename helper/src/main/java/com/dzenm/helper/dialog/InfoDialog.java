@@ -2,7 +2,6 @@ package com.dzenm.helper.dialog;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -10,9 +9,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.dzenm.helper.R;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
+import com.dzenm.helper.os.ScreenHelper;
 
 /**
  * @author dinzhenyan
@@ -283,6 +285,7 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
 
         if (isMaterialDesign) {
             setMaterialDesignStyle(tvTitle, tvPositive, tvNegative);
+            tvMessage.setMaxLines(10);
         } else {
             setUnMaterialDesignStyle(tvTitle, tvPositive, tvNegative);
         }
@@ -306,7 +309,7 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
                 LinearLayout.LayoutParams.WRAP_CONTENT, OsHelper.dp2px(36));
         layoutParams.gravity = Gravity.END;
         int marginVertical = OsHelper.dp2px(8);
-        int marginHorizontal = OsHelper.dp2px(16);
+        int marginHorizontal = OsHelper.dp2px(8);
         layoutParams.setMargins(marginHorizontal, marginVertical, marginHorizontal, marginVertical);
         linearLayout.setLayoutParams(layoutParams);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -333,7 +336,7 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
         tvMessage.setGravity(Gravity.START);
         setTitleMargin(tvTitle, 20);
         setMessageMargin(8, 24);
-        mCenterWidth = (int) (OsHelper.getDisplayWidth() * 0.9);
+        mCenterWidth = (int) (ScreenHelper.getDisplayWidth() * 0.9);
     }
 
     /**
@@ -364,8 +367,7 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
         public void run() {
             // 因为getLineCount()要返回正确的行数，必须是TextView已经成功绘画到屏幕上。
             // 否则我们可以试验不用post直接在onCreate调用，getLineCount就会出现空指针
-            if (tvMessage == null) return;
-            if (tvMessage.getLayout() == null) return;
+            if (tvMessage == null || tvMessage.getLayout() == null) return;
             int lineCount = tvMessage.getLayout().getLineCount();
             tvMessage.setGravity(lineCount > 1 ? Gravity.START : Gravity.CENTER_HORIZONTAL);
         }

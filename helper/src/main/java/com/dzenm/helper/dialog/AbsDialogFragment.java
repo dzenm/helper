@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import com.dzenm.helper.R;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
+import com.dzenm.helper.os.ScreenHelper;
 
 /**
  * @author dinzhenyan
@@ -58,7 +59,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      * dialog居中时的宽度, 宽度为(屏幕宽度-10*mMargin), 由于居中时, width值过大, 因此在居中时
      * 做一些限制, 改变居中时的宽度
      */
-    protected int mCenterWidth = OsHelper.getDisplayWidth() - 10 * mMargin;
+    protected int mCenterWidth = ScreenHelper.getDisplayWidth() - 10 * mMargin;
 
     /**
      * dialog显示的位置，默认显示在中间, 调用 {@link Gravity} 里的值设置
@@ -463,14 +464,14 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      */
     protected void setLayoutParams(ViewGroup.MarginLayoutParams layoutParams) {
         if (isFullScreen()) {
-            layoutParams.width = OsHelper.getDisplayWidth();
+            layoutParams.width = ScreenHelper.getDisplayWidth();
         } else {
             if (isShowCenter()) {
                 layoutParams.width = mCenterWidth;
             } else {
                 layoutParams.topMargin = 2 * mMargin;
                 layoutParams.bottomMargin = mMargin;
-                layoutParams.width = OsHelper.getDisplayWidth() - 2 * mMargin;
+                layoutParams.width = ScreenHelper.getDisplayWidth() - 2 * mMargin;
             }
         }
     }
@@ -515,7 +516,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         if (isFullScreen()) {
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-                    OsHelper.getDisplayHeight(mActivity));
+                    ScreenHelper.getDisplayHeight(mActivity));
         }
         // 消除Dialog内容区域外围的灰色
         if (mDimAccount != -1f) window.setDimAmount(mDimAccount);

@@ -19,6 +19,7 @@ import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.download.NotificationType;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
+import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.view.ProgressBar;
 
 /**
@@ -308,7 +309,7 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
     @Override
     protected void setLayoutParams(ViewGroup.MarginLayoutParams layoutParams) {
         // 设置dialog的宽度
-        layoutParams.width = (int) (OsHelper.getDisplayWidth() * 0.7);
+        layoutParams.width = (int) (ScreenHelper.getDisplayWidth() * 0.7);
     }
 
     /**

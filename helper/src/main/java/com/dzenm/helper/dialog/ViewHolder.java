@@ -3,6 +3,8 @@ package com.dzenm.helper.dialog;
 import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
@@ -39,6 +41,22 @@ public class ViewHolder {
             mViews.put(viewId, view);
         }
         return (T) view;
+    }
+
+    public View getConvertView() {
+        return mConvertView;
+    }
+
+    public TextView getTextView(@IdRes int viewId) {
+        return getView(viewId);
+    }
+
+    public ImageView getImageView(@IdRes int viewId) {
+        return getView(viewId);
+    }
+
+    public ListView getListView(@IdRes int viewId) {
+        return getView(viewId);
     }
 
     /**

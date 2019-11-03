@@ -54,7 +54,6 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
         setWebView(viewGroup, url);
         setWebClient(mWebView, progressBar);
         setWebSettings(mWebView);
-        findNetworkAvailable();
     }
 
     /**
@@ -429,17 +428,6 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
         webSettings.setLoadsImagesAutomatically(true);    // 支持自动加载图片
         webSettings.setDefaultTextEncodingName("utf-8");  // 设置编码格式
         webSettings.setGeolocationEnabled(true);          // 允许网页执行定位操作
-    }
-
-    @Override
-    protected void onConnectNetwork() {
-        mWebView.reload();
-    }
-
-    @Override
-    protected void onUnConnectNetWork() {
-        super.onUnConnectNetWork();
-        mWebView.stopLoading();
     }
 
     /**

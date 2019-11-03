@@ -1,13 +1,14 @@
 package com.dzenm.ui;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
@@ -27,18 +28,28 @@ import com.dzenm.helper.dialog.UpGradeDialog;
 import com.dzenm.helper.dialog.ViewHolder;
 import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.draw.DrawableHelper;
-import com.dzenm.helper.file.FileHelper;
-import com.dzenm.helper.log.Logger;
-import com.dzenm.helper.net.NetHelper;
+import com.dzenm.helper.net.NetworkHelper;
 import com.dzenm.helper.photo.PhotoHelper;
 import com.dzenm.helper.popup.PopupHelper;
 import com.dzenm.helper.toast.ToastHelper;
 
+import java.io.File;
+
 public class DialogActivity extends AbsBaseActivity implements View.OnClickListener {
 
     @Override
+    protected boolean isDataBinding() {
+        return true;
+    }
+
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_dialog;
+    }
+
+    @Override
     protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        ActivityDialogBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_dialog);
+        ActivityDialogBinding binding = (ActivityDialogBinding) viewDataBinding;
         setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
 
         setPressedBackground(binding.tv100, android.R.color.holo_blue_dark);
@@ -155,7 +166,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                             if (confirm) {
                                 InfoDialog.newInstance(DialogActivity.this)
                                         .setTitle("设置按钮文本")
-                                        .setMessage("本机IP地址: " + NetHelper.getIPAddress(DialogActivity.this))
+                                        .setMessage("本机IP地址: " + NetworkHelper.getIPAddress(DialogActivity.this))
                                         .setButtonText("这是确定按钮", "这是取消按钮")
                                         .setBackground(DrawableHelper.solid(android.R.color.holo_blue_bright).radius(8).build())
                                         .setTouchInOutSideCancel(true)
@@ -164,7 +175,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                             } else {
                                 InfoDialog.newInstance(DialogActivity.this)
                                         .setTitle("设置按钮颜色")
-                                        .setMessage("本机IP地址: " + NetHelper.getIPAddress(DialogActivity.this))
+                                        .setMessage("本机IP地址: " + NetworkHelper.getIPAddress(DialogActivity.this))
                                         .setButtonTextColor(R.color.colorDarkBlue,
                                                 android.R.color.holo_red_dark)
                                         .setBackground(DrawableHelper.solid(android.R.color.holo_orange_light)
@@ -368,13 +379,12 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
         } else if (view.getId() == R.id.tv_111) {
             PhotoDialog.newInstance(this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
                 @Override
-                public boolean onCrop(PhotoHelper helper, Uri uri) {
-//                    binding.ivImage.setImageBitmap(helper.getPhoto(uri));
-                    String filePath = helper.getRealFilePath(uri);
-                    String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
-                    logD("copy file path: " + file);
-                    FileHelper.getInstance().copyFile(filePath, file);
-                    return false;
+                public boolean onCrop(PhotoHelper helper, String filePath) {
+                    logD("the filePath: " + filePath);
+//                    String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
+//                    FileHelper.getInstance().copyFile(filePath, file);
+//                    FileHelper.getInstance().refreshGallery(filePath);
+                    return true;
                 }
             })
                     .show();
@@ -421,7 +431,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                                 });
                                             }
                                         }).create()
-                                        .showAsDropDown(dialog.getView());
+                                        .showAsDropDown(dialog.getView(), 100, 0);
                             } else {
                                 dialog.dismiss();
                             }

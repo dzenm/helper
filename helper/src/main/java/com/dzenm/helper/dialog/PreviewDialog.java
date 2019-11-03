@@ -11,20 +11,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
+import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.view.ImageLoader;
 import com.dzenm.helper.view.RatioImageView;
 
 /**
  * @author dzenm
  * @date 2019-10-07 11:52
+ * <pre>
+ * PreviewDialog.newInstance(mActivity)
+ *       .loader(new MyImageLoader())
+ *       .load(binding.ivHeader.getDrawable())
+ *       .show();
+ * </pre>
  */
 public class PreviewDialog extends AbsDialogFragment implements View.OnTouchListener {
 
     private static final int NONE = -1;
     private static final int MODE_DOWN = 0;
     private static final int MODE_POINT_DOWN = 1;
-    private static final int STATUS_SCALE = 2;
-    private static final int STATUS_ZOOM = 4;
+    private static final int MODE_ZOOM = 2;
 
     private ImageLoader mImageLoader;
     private Object mImage;
@@ -34,7 +40,9 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
     private float mPointDistance = 0f;
     private PointF mMidPointF;
 
-    private int mStatus = NONE, mMode = NONE;
+    private int mMode = NONE;
+    private float mLastScale = 1f;
+    private boolean isZooming = false;
 
     public static PreviewDialog newInstance(AppCompatActivity activity) {
         return new PreviewDialog(activity);
@@ -89,53 +97,54 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
         switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:           // 主控点放下
                 // 记录主触摸点坐标
-                mStatus = MODE_DOWN;
+                mMode = MODE_DOWN;
                 mTouchDownX = (int) event.getX(0);
                 mTouchDownY = (int) event.getY(0);
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:   // 辅控点放下
                 mPointDistance = getPointDistance(event);
                 // 当两指间距大于40时，计算两指中心点
-                if (mPointDistance > 40f) {
+                if (mPointDistance > 10f) {
                     mMidPointF = getPointMid(event);
-                    mStatus = MODE_POINT_DOWN;
+                    setImageScaleAnimator(mMidPointF.x, mMidPointF.y, 1);
+//                    mMode = MODE_POINT_DOWN;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:           // 主(辅)控点移动
-                if (event.getPointerCount() == 1 && mStatus == MODE_DOWN && mMode != STATUS_ZOOM) {
+                if (mMode == MODE_DOWN && !isZooming) {
                     // 计算主控点偏移量
                     mOffsetX = (int) event.getX(0) - mTouchDownX;
                     mOffsetY = (int) event.getY(0) - mTouchDownY;
-                    float offset = (float) mOffsetY / (float) OsHelper.getDisplayHeight();
+                    float offset = (float) mOffsetY / (float) ScreenHelper.getDisplayHeight();
                     setImageDismissAnimator(mOffsetX, mOffsetY, mOffsetY > 0 ? mDimAccount - offset : mDimAccount);
-//                } else if (event.getPointerCount() == 1 && mStatus == MODE_DOWN && mMode == STATUS_ZOOM) {
-//                    // 计算主控点偏移量
-//                    mOffsetX = (int) event.getX(0) - mTouchDownX;
-//                    mOffsetY = (int) event.getY(0) - mTouchDownY;
-//                    mImageView.setPivotX((int) event.getX(0));
-//                    mImageView.setPivotY((int) event.getY(0));
-//                } else if (event.getPointerCount() == 2 && mStatus == MODE_POINT_DOWN) {
-//                    mMode = STATUS_ZOOM;
-//                    // 计算辅控点偏移量
-//                    float distance = getPointDistance(event);
-//                    if (distance > 10f) {
-//                        float scale = distance / mPointDistance;
-//                        setImageScaleAnimator(mMidPointF.x, mMidPointF.y, scale);
+                } else if (mMode == MODE_ZOOM && isZooming) {
+
+                } else if (mMode == MODE_POINT_DOWN) {
+//                    float newDistance = getPointDistance(event);
+//                    if (newDistance > 0f) {
+//                        mMode = MODE_ZOOM;
+//                        float distance = newDistance / mPointDistance;
+//                        float scale = mLastScale + distance;
+//                        mImageView.setScaleX(scale);
+//                        mImageView.setScaleY(scale);
 //                    }
                 }
                 break;
-            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_POINTER_UP:     // 非最后一个触控点抬起
+//                if (mMode != MODE_ZOOM) {
+//                    setImageDismissAnimator(0, 0, mDimAccount);
+//                    mMode = MODE_DOWN;
+//                }
+                break;
             case MotionEvent.ACTION_UP:             // 最后一个点抬起
-                if (event.getPointerCount() == 1) {
-                    if (mOffsetY > OsHelper.getDisplayHeight() * 0.1) {
+                if (mMode == MODE_DOWN && !isZooming) {
+                    if (mOffsetY > ScreenHelper.getDisplayHeight() * 0.1) {
                         dismiss();
                     } else {
                         setImageDismissAnimator(0, 0, mDimAccount);
                     }
-//                } else if (mStatus == STATUS_ZOOM && event.getPointerCount() == 2) {
+                    mMode = NONE;
                 }
-                break;
-            case MotionEvent.ACTION_POINTER_UP:     // 非最后一个触控点抬起
                 break;
         }
         // 注明消费此事件，不然无效果
@@ -178,8 +187,8 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
      * @return 两指之间的距离
      */
     private float getPointDistance(MotionEvent event) {
-        float x = event.getX(1) - event.getX(0);
-        float y = event.getY(1) - event.getY(0);
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
         return (float) Math.sqrt(x * x + y * y);
     }
 

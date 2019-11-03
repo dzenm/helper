@@ -15,7 +15,6 @@ import android.os.Binder;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 import androidx.core.app.ActivityCompat;
@@ -438,45 +437,5 @@ public final class OsHelper {
      */
     public static int dp2px(float value) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, Resources.getSystem().getDisplayMetrics());
-    }
-
-    /**
-     * @return 屏幕宽度, 不包含NavigatorBar
-     */
-    public static int getDisplayWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
-    }
-
-    /**
-     * @return 屏幕宽度, 不包含NavigatorBar
-     */
-    public static int getDisplayHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
-    }
-
-    /**
-     * @return 屏幕宽度, 包含NavigatorBar
-     */
-    public static int getDisplayWidth(Activity activity) {
-        return getDisplayMetrics(activity).widthPixels;
-    }
-
-    /**
-     * @return 屏幕高度, 包含NavigatorBar
-     */
-    public static int getDisplayHeight(Activity activity) {
-        return getDisplayMetrics(activity).heightPixels;
-    }
-
-    /**
-     * 获取屏幕指标工具
-     *
-     * @param activity 获取WindowManager
-     * @return 屏幕指标
-     */
-    public static DisplayMetrics getDisplayMetrics(Activity activity) {
-        DisplayMetrics metric = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getRealMetrics(metric);
-        return metric;
     }
 }

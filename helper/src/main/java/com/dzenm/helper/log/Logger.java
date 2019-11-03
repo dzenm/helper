@@ -1,5 +1,6 @@
 package com.dzenm.helper.log;
 
+import android.content.Context;
 import android.os.Environment;
 import androidx.annotation.IntDef;
 import android.text.TextUtils;
@@ -77,7 +78,7 @@ public class Logger {
         return this;
     }
 
-    public static boolean getDebug() {
+    public static boolean isDebug() {
         return Logger.isDebug;
     }
 
@@ -154,7 +155,12 @@ public class Logger {
     /**
      * 初始化日志存储目录（需要先申请文件读写权限）
      */
-    public Logger init() {
+    public Logger init(Context context) {
+        // 初始化APP文件夹
+        FileHelper.getInstance().init(context);
+        // 用于将捕捉到的异常保存为文件, 依赖FileHelper
+        CrashHelper.getInstance().init(context);
+
         logcatPath = FileHelper.getInstance().getFolder("/log").getAbsolutePath();
         if (TextUtils.isEmpty(logcatPath)) {
             logcatPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "log";

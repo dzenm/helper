@@ -1,19 +1,23 @@
 package com.dzenm.ui;
 
+import android.Manifest;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityDrawableBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
+import com.dzenm.helper.dialog.PhotoDialog;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.file.FileHelper;
+import com.dzenm.helper.permission.PermissionManager;
 import com.dzenm.helper.photo.PhotoHelper;
 import com.dzenm.helper.toast.ToastHelper;
 import com.dzenm.helper.view.PhotoLayout;
@@ -25,9 +29,18 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnL
     private PhotoLayout plAdd, plPreview;
 
     @Override
+    protected boolean isDataBinding() {
+        return true;
+    }
+
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_drawable;
+    }
+
+    @Override
     protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        ActivityDrawableBinding binding =
-                DataBindingUtil.setContentView(this, R.layout.activity_drawable);
+        ActivityDrawableBinding binding = (ActivityDrawableBinding) viewDataBinding;
         setToolbarWithGradientStatusBar(binding.toolbar,
                 DrawableHelper.orientation(GradientDrawable.Orientation.LEFT_RIGHT)
                         .gradient(android.R.color.holo_orange_light,
@@ -73,13 +86,29 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnL
 
     @Override
     public void onLoad(final PhotoLayout layout) {
-        PhotoHelper.getInstance().with(this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
-            @Override
-            public boolean onGallery(PhotoHelper helper, String filePath) {
-                layout.load(FileHelper.getInstance().getPhoto(filePath));
-                return false;
-            }
-        }).gallery();
+        PermissionManager.getInstance().with(this).load(
+                new String[]{Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE})
+                .into(new PermissionManager.OnPermissionListener() {
+                    @Override
+                    public void onPermit(boolean isGrant) {
+                        if (isGrant) {
+                            PhotoDialog.newInstance(DrawableActivity.this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+                                @Override
+                                public boolean onGallery(PhotoHelper helper, String filePath) {
+                                    layout.load(FileHelper.getInstance().getPhoto(filePath));
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onGraph(PhotoHelper helper, String filePath) {
+                                    layout.load(FileHelper.getInstance().getPhoto(filePath));
+                                    return false;
+                                }
+                            }).show();
+                        }
+                    }
+                }).request();
     }
 
     private void previewPhoto() {

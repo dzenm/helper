@@ -2,24 +2,27 @@ package com.dzenm.helper.file;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 import androidx.core.content.FileProvider;
 
-import com.dzenm.helper.date.DateHelper;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
 
@@ -58,7 +61,6 @@ public class FileHelper {
     private String mAppFolder;              // app名称目录
     private String mPersonFolder;           // 个人账号文件夹
 
-    @SuppressLint("StaticFieldLeak")
     private static volatile FileHelper sInstance;
 
     private FileHelper() {
@@ -194,89 +196,101 @@ public class FileHelper {
     }
 
     /**
-     * 获取图片真实路径, 由于文件uri会存在scheme会content的情况, 但是通过Cursor方法找不到
-     * 只能通过Uri的getPath方法, 因此在经过一次判空获取文件真实路径
-     *
-     * @param uri 文件的Uri
-     * @return 真实路径
+     * @param uri 当前图片的Uri
+     * @return 解析后的Uri对应的String
      */
     public String getRealFilePath(Uri uri) {
-        if (null == uri) return null;
-        String path = getFilePathByUri(uri);
-        if (path == null) return uri.getPath();
-        return path;
-    }
-
-    /**
-     * 通过Uri获取图片真实路径
-     *
-     * @param uri 文件的Uri
-     * @return 路径
-     */
-    private String getFilePathByUri(Uri uri) {
-        String scheme = uri.getScheme();
-        if (scheme == null) return null;
-        if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(scheme)) {
-            return uri.getPath();
-        } else if (ContentResolver.SCHEME_CONTENT.equalsIgnoreCase(scheme)) {
-            if (isGooglePhotosUri(uri)) {               // 判断是否是google相册图片
-                return uri.getLastPathSegment();
-            } else if (isGooglePlayPhotosUri(uri)) {    // 判断是否是Google相册图片
-                return getImageUriWithAuthority(uri);
-            } else {    // 其他类似于media这样的图片，和android4.4以下获取图片path方法类似
-                return getDataColumn(uri);
+        // 1. DocumentProvider
+        if (DocumentsContract.isDocumentUri(mContext, uri)) {
+            Logger.d(TAG + "file scheme is DocumentProvider");
+            // 1.1 ExternalStorageProvider, Whether the Uri authority is ExternalStorageProvider
+            if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
             }
+            // 1.2 DownloadsProvider, Whether the Uri authority is DownloadsProvider
+            else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                return getDataColumn(mContext, contentUri, null, null);
+            }
+            // 1.3 MediaProvider, Whether the Uri authority is MediaProvider.
+            else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{split[1]};
+
+                return getDataColumn(mContext, contentUri, selection, selectionArgs);
+            }
+        }
+        // 2. MediaStore (and general)
+        else if (ContentResolver.SCHEME_CONTENT.equalsIgnoreCase(uri.getScheme())) {
+            Logger.d(TAG + "file scheme is MediaStore");
+            // 判断是否是Google相册的图片，类似于content://com.google.android.apps.photos.content/...
+            if ("com.google.android.apps.photos.content".equals(uri.getAuthority())) {
+                return uri.getLastPathSegment();
+            }
+            // 判断是否是Google相册的图片，类似于content://com.google.android.apps.photos.contentprovider/0/1/mediakey:/local%3A821abd2f-9f8c-4931-bbe9-a975d1f5fabc/ORIGINAL/NONE/1075342619
+            else if ("com.google.android.apps.photos.contentprovider".equals(uri.getAuthority())) {
+                if (uri.getAuthority() != null) {
+                    try (InputStream is = mContext.getContentResolver().openInputStream(uri)) {
+                        Bitmap bmp = BitmapFactory.decodeStream(is);
+                        return writeToTempImageAndGetPathUri(bmp).toString();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            } else {                                // 其他类似于media这样的图片，和android4.4以下获取图片path方法类似
+                Logger.d(TAG + "file is not google photo");
+                return getDataColumn(mContext, uri, "external-path", null);
+            }
+        }
+        // 3. 判断是否是文件形式 File
+        else if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(uri.getScheme())) {
+            Logger.d(TAG + "file scheme is File");
+            return uri.getPath();
         }
         return uri.getPath();
     }
 
     /**
-     * @param uri 通过Cursor查找文件路径(文件的uri)
+     * 获取图片真实路径, 由于文件uri会存在scheme会content的情况, 但是通过Cursor方法找不到
+     * 只能通过Uri的getPath方法获取文件真实路径
+     *
+     * @param uri           通过Cursor查找文件路径(文件的uri)
+     * @param selection     选择哪些列{@link FileProvider}
+     * @param selectionArgs 通过mimeType去选择
      * @return 文件uri
      */
-    private String getDataColumn(Uri uri) {
-        String column = "_data";
-        String[] projection = {column};
-        try (Cursor cursor = mContext.getContentResolver().query(uri, projection, null,
-                null, null, null)) {
-            if (null != cursor && cursor.moveToFirst()) {
-                int columnIndex = cursor.getColumnIndexOrThrow(column);
-                if (columnIndex > -1) return cursor.getString(columnIndex);
+    private String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+        try (Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, selection, selectionArgs, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
+                Logger.d(TAG + "uri path from content resolver is " + cursor.getString(columnIndex));
+                return cursor.getString(columnIndex);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
-    }
-
-    /**
-     * 判断是否是Google相册的图片，类似于content://com.google.android.apps.photos.content/...
-     **/
-    private boolean isGooglePhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
-    }
-
-    /**
-     * 判断是否是Google相册的图片，类似于content://com.google.android.apps.photos.contentprovider
-     * /0/1/mediakey:/local%3A821abd2f-9f8c-4931-bbe9-a975d1f5fabc/ORIGINAL/NONE/1075342619
-     **/
-    private boolean isGooglePlayPhotosUri(Uri uri) {
-        return "com.google.android.apps.photos.contentprovider".equals(uri.getAuthority());
-    }
-
-    /**
-     * Google相册图片获取路径
-     **/
-    private String getImageUriWithAuthority(Uri uri) {
-        if (uri.getAuthority() != null) {
-            try (InputStream is = mContext.getContentResolver().openInputStream(uri)) {
-                Bitmap bmp = BitmapFactory.decodeStream(is);
-                return writeToTempImageAndGetPathUri(bmp).toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+        Logger.d(TAG + "uri path from content resolver is not found, the path is: " + uri.getPath());
+        return uri.getPath();
     }
 
     /**
@@ -376,30 +390,28 @@ public class FileHelper {
     /**
      * @param bitmap 保存的图片
      * @param path   存储所在的文件夹
-     * @return 图片的名称
+     * @return 是否保存成功
      */
-    public String savePhoto(Bitmap bitmap, String path) {
+    public boolean savePhoto(Bitmap bitmap, String path) {
         return savePhoto(bitmap, new File(path));
-    }
-
-    /**
-     * @param bitmap 保存的图片
-     * @param file   存储的文件
-     * @return 图片的名称
-     */
-    public String savePhoto(Bitmap bitmap, File file) {
-        String fileName = DateHelper.getCurrentTimeMillis() + ".jpeg";
-        savePhoto(bitmap, new File(file, fileName));
-        return fileName;
     }
 
     /**
      * @param bitmap    保存的图片
      * @param parent    存储所在的文件夹
      * @param photoName 图片的名称
+     * @return 是否保存成功
      */
     public boolean savePhoto(Bitmap bitmap, File parent, String photoName) {
-        File file = new File(parent, photoName);
+        return savePhoto(bitmap, new File(parent, photoName));
+    }
+
+    /**
+     * @param bitmap 保存的图片
+     * @param file   存储的文件
+     * @return 是否保存成功
+     */
+    public boolean savePhoto(Bitmap bitmap, File file) {
         if (file.exists()) file.delete();
         createNewFile(file);
         Logger.d(TAG + "save the photo's path: " + file.getPath());
@@ -886,6 +898,43 @@ public class FileHelper {
         }
         Logger.d(TAG + "复制的源文件不存在");
         return false;
+    }
+
+    public void refreshGallery(String filePath) {
+        refreshGallery(new File(filePath));
+    }
+
+    public void refreshGallery(File file) {
+        refreshGallery(Uri.fromFile(file));
+    }
+
+    /**
+     * 通知广播刷新相册
+     *
+     * @param uri 刷新的uri
+     */
+    public void refreshGallery(Uri uri) {
+        // 其次把文件插入到系统图库
+        File file = new File(getRealFilePath(uri));
+        try {
+            MediaStore.Images.Media.insertImage(mContext.getContentResolver(),
+                    file.getAbsolutePath(), file.getName(), null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 以广播方式刷新系统相册，以便能够在相册中找到刚刚所拍摄和裁剪的照片
+        if (OsHelper.isKitkat()) {
+            MediaScannerConnection.scanFile(mContext, new String[]{file.getAbsolutePath()},
+                    new String[]{"image/jpeg", "image/jpg", "image/png"},
+                    new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+                        }
+                    });
+        } else {
+            mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+                    Uri.fromFile(new File(file.getParent()).getAbsoluteFile())));
+        }
     }
 
     /**

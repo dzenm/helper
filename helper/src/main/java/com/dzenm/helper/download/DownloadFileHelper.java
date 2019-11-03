@@ -34,8 +34,7 @@ public class DownloadFileHelper {
     private DownloadManager mDownloadManager;
 
     private long mDownloadId;
-    private String mFilePath;
-    private String mUrl;
+    private String mFilePath, mUrl;
     private boolean isShowRunningNotification = true;
     private OnDownloadListener mOnDownloadListener;
 

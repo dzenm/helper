@@ -20,6 +20,7 @@ import com.dzenm.helper.os.OsHelper;
  * <pre>
  *  MenuDialog.newInstance(this)
  *        .setItem("测试", "第二个", "取消")
+ *        .setRadiusCard(2f)
  *        .setOnItemClickListener(new MenuDialog.OnItemClickListener() {
  *            @Override
  *            public void onItemClick(Object tag) {
@@ -29,8 +30,7 @@ import com.dzenm.helper.os.OsHelper;
  *                    ToastHelper.show("取消");
  *                }
  *            }
- *        })
- *        .setGravity(Gravity.BOTTOM)
+ *        }).setGravity(Gravity.BOTTOM)
  *        .show();
  * </pre>
  */

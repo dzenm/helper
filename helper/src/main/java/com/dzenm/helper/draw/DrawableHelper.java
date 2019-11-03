@@ -1,6 +1,5 @@
 package com.dzenm.helper.draw;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 
@@ -24,8 +23,8 @@ public class DrawableHelper {
     private DrawableHelper() {
     }
 
-    public static ShapeHelper init(Context context) {
-        return ShapeHelper.getInstance().init(context);
+    public static ShapeHelper getInstance() {
+        return ShapeHelper.getInstance();
     }
 
     /**

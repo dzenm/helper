@@ -11,10 +11,17 @@ import android.graphics.Rect;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.dzenm.helper.R;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -29,6 +36,20 @@ import java.lang.reflect.Method;
 public class ScreenHelper {
 
     /**
+     * 设置toolbar,并在左上角添加动画横线按钮
+     *
+     * @param activity     {@link Activity}
+     * @param drawerLayout {@link DrawerLayout} 布局
+     * @param toolbar      设置的Toolbar
+     */
+    public void addDrawerLayoutToggle(Activity activity, DrawerLayout drawerLayout, Toolbar toolbar) {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(activity, drawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    /**
      * @return 屏幕宽度
      */
     public static int getWidth() {
@@ -40,6 +61,46 @@ public class ScreenHelper {
      */
     public static int getHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+    /**
+     * @return 屏幕宽度, 不包含NavigatorBar
+     */
+    public static int getDisplayWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    /**
+     * @return 屏幕宽度, 不包含NavigatorBar
+     */
+    public static int getDisplayHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+    /**
+     * @return 屏幕宽度, 包含NavigatorBar
+     */
+    public static int getDisplayWidth(Activity activity) {
+        return getDisplayMetrics(activity).widthPixels;
+    }
+
+    /**
+     * @return 屏幕高度, 包含NavigatorBar
+     */
+    public static int getDisplayHeight(Activity activity) {
+        return getDisplayMetrics(activity).heightPixels;
+    }
+
+    /**
+     * 获取屏幕指标工具
+     *
+     * @param activity 获取WindowManager
+     * @return 屏幕指标
+     */
+    public static DisplayMetrics getDisplayMetrics(Activity activity) {
+        DisplayMetrics metric = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getRealMetrics(metric);
+        return metric;
     }
 
     /**
@@ -218,6 +279,7 @@ public class ScreenHelper {
     /**
      * 获取资源Id的带透明度的color
      *
+     * @param context
      * @param id
      * @param value
      * @return

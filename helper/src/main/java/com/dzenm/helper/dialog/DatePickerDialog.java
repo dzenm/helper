@@ -18,15 +18,20 @@ import java.util.List;
  * @author dzenm
  * @date 2019-07-22 17:22
  * <pre>
- * DatePickerDialog.newInstance(MainActivity.this)
- *             .setLoop(true)
- *             .setPrimaryColor(getResources().getColor(android.R.color.holo_blue_light))
- *             .setOnSelectedCallback(new DatePickerDialog.OnSelectedCallback() {
- *                 @Override
- *                 public void onSelect(String date) {
- *                     ToastHelper.show(date);
- *                 }
- *             }).show();
+ *     DatePickerDialog.newInstance(DialogActivity.this)
+ *          .setLoop(true)
+ *          .setTitle("")
+ *          .setSelected("2019-02-01")
+ *          .setSeparator("-")
+ *          .setPrimaryColor(android.R.color.holo_green_light)
+ *          .setRange("1970/1/1", "2019/8/1")
+ *          .setOnSelectedCallback(new DatePickerDialog.OnSelectedCallback() {
+ *              @Override
+ *              public void onSelect(String date) {
+ *
+ *              }
+ *          }).setMargin(0)
+ *          .show();
  * </pre>
  */
 @SuppressLint("ValidFragment")

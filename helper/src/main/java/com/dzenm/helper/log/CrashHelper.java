@@ -40,7 +40,6 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
 
     private Context mContext;
     private Thread.UncaughtExceptionHandler mDefaultExceptionHandle;            // 系统默认的UncaughtException处理类
-    @SuppressLint("StaticFieldLeak")
     private static CrashHelper sCrashHelper;
 
     private CrashHelper() {
@@ -96,10 +95,18 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
         Map<String, String> info = collectDeviceInfo();                            // 收集设备参数信息
         String crashInfo = collectCrashInfo(throwable, info);                      // 收集崩溃日志的信息
 
-        String fileName = NAME + DateHelper.getCurrentTimeMillis() + SUFFIX;
-        FileHelper.getInstance().newFile(getCrashDirect().getPath(), fileName, crashInfo);  // 保存当前文件
-        FileHelper.getInstance().delete(getCrashDirect(), fileName);                        // 删除其它文件
+        handlerCrashInfo(crashInfo);
         return true;
+    }
+
+    private void handlerCrashInfo(String crashInfo) {
+        if (Logger.isDebug()) {
+            String fileName = NAME + DateHelper.getCurrentTimeMillis() + SUFFIX;
+            FileHelper.getInstance().newFile(getCrashDirect().getPath(), fileName, crashInfo);  // 保存当前文件
+            FileHelper.getInstance().delete(getCrashDirect(), fileName);                        // 删除其它文件
+        } else {
+            // 上传到服务器
+        }
     }
 
     /**

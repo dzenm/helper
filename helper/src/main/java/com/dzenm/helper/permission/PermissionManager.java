@@ -9,12 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dzenm.helper.R;
+import com.dzenm.helper.base.AbsBaseActivity;
+import com.dzenm.helper.base.OnActivityResult;
+import com.dzenm.helper.base.OnRequestPermissionsResult;
 import com.dzenm.helper.dialog.AbsDialogFragment;
 import com.dzenm.helper.dialog.DialogHelper;
 import com.dzenm.helper.dialog.InfoDialog;
@@ -56,7 +60,7 @@ import java.util.List;
  * <p>
  * 权限请求管理工具类
  */
-public final class PermissionManager implements DialogHelper.OnConvertViewClickListener {
+public final class PermissionManager implements DialogHelper.OnConvertViewClickListener, OnActivityResult, OnRequestPermissionsResult {
 
     private static final String TAG = PermissionManager.class.getSimpleName() + "|";
 
@@ -123,6 +127,10 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
     public PermissionManager with(AppCompatActivity activity) {
         Logger.d(TAG + activity.getClass().getSimpleName() + " is requesting permission");
         mActivity = activity;
+        if (mActivity instanceof AbsBaseActivity) {
+            ((AbsBaseActivity) mActivity).setOnRequestPermissionsResult(this);
+            ((AbsBaseActivity) mActivity).setOnActivityResult(this);
+        }
         return this;
     }
 
@@ -210,14 +218,25 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
     }
 
     /**
+     * 手动授予权限回掉（重写onActivityResult，并调用该方法）
+     *
+     * @param requestCode 请求时的标志位
+     */
+    @Override
+    public void onResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_SETTING) request();
+    }
+
+    /**
      * 权限处理结果（重写onRequestPermissionsResult方法，并调用该方法）
      * 当请求权限的模式为 MODE_ONCE_INFO 或 MODE_REPEAT 时，如果需要强制授予权限，不授予时不予进入，则需要执行该方法
      *
-     * @param requestCode  请求权限结果回调的唯一码
+     * @param requestCode  请求权限的标志位
      * @param permissions  未授权的权限调用请求权限的权限
      * @param grantResults 用于判断是否授权 grantResults[i] == PackageManager.PERMISSION_GRANTED
      */
-    public void onPermissionResult(int requestCode, String[] permissions, int[] grantResults) {
+    @Override
+    public void onResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (REQUEST_PERMISSION == requestCode) {
             // 第一次请求的处理结果，过滤已授予的权限
             mPermissions = filterPermission(permissions);
@@ -243,18 +262,6 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
                 openSettingDialog();
             }
         }
-    }
-
-    /**
-     * 手动授予权限回掉（重写onActivityResult，并调用该方法）
-     *
-     * @param requestCode
-     * @param resultCode
-     * @param data
-     * @return
-     */
-    public void onSettingResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_SETTING) request();
     }
 
     /**

@@ -108,7 +108,6 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
         }
     }
 
-
     @Override
     protected void onNewIntent(Intent intent) {
         // 获取到Tag标签对象

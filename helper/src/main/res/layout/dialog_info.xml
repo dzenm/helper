@@ -22,7 +22,7 @@
             android:ellipsize="end"
             android:maxHeight="@dimen/avatar_big_size"
             android:maxLines="1"
-            android:textSize="@dimen/title_text_size" />
+            android:textSize="@dimen/appbar_text_size" />
 
         <TextView
             android:id="@+id/tv_message"

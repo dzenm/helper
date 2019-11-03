@@ -13,13 +13,15 @@ import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
 
+import com.dzenm.helper.base.AbsBaseActivity;
+import com.dzenm.helper.base.OnActivityResult;
+import com.dzenm.helper.date.DateHelper;
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.file.FileType;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -53,7 +55,7 @@ import java.util.List;
  *  PhotoHelper.getInstance().onPhotoResult(requestCode, resultCode, data);
  * </pre>
  */
-public class PhotoHelper {
+public class PhotoHelper implements OnActivityResult {
 
     private final String TAG = PhotoHelper.class.getSimpleName() + "|";
 
@@ -65,6 +67,8 @@ public class PhotoHelper {
      * 拍照后的图片Uri, 裁剪后的图片Uri
      */
     private Uri mGraphUri, mCropUri;
+
+    private String mGraphFilePath;
 
     /**
      * 裁剪比例
@@ -91,6 +95,9 @@ public class PhotoHelper {
     public PhotoHelper with(Activity activity) {
         mActivity = activity;
         mAspectX = mAspectY = mOutputWidth = mOutputHeight = 0;
+        if (mActivity instanceof AbsBaseActivity) {
+            ((AbsBaseActivity) mActivity).setOnActivityResult(this);
+        }
         return this;
     }
 
@@ -131,9 +138,9 @@ public class PhotoHelper {
     public void camera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File file = createTempFile("/photo");
-        if (file == null) return;
         if (intent.resolveActivity(mActivity.getPackageManager()) != null) {
             mGraphUri = FileHelper.getInstance().getUri(file);
+            mGraphFilePath = file.getAbsolutePath();
             // 添加Uri读取权限
             intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mGraphUri);
@@ -174,7 +181,6 @@ public class PhotoHelper {
 
         intent.putExtra("aspectX", mAspectX);
         intent.putExtra("aspectY", mAspectY);              // 设置裁剪区域的宽高比例
-
         intent.putExtra("outputX", mOutputWidth);
         intent.putExtra("outputY", mOutputHeight);        // 设置裁剪区域的宽度和高度
 
@@ -183,16 +189,11 @@ public class PhotoHelper {
 
         intent.putExtra("return-data", false);     // 不返回数据, 避免图片太大异常
 
-        // 从相册中选择, 那么裁剪的图片保存在 (包名/crop/) 中
+        // 从相册中选择, 那么裁剪的图片保存在 (APP名/crop/) 中
         // 裁切后保存的URI, 不属于我们向外共享的, 所以可以使用fill://类型的URI
         // 文件夹为临时文件夹, 用于存放临时的裁剪图片文件, 裁剪完成之后会删除该文件
         mCropUri = Uri.fromFile(createTempFile("/crop"));
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mCropUri);
-
-        // 以广播方式刷新系统相册，以便能够在相册中找到刚刚所拍摄和裁剪的照片
-        Intent intentBc = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        intentBc.setData(mCropUri);
-        mActivity.sendBroadcast(intentBc);
 
         // 裁剪后图片的Uri权限，需要添加访问Uri权限的请求，否则会出现Uri权限请求拒绝的错误
         List resInfoList = mActivity.getPackageManager().queryIntentActivities(
@@ -210,7 +211,7 @@ public class PhotoHelper {
     /**
      * 裁剪图片为缩略图
      *
-     * @param imageUri
+     * @param imageUri 图片的Uri
      * @return this
      */
     public Bitmap convertToBitmap(Uri imageUri) {
@@ -239,17 +240,24 @@ public class PhotoHelper {
         return BitmapFactory.decodeFile(imagePath, options);
     }
 
+    @Override
+    public void onResult(int requestCode, int resultCode, @Nullable Intent data) {
+        onPhotoResult(requestCode, resultCode, data);
+    }
+
+
     /**
      * 处理的回调结果
      *
-     * @param requestCode
-     * @param resultCode
-     * @param data
+     * @param requestCode 请求时的标志位
+     * @param resultCode  回调结果的判断标志
+     * @param data        回调结果的数据
      */
-    public void onPhotoResult(int requestCode, int resultCode, @Nullable Intent data) {
+    private void onPhotoResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == PhotoType.GRAPH && resultCode == Activity.RESULT_OK) {
-            Logger.d(TAG + "拍照后的图片uri: " + mGraphUri);
-            if (mOnSelectPhotoListener.onGraph(this, mGraphUri)) {
+            Logger.d(TAG + "拍照后的图片路径: " + mGraphFilePath);
+            mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mGraphUri));
+            if (mOnSelectPhotoListener.onGraph(this, mGraphFilePath)) {
                 crop(mGraphUri);
             }
         } else if (requestCode == PhotoType.GALLERY && resultCode == Activity.RESULT_OK) {
@@ -264,18 +272,19 @@ public class PhotoHelper {
                 mOnSelectPhotoListener.onError("图片不存在");
             }
         } else if (requestCode == PhotoType.CROP && resultCode == Activity.RESULT_OK) {
-            Logger.d(TAG + "裁剪后的图片uri: " + mCropUri);
-            if (mOnSelectPhotoListener.onCrop(this, mCropUri)) {
+            mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mCropUri));
+            File file = new File(getRealFilePath(mCropUri));
+            Logger.d(TAG + "裁剪后的图片路径: " + file.getAbsolutePath());
+            if (mOnSelectPhotoListener.onCrop(this, file.getAbsolutePath())) {
                 // 删除文件
-                String filePath = getRealFilePath(mCropUri);
-                File file = new File(filePath);
                 Logger.d(TAG + "删除裁剪图片的文件路径: " + file.getPath());
                 FileHelper.getInstance().delete(file.getParent());
             }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            Logger.d(TAG + "回调失败: " + mGraphUri + mCropUri);
-            mGraphUri = mCropUri = null;
-            Logger.d(TAG + "回调失败: " + mGraphUri + mCropUri);
+        } else if (requestCode == PhotoType.GRAPH && resultCode == Activity.RESULT_CANCELED) {
+            String path = FileHelper.getInstance().getRealFilePath(mGraphUri);
+            FileHelper.getInstance().delete(new File(path).getParent());
+            Logger.d(TAG + "回调失败: " + mGraphUri);
+            mGraphUri = null;
         }
     }
 
@@ -287,20 +296,16 @@ public class PhotoHelper {
     private File createTempFile(String folder) {
         File direct = FileHelper.getInstance().getFolder(folder);
         if (!direct.exists()) direct.mkdirs();
-        try {
-            return File.createTempFile("temp_", ".jpeg", direct);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        FileHelper.getInstance().delete(direct);
+        return new File(direct, DateHelper.getCurrentTimeMillis() + ".jpeg");
     }
 
     /**
      * 按比例获取bitmap
      *
-     * @param path
-     * @param w
-     * @param h
+     * @param path 图片的路径
+     * @param w    需要获取的比例宽
+     * @param h    需要获取的比例长
      * @return Bitmap
      */
     public Bitmap convertToBitmap(String path, int w, int h) {
@@ -327,8 +332,8 @@ public class PhotoHelper {
     /**
      * 获取原图bitmap
      *
-     * @param path
-     * @return
+     * @param path 图片的路径
+     * @return Bitmap
      */
     public Bitmap convertToBitmap(String path) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -343,7 +348,7 @@ public class PhotoHelper {
     /**
      * 通过Uri删除图片
      *
-     * @param uri
+     * @param uri 图片的Uri
      */
     public void deleteUriBitmap(Uri uri) {
         if (uri.toString().startsWith("content://")) {
@@ -368,7 +373,7 @@ public class PhotoHelper {
     public static abstract class OnSelectPhotoListener implements OnPhotoListener {
 
         @Override
-        public boolean onGraph(PhotoHelper helper, Uri uri) {
+        public boolean onGraph(PhotoHelper helper, String filePath) {
             return true;
         }
 
@@ -378,7 +383,7 @@ public class PhotoHelper {
         }
 
         @Override
-        public boolean onCrop(PhotoHelper helper, Uri uri) {
+        public boolean onCrop(PhotoHelper helper, String filePath) {
             return true;
         }
 
@@ -393,11 +398,11 @@ public class PhotoHelper {
         /**
          * 照相回调
          *
-         * @param helper 用于图片的uri和路径之间的操作
-         * @param uri    图片所在的Uri
+         * @param helper   用于图片的uri和路径之间的操作
+         * @param filePath 图片所在的路径
          * @return 返回true表示进行默认的操作(裁剪), 返回false表示自定义拍照的操作
          */
-        boolean onGraph(PhotoHelper helper, Uri uri);
+        boolean onGraph(PhotoHelper helper, String filePath);
 
         /**
          * @param helper   用于图片的uri和路径之间的操作
@@ -407,11 +412,11 @@ public class PhotoHelper {
         boolean onGallery(PhotoHelper helper, String filePath);
 
         /**
-         * @param helper 用于图片的uri和路径之间的操作
-         * @param uri    图片的路径
+         * @param helper   用于图片的uri和路径之间的操作
+         * @param filePath 图片的路径
          * @return 是否删除裁剪之后的图片
          */
-        boolean onCrop(PhotoHelper helper, Uri uri);
+        boolean onCrop(PhotoHelper helper, String filePath);
 
         /**
          * 在选择过程中未到达预期的效果(也就是产生错误), 调用该方法

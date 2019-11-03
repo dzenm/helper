@@ -46,6 +46,11 @@ public class RatioImageView extends AppCompatImageView {
     private float mRatio;
 
     /**
+     * 设置图片可以缩放和移动
+     */
+    private ImageZoomHelper mImageZoomHelper;
+
+    /**
      * 设置ImageView为圆形图片
      *
      * @param circle 是否设置为圆形
@@ -68,6 +73,15 @@ public class RatioImageView extends AppCompatImageView {
         mForegroundColor = foregroundColor;
     }
 
+    /**
+     * 设置ImageView可以缩放和移动
+     *
+     * @param imageZoomHelper 创建一个新{@link ImageZoomHelper}即可绑定
+     */
+    public void setImageZoomHelper(ImageZoomHelper imageZoomHelper) {
+        mImageZoomHelper = imageZoomHelper;
+    }
+
     public RatioImageView(Context context) {
         this(context, null);
     }
@@ -80,7 +94,7 @@ public class RatioImageView extends AppCompatImageView {
         super(context, attrs, defStyleAttr);
         TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.RatioImageView);
 
-        mRatio = t.getFloat(R.styleable.RatioImageView_ratio, 1f);
+        mRatio = t.getFloat(R.styleable.RatioImageView_ratio, 0f);
         mForegroundColor = t.getColor(R.styleable.RatioImageView_foregroundColor, 0xFFBDBDBD);
         isCircle = t.getBoolean(R.styleable.RatioImageView_isCircle, false);
         mCornerRadius[0] = mCornerRadius[1] = mCornerRadius[2] = mCornerRadius[3] =
@@ -105,21 +119,26 @@ public class RatioImageView extends AppCompatImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Drawable drawable = getDrawable();
-        if (drawable != null && isClickable()) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    drawable.mutate().setColorFilter(mForegroundColor, PorterDuff.Mode.MULTIPLY);
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                case MotionEvent.ACTION_UP:
-                    drawable.mutate().clearColorFilter();
-                    break;
+        if (mImageZoomHelper != null) {
+            mImageZoomHelper.bindImageView(this, event);
+            return true;
+        } else {
+            Drawable drawable = getDrawable();
+            if (drawable != null && isClickable()) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        drawable.mutate().setColorFilter(mForegroundColor, PorterDuff.Mode.MULTIPLY);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        drawable.mutate().clearColorFilter();
+                        break;
+                }
             }
+            return super.onTouchEvent(event);
         }
-        return super.onTouchEvent(event);
     }
 
     @Override

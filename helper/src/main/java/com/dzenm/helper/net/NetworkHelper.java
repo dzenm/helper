@@ -15,7 +15,6 @@ import android.provider.Settings;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.dialog.InfoDialog;
 import com.dzenm.helper.log.Logger;
 
@@ -27,13 +26,13 @@ import java.util.Enumeration;
 
 /**
  * <pre>
- *     注册网络监听广播 NetHelper.getInstance().register(this).setOnNetworkChangeListener(this);
+ *     注册网络监听广播 NetworkHelper.getInstance().register(this).setOnNetworkChangeListener(this);
  *
  *     @Override
  *     public void onNetChange(boolean isConnect) {
  *         if (isConnect) {
  *         } else {
- *             NetHelper.setNetworkSetting(this);
+ *             NetworkHelper.setNetworkSetting(this);
  *         }
  *     }
  *     需要加入权限 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -43,34 +42,34 @@ import java.util.Enumeration;
  * @date 2019-05-23 20:50
  * 网络工具类
  */
-public class NetHelper {
+public class NetworkHelper {
 
     private static String TAG;
     private Context mContext;
-    private static volatile NetBroadcast sNetBroadcast;
+    private static volatile NetworkBroadcast sNetworkBroadcast;
     private boolean isInitial = false;
 
     @SuppressLint("StaticFieldLeak")
-    private static volatile NetHelper sNetHelper;
+    private static volatile NetworkHelper sNetworkHelper;
 
-    private NetHelper() {
+    private NetworkHelper() {
     }
 
-    public static NetHelper getInstance() {
-        if (sNetHelper == null) synchronized (NetHelper.class) {
-            if (sNetHelper == null) {
-                sNetHelper = new NetHelper();
-                sNetBroadcast = NetBroadcast.getInstance();
+    public static NetworkHelper getInstance() {
+        if (sNetworkHelper == null) synchronized (NetworkHelper.class) {
+            if (sNetworkHelper == null) {
+                sNetworkHelper = new NetworkHelper();
+                sNetworkBroadcast = NetworkBroadcast.getInstance();
             }
         }
-        return sNetHelper;
+        return sNetworkHelper;
     }
 
     /**
      * @param context
      * @return
      */
-    public NetHelper init(Context context) {
+    public NetworkHelper init(Context context) {
         if (!isInitial) {
             TAG = context.getClass().getSimpleName() + "|";
             mContext = context;
@@ -83,11 +82,11 @@ public class NetHelper {
     /**
      * 设置网络监听回调事件
      *
-     * @param AbsBaseActivity
+     * @param onNetworkChangeListener
      * @return
      */
-    public NetHelper setOnNetworkChangeListener(AbsBaseActivity AbsBaseActivity) {
-        sNetBroadcast.setOnNetworkChangeListener(AbsBaseActivity);
+    public NetworkHelper setOnNetworkChangeListener(NetworkHelper.OnNetworkChangeListener onNetworkChangeListener) {
+        sNetworkBroadcast.setOnNetworkChangeListener(onNetworkChangeListener);
         return this;
     }
 
@@ -96,7 +95,7 @@ public class NetHelper {
      *
      * @return
      */
-    public NetHelper register(Context context) {
+    public NetworkHelper register(Context context) {
         init(context);
         register();
         return this;
@@ -107,9 +106,9 @@ public class NetHelper {
      *
      * @return
      */
-    private NetHelper register() {
-        if (!sNetBroadcast.isRegister()) {
-            sNetBroadcast.registerNetwork(mContext);
+    private NetworkHelper register() {
+        if (!sNetworkBroadcast.isRegister()) {
+            sNetworkBroadcast.registerNetwork(mContext);
         } else {
             Logger.i(TAG + "network broadcast is already register");
         }
@@ -119,9 +118,9 @@ public class NetHelper {
     /**
      * 取消注册广播
      */
-    public NetHelper unregister() {
-        if (sNetBroadcast.isRegister()) {
-            sNetBroadcast.unregisterNetwork(mContext);
+    public NetworkHelper unregister() {
+        if (sNetworkBroadcast.isRegister()) {
+            sNetworkBroadcast.unregisterNetwork(mContext);
         } else {
             Logger.i(TAG + "network broadcast is not register");
         }
@@ -233,7 +232,6 @@ public class NetHelper {
     public static String intIP2StringIP(int ip) {
         return (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + (ip >> 24 & 0xFF);
     }
-
 
     /**
      * 打开设置网络界面

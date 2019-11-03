@@ -35,8 +35,7 @@ import com.dzenm.helper.view.EditText;
  *              }
  *              return true;
  *          }
- *      }).setTranslucent(true)
- *      .show();
+ *      }).show();
  * </pre>
  */
 @SuppressLint("ValidFragment")

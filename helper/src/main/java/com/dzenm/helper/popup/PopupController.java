@@ -102,7 +102,6 @@ class PopupController {
             mActivity = activity;
         }
 
-        @SuppressLint("NewApi")
         void apply(PopupController controller) {
             if (mPopupView == null) {
                 throw new NullPointerException("PopupWindow's view is null");

@@ -36,10 +36,10 @@ public class ActivityHelper {
     }
 
     /**
-     * 判断Activity是不是活的
+     * 判断Activity是否存活
      *
-     * @param clazz
-     * @return
+     * @param clazz 判断的Activity的class
+     * @return 是否存活
      */
     public boolean isAlive(Class<?> clazz) {
         if (isEmpty(sActivityStack)) return false;
@@ -184,7 +184,6 @@ public class ActivityHelper {
         return this;
     }
 
-
     /**
      * 获取指定的Serivce
      */
@@ -199,7 +198,6 @@ public class ActivityHelper {
         Logger.d(TAG + "service stack's size is " + sServiceStack.size());
         return null;
     }
-
 
     /**
      * 获取堆栈中最后一个传入的Service
@@ -278,8 +276,8 @@ public class ActivityHelper {
     /**
      * 判断栈是否为空
      *
-     * @param stack
-     * @return
+     * @param stack 任务栈
+     * @return 是否为空
      */
     private boolean isEmpty(Stack stack) {
         if (stack == null)

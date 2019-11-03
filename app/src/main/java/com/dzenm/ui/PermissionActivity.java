@@ -26,8 +26,18 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
             Manifest.permission.WRITE_CALENDAR};
 
     @Override
+    protected boolean isDataBinding() {
+        return true;
+    }
+
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_permission;
+    }
+
+    @Override
     protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        ActivityPermissionBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_permission);
+        ActivityPermissionBinding binding = (ActivityPermissionBinding) viewDataBinding;
         setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
 
         setPressedBackground(binding.tv100);

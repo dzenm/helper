@@ -16,8 +16,18 @@ import com.dzenm.helper.draw.DrawableHelper;
 public class LoadingActivity extends AbsBaseActivity implements View.OnClickListener {
 
     @Override
+    protected boolean isDataBinding() {
+        return true;
+    }
+
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_loading;
+    }
+
+    @Override
     protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        ActivityLoadingBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_loading);
+        ActivityLoadingBinding binding = (ActivityLoadingBinding) viewDataBinding;
         setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
 
         setPressedBackground(binding.tv131, android.R.color.holo_blue_dark);

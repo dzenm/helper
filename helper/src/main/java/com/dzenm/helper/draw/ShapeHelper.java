@@ -114,7 +114,7 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
         return sShapeHelper;
     }
 
-    ShapeHelper init(Context context) {
+    public ShapeHelper init(Context context) {
         mContext = context;
         return this;
     }

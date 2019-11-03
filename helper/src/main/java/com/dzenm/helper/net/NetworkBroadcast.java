@@ -13,20 +13,21 @@ import com.dzenm.helper.log.Logger;
  * @date 2019-05-30 20:52
  * 网络监听 广播
  */
-class NetBroadcast extends BroadcastReceiver {
+class NetworkBroadcast extends BroadcastReceiver {
 
-    private static final String TAG = NetBroadcast.class.getSimpleName() + "|";
+    private static final String TAG = NetworkBroadcast.class.getSimpleName() + "|";
+
     private boolean mRegister = false;
-    private static NetBroadcast sNetBroadcast;
+    private static volatile NetworkBroadcast sNetworkBroadcast;
 
-    private NetBroadcast() {
+    private NetworkBroadcast() {
     }
 
-    public static NetBroadcast getInstance() {
-        if (sNetBroadcast == null) synchronized (NetBroadcast.class) {
-            if (sNetBroadcast == null) sNetBroadcast = new NetBroadcast();
+    public static NetworkBroadcast getInstance() {
+        if (sNetworkBroadcast == null) synchronized (NetworkBroadcast.class) {
+            if (sNetworkBroadcast == null) sNetworkBroadcast = new NetworkBroadcast();
         }
-        return sNetBroadcast;
+        return sNetworkBroadcast;
     }
 
     public boolean isRegister() {
@@ -36,9 +37,9 @@ class NetBroadcast extends BroadcastReceiver {
     /*
      * 网络广播监听回掉
      */
-    private NetHelper.OnNetworkChangeListener mOnNetworkChangeListener;
+    private NetworkHelper.OnNetworkChangeListener mOnNetworkChangeListener;
 
-    void setOnNetworkChangeListener(NetHelper.OnNetworkChangeListener onNetworkChangeListener) {
+    void setOnNetworkChangeListener(NetworkHelper.OnNetworkChangeListener onNetworkChangeListener) {
         mOnNetworkChangeListener = onNetworkChangeListener;
     }
 
@@ -46,7 +47,7 @@ class NetBroadcast extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // 如果相等的话就说明网络状态发生了变化
         if (intent.getAction() != null && intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-            boolean isConnected = NetHelper.isConnected(context);
+            boolean isConnected = NetworkHelper.isConnected(context);
             // 当网络发生变化，判断当前网络状态，并通过NetEvent回调当前网络状态
             if (mOnNetworkChangeListener != null) {
                 Logger.i(TAG + "network broadcast receive connect state: " + isConnected);

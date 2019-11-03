@@ -17,7 +17,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Helper.init(this);
-        ToastHelper.getInstance().setGravity(Gravity.CENTER, 0)
+        ToastHelper.getInstance()
+                .setGravity(Gravity.CENTER, 0)
                 .setBackground(DrawableHelper.solid(android.R.color.holo_red_light).radius(16).build());
     }
 }

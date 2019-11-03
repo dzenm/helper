@@ -1,8 +1,8 @@
 package com.dzenm.helper.dialog;
 
-import android.annotation.SuppressLint;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.Gravity;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.photo.PhotoHelper;
 
@@ -10,26 +10,21 @@ import com.dzenm.helper.photo.PhotoHelper;
  * @author dzenm
  * @date 2019-08-19 13:52
  * <pre>
- *      PhotoDialog.newInstance(this)
- *                     .setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
- *                         @Override
- *                         public void onError(String msg) {
- *                             super.onError(msg);
- *                         }
+ * PhotoDialog.newInstance(DrawableActivity.this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+ *     @Override
+ *     public boolean onGallery(PhotoHelper helper, String filePath) {
+ *         layout.load(FileHelper.getInstance().getPhoto(filePath));
+ *         return false;
+ *     }
  *
- *                         @Override
- *                         public boolean onCrop(PhotoHelper helper, Uri uri) {
- *                             binding.ivImage.setImageBitmap(helper.getPhoto(uri));
- *                             String filePath = helper.getRealFilePath(uri);
- *                             String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
- *                             Logger.d(TAG + "copy file path: " + file);
- *                             FileHelper.getInstance().copyFile(filePath, file);
- *                             return false;
- *                         }
- *                     }).show();
+ *     @Override
+ *     public boolean onGraph(PhotoHelper helper, String filePath) {
+ *         layout.load(FileHelper.getInstance().getPhoto(filePath));
+ *         return false;
+ *     }
+ * }).show();
  * </pre>
  */
-@SuppressLint("ValidFragment")
 public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickListener {
 
     private PhotoHelper.OnSelectPhotoListener mOnSelectPhotoListener;

@@ -52,7 +52,7 @@ public abstract class AbsDialog extends AppCompatDialog {
      * dialog居中时的宽度, 宽度为(屏幕宽度-10*mMargin), 由于居中时, width值过大, 因此在居中时
      * 做一些限制, 改变居中时的宽度
      */
-    protected int mCenterWidth = OsHelper.getDisplayWidth() - 10 * mMargin;
+    protected int mCenterWidth = ScreenHelper.getDisplayWidth() - 10 * mMargin;
 
 
     /**

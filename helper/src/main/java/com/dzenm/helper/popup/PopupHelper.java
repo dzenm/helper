@@ -55,7 +55,6 @@ public class PopupHelper extends PopupWindow {
         controller = new PopupController(activity, this);
     }
 
-
     public static class Builder {
 
         public static Builder newInstance(Activity activity) {

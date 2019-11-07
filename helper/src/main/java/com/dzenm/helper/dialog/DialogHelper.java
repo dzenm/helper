@@ -1,16 +1,17 @@
 package com.dzenm.helper.dialog;
 
 import android.annotation.SuppressLint;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 
 /**
  * @author dinzhenyan
@@ -18,52 +19,39 @@ import android.view.ViewGroup;
  * <p>
  * 这是一个可以自定义布局的dialog， 通过setLayout方法设置布局
  * <pre>
- * DialogHelper.newInstance(this)
- *        .setLayout(R.layout.dialog_info)
- *        .setOnConvertViewClickListener(new DialogHelper.OnConvertViewClickListener() {
- *            @Override
- *            public void onConvertClick(ViewHolder holder, final AbsDialogFragment dialog) {
- *                holder.setOnClickListener(R.id.tv_negative, new View.OnClickListener() {
- *                    @Override
- *                    public void onClick(View v) {
- *                        dialog.dismiss();
- *                    }
- *                });
- *                holder.setOnClickListener(R.id.tv_positive, new View.OnClickListener() {
- *                    @Override
- *                    public void onClick(View v) {
- *                        dialog.dismiss();
- *                    }
- *                });
- *                holder.setText(R.id.tv_title, "这是标题");
- *                holder.setText(R.id.et_message, "这是内容");
- *            }
- *        }).show();
+ * DialogHelper.newInstance(mActivity)
+ *         .setLayout(R.layout.dialog_permission_prompt)
+ *         .setCancel(false)
+ *         .setOnBindViewHolder(this)
+ *         .setBackground(DrawableHelper.solid(android.R.color.white)
+ *                 .radius(10)
+ *                 .build())
+ *         .show();
  * </pre>
  * DataBinding使用方法
  * <pre>
  * DialogHelper.newInstance(this)
- *      .setLayout(R.layout.dialog_info)
- *      .setUseDataBinding(true)
- *      .setOnBindingListener(new DialogHelper.OnBindingListener() {
- *          @Override
- *          public void onBinding(ViewDataBinding binding, final AbsDialogFragment dialog) {
- *              DialogInfoBinding infoBinding = (DialogInfoBinding) binding;
- *              infoBinding.etMessage.setText("这是使用dataBinding的结果");
- *              infoBinding.tvNegative.setOnClickListener(new View.OnClickListener() {
- *                  @Override
- *                  public void onClick(View v) {
- *                      dialog.dismiss();
- *                  }
- *              });
- *              infoBinding.tvPositive.setOnClickListener(new View.OnClickListener() {
- *                  @Override
- *                  public void onClick(View v) {
- *                      dialog.dismiss();
- *                  }
- *              });
- *          }
- *      }).show();
+ *                     .setLayout(R.layout.dialog_info)
+ *                     .setOnViewDataBinding(new DialogHelper.OnViewDataBinding() {
+ *                         @Override
+ *                         public void onBinding(ViewDataBinding binding, final AbsDialogFragment dialog) {
+ *                             DialogInfoBinding infoBinding = (DialogInfoBinding) binding;
+ *                             infoBinding.etMessage.setVisibility(View.VISIBLE);
+ *                             infoBinding.etMessage.setText("这是使用dataBinding的结果");
+ *                             infoBinding.tvNegative.setOnClickListener(new View.OnClickListener() {
+ *                                 @Override
+ *                                 public void onClick(View v) {
+ *                                     dialog.dismiss();
+ *                                 }
+ *                             });
+ *                             infoBinding.tvPositive.setOnClickListener(new View.OnClickListener() {
+ *                                 @Override
+ *                                 public void onClick(View v) {
+ *                                     dialog.dismiss();
+ *                                 }
+ *                             });
+ *                         }
+ *                     }).show();
  * </pre>
  */
 @SuppressLint("ValidFragment")
@@ -72,11 +60,9 @@ public class DialogHelper extends AbsDialogFragment {
     private @LayoutRes
     int mLayoutId;
 
-    private boolean isUseBinding;
+    private OnViewDataBinding mOnViewDataBinding;
 
-    private OnBindingListener mOnBindingListener;
-
-    private OnConvertViewClickListener onConvertViewClickListener;
+    private OnBindViewHolder mOnBindViewHolder;
 
     /************************************* 以下为自定义提示内容 *********************************/
 
@@ -87,13 +73,13 @@ public class DialogHelper extends AbsDialogFragment {
 
     /**
      * ViewHolder用于进行对一些控件的操作, 主要是通过对应的Id进行操作, 使用时直接通过
-     * OnConvertViewClickListener 的 holder 参数进行view的操作
+     * {@link OnBindViewHolder} 的 holder 参数进行view的操作
      *
-     * @param onConvertViewClickListener 回调事件
+     * @param onBindViewHolder 回调事件
      * @return this
      */
-    public DialogHelper setOnConvertViewClickListener(OnConvertViewClickListener onConvertViewClickListener) {
-        this.onConvertViewClickListener = onConvertViewClickListener;
+    public DialogHelper setOnBindViewHolder(OnBindViewHolder onBindViewHolder) {
+        mOnBindViewHolder = onBindViewHolder;
         return this;
     }
 
@@ -101,11 +87,11 @@ public class DialogHelper extends AbsDialogFragment {
      * 使用dataBinding进行一些控件的操作, 使用时, 在布局的最外层添加layout, 然后在使用
      * OnBindingListener 的 binding 参数进行View的操作, 由于类型的不匹配, 需要进行强制转换
      *
-     * @param onBindingListener 回调事件
+     * @param onViewDataBinding 回调事件
      * @return this
      */
-    public DialogHelper setOnBindingListener(OnBindingListener onBindingListener) {
-        mOnBindingListener = onBindingListener;
+    public DialogHelper setOnViewDataBinding(OnViewDataBinding onViewDataBinding) {
+        mOnViewDataBinding = onViewDataBinding;
         return this;
     }
 
@@ -115,18 +101,6 @@ public class DialogHelper extends AbsDialogFragment {
      */
     public DialogHelper setLayout(@LayoutRes int layoutId) {
         mLayoutId = layoutId;
-        return this;
-    }
-
-    /**
-     * 设置是否使用DataBinding, 如果使用DataBinding, 则需实现 {@link #setOnBindingListener(OnBindingListener)}
-     * 如果使用默认的ViewHolder, 则实现 {@link #setOnConvertViewClickListener(OnConvertViewClickListener)}
-     *
-     * @param useBinding 是否使用dataBinding
-     * @return this
-     */
-    public DialogHelper setUseDataBinding(boolean useBinding) {
-        isUseBinding = useBinding;
         return this;
     }
 
@@ -196,24 +170,22 @@ public class DialogHelper extends AbsDialogFragment {
      */
     @Override
     protected void convertView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (isUseBinding) {
+        if (mOnViewDataBinding != null) {
             ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutId(), container, false);
             mView = binding.getRoot();
-            if (mOnBindingListener != null) mOnBindingListener.onBinding(binding, this);
-        } else {
+            mOnViewDataBinding.onBinding(binding, this);
+        } else if (mOnBindViewHolder != null) {
             ViewHolder holder = ViewHolder.create(mView);
-            if (onConvertViewClickListener != null) {
-                onConvertViewClickListener.onConvertClick(holder, this);
-            }
+            mOnBindViewHolder.onBinding(holder, this);
         }
     }
 
-    public interface OnBindingListener<T extends AbsDialogFragment> {
+    public interface OnViewDataBinding<T extends AbsDialogFragment> {
         void onBinding(ViewDataBinding binding, T dialog);
     }
 
 
-    public interface OnConvertViewClickListener<T extends AbsDialogFragment> {
-        void onConvertClick(ViewHolder holder, T dialog);
+    public interface OnBindViewHolder<T extends AbsDialogFragment> {
+        void onBinding(ViewHolder holder, T dialog);
     }
 }

@@ -130,7 +130,6 @@ public class FileHelper {
         File file = mkdir(Environment.getExternalStorageDirectory() + File.separator + appPath);
 
         mAppFolder = file.getAbsolutePath();
-        Logger.d(TAG + "App文件夹路径: " + mAppFolder);
     }
 
     /**

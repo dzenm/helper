@@ -53,12 +53,17 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
             startActivity(intent);
         } else if (v.getId() == R.id.tv_preview) {
             PreviewDialog.newInstance(mActivity)
-                    .loader(new MyImageLoader())
+                    .setImageLoader(new MyImageLoader())
                     .load(R.drawable.one)
+                    .setOnLongClickListener(new PreviewDialog.OnLongClickListener() {
+                        @Override
+                        public void onLongClick() {
+                        }
+                    })
                     .show();
         } else if (v.getId() == R.id.iv_header) {
             PreviewDialog.newInstance(mActivity)
-                    .loader(new MyImageLoader())
+                    .setImageLoader(new MyImageLoader())
                     .load(binding.ivHeader.getDrawable())
                     .show();
         }

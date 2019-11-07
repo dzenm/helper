@@ -19,19 +19,19 @@ import com.dzenm.helper.os.OsHelper;
  * @date 2019-08-18 18:22
  * <pre>
  *  MenuDialog.newInstance(this)
- *        .setItem("测试", "第二个", "取消")
- *        .setRadiusCard(2f)
- *        .setOnItemClickListener(new MenuDialog.OnItemClickListener() {
- *            @Override
- *            public void onItemClick(Object tag) {
- *                if (tag.equals("测试")) {
- *                    ToastHelper.show("测试");
- *                } else if (tag.equals("取消")) {
- *                    ToastHelper.show("取消");
- *                }
- *            }
- *        }).setGravity(Gravity.BOTTOM)
- *        .show();
+ *          .setItem("测试", "第二个", "取消")
+ *          .setRadiusCard(2f)
+ *          .setOnItemClickListener(new MenuDialog.OnItemClickListener() {
+ *              @Override
+ *              public void onItemClick(Object tag) {
+ *                  if (tag.equals("测试")) {
+ *                      ToastHelper.show("测试");
+ *                  } else if (tag.equals("取消")) {
+ *                      ToastHelper.show("取消");
+ *                  }
+ *              }
+ *          }).setGravity(Gravity.BOTTOM)
+ *          .show();
  * </pre>
  */
 @SuppressLint("ValidFragment")

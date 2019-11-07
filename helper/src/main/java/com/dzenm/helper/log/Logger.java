@@ -2,9 +2,10 @@ package com.dzenm.helper.log;
 
 import android.content.Context;
 import android.os.Environment;
-import androidx.annotation.IntDef;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.IntDef;
 
 import com.dzenm.helper.date.DateHelper;
 import com.dzenm.helper.file.FileHelper;
@@ -30,13 +31,13 @@ public class Logger {
     private static final String TAG = Logger.class.getSimpleName() + "|";
 
     private static final String SUFFIX = ".txt";            // 日志文件后缀
-    private static boolean isDebug = true;                  // 是否是debug模式
 
     private static String logcatPath;                       // log文件路径
     private LogDumper mLogDumper;                           // log输出文件线程
     private int mPID;                                       // 进程的pid
     private static String mTag = "DZY";                     // 日志TAG
 
+    public static final int LEBEL = 0;
     public static final int VERBOSE = 1;
     public static final int DEBUG = 2;
     public static final int INFO = 3;
@@ -45,10 +46,9 @@ public class Logger {
     public static final int WTF = 6;
     public static final int ONTHING = 7;
 
-    @IntDef({VERBOSE, DEBUG, INFO, WARN, ERROR, WTF, ONTHING})
+    @IntDef({LEBEL, VERBOSE, DEBUG, INFO, WARN, ERROR, WTF, ONTHING})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Level {
-
     }
 
     private @Level
@@ -70,23 +70,20 @@ public class Logger {
     /**
      * 设置开启debug模式
      *
-     * @param isDebug
-     * @return
+     * @return this
      */
-    public Logger setDebug(boolean isDebug) {
-        Logger.isDebug = isDebug;
+    public Logger setDebug() {
+        sLevel = LEBEL;
         return this;
     }
 
-    public static boolean isDebug() {
-        return Logger.isDebug;
+    public boolean isDebug() {
+        return sLevel == LEBEL;
     }
 
     /**
-     * 设置Log日志显示的级别
-     *
-     * @param level
-     * @return
+     * @param level 设置Log日志显示的级别
+     * @return this
      */
     public Logger setLevel(@Level int level) {
         sLevel = level;
@@ -94,10 +91,8 @@ public class Logger {
     }
 
     /**
-     * 设置Log日志的tag
-     *
-     * @param tag
-     * @return
+     * @param tag 设置Log日志的tag
+     * @return this
      */
     public Logger setTag(String tag) {
         mTag = tag;
@@ -106,49 +101,37 @@ public class Logger {
 
     public static void v(String msg) {
         if (sLevel <= VERBOSE) {
-            if (isDebug) {
-                Log.v(mTag, msg);
-            }
+            Log.v(mTag, msg);
         }
     }
 
     public static void d(String msg) {
         if (sLevel <= DEBUG) {
-            if (isDebug) {
-                Log.d(mTag, msg);
-            }
+            Log.d(mTag, msg);
         }
     }
 
     public static void i(String msg) {
         if (sLevel <= INFO) {
-            if (isDebug) {
-                Log.i(mTag, msg);
-            }
+            Log.i(mTag, msg);
         }
     }
 
     public static void w(String msg) {
         if (sLevel <= WARN) {
-            if (isDebug) {
-                Log.w(mTag, msg);
-            }
+            Log.w(mTag, msg);
         }
     }
 
     public static void e(String msg) {
         if (sLevel <= ERROR) {
-            if (isDebug) {
-                Log.e(mTag, msg);
-            }
+            Log.e(mTag, msg);
         }
     }
 
     public static void wtf(String msg) {
         if (sLevel <= WTF) {
-            if (isDebug) {
-                Log.wtf(mTag, msg);
-            }
+            Log.wtf(mTag, msg);
         }
     }
 
@@ -156,11 +139,6 @@ public class Logger {
      * 初始化日志存储目录（需要先申请文件读写权限）
      */
     public Logger init(Context context) {
-        // 初始化APP文件夹
-        FileHelper.getInstance().init(context);
-        // 用于将捕捉到的异常保存为文件, 依赖FileHelper
-        CrashHelper.getInstance().init(context);
-
         logcatPath = FileHelper.getInstance().getFolder("/log").getAbsolutePath();
         if (TextUtils.isEmpty(logcatPath)) {
             logcatPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "log";
@@ -171,10 +149,8 @@ public class Logger {
 
     /**
      * 初始化完成之后才可以开始保存日志
-     *
-     * @return
      */
-    public Logger start() {
+    public void start() {
         if (mLogDumper == null) {
             mLogDumper = new LogDumper(String.valueOf(mPID), logcatPath);
         }
@@ -182,67 +158,26 @@ public class Logger {
             mLogDumper.start();
         }
         Logger.i(TAG + "开始保存日志");
-        return this;
     }
 
     /**
      * 停止输出日志
-     *
-     * @return
      */
-    public Logger stop() {
+    public void stop() {
         if (mLogDumper != null) {
             mLogDumper.stopLogs();
             mLogDumper = null;
-            Logger.i(TAG + "停止输出日志");
         }
-        return this;
+        Logger.i(TAG + "停止输出日志");
     }
 
     /**
-     * 打印所有的日志信息
+     * 保存打印的日志信息
      *
-     * @return
+     * @return this
      */
-    public Logger all() {
-        mLogDumper.all();
-        Logger.i(TAG + "打印所有的日志信息");
-        return this;
-    }
-
-    /**
-     * 打印只带tag的日志信息
-     *
-     * @return
-     */
-    public Logger tag() {
-        mLogDumper.tag();
-        Logger.i(TAG + "打印只带tag的日志信息");
-        return this;
-    }
-
-    public Logger v() {
-        mLogDumper.v();
-        return this;
-    }
-
-    public Logger d() {
-        mLogDumper.d();
-        return this;
-    }
-
-    public Logger i() {
-        mLogDumper.i();
-        return this;
-    }
-
-    public Logger w() {
-        mLogDumper.w();
-        return this;
-    }
-
-    public Logger e() {
-        mLogDumper.e();
+    public Logger cache(int level) {
+        mLogDumper.cache(level);
         return this;
     }
 
@@ -260,58 +195,38 @@ public class Logger {
         private String mCmds;
         private String mPID;
 
-        public LogDumper(String pid, String dir) {
-            mPID = pid;
+        LogDumper(String pid, String dir) {
             try {
+                mPID = pid;
                 mFileOutputStream = new FileOutputStream(new File(dir, DateHelper.getCurrentTimeMillis() + SUFFIX));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            if (isDebug) {
-                tag();
+            cache(sLevel);
+        }
+
+        private void cache(int level) {
+            if (level == LEBEL) {
+                Logger.i(TAG + "打印只带tag的日志信息");
+                mCmds = "logcat -s " + mTag;
+            } else if (level == VERBOSE) {
+                mCmds = "logcat *:e *:v |grep\"(" + mPID + ")\"";
+            } else if (level == DEBUG) {
+                mCmds = "logcat *:e *:d |grep\"(" + mPID + ")\"";
+            } else if (level == INFO) {
+                mCmds = "logcat *:e *:i |grep\"(" + mPID + ")\"";
+            } else if (level == WARN) {
+                mCmds = "logcat *:e *:w |grep\"(" + mPID + ")\"";
+            } else if (level == ERROR) {
+                mCmds = "logcat *:e |grep\"(" + mPID + ")\"";
             } else {
-                all();
+                Logger.i(TAG + "打印所有的日志信息");
+                mCmds = "logcat |grep\"(" + mPID + ")\"";
             }
         }
 
-        private LogDumper all() {
-            mCmds = "logcat |grep\"(" + mPID + ")\"";
-            return this;
-        }
-
-        private LogDumper tag() {
-            mCmds = "logcat -s " + mTag;
-            return this;
-        }
-
-        private LogDumper v() {
-            mCmds = "logcat *:e *:v |grep\"(" + mPID + ")\"";
-            return this;
-        }
-
-        private LogDumper d() {
-            mCmds = "logcat *:e *:d |grep\"(" + mPID + ")\"";
-            return this;
-        }
-
-        private LogDumper i() {
-            mCmds = "logcat *:e *:i |grep\"(" + mPID + ")\"";
-            return this;
-        }
-
-        private LogDumper w() {
-            mCmds = "logcat *:e *:w |grep\"(" + mPID + ")\"";
-            return this;
-        }
-
-        private LogDumper e() {
-            mCmds = "logcat *:e |grep\"(" + mPID + ")\"";
-            return this;
-        }
-
-        private LogDumper stopLogs() {
+        private void stopLogs() {
             mRunning = false;
-            return this;
         }
 
         @Override
@@ -365,8 +280,8 @@ public class Logger {
     /**
      * 转化为string
      *
-     * @param object
-     * @return
+     * @param object 需要转为为string的对象
+     * @return 转化后的string
      */
     public static String toString(Object object) {
         if (object == null) {

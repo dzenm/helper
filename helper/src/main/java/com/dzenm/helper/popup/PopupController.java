@@ -19,9 +19,9 @@ import com.dzenm.helper.dialog.ViewHolder;
 class PopupController {
 
     private Activity mActivity;
-    private PopupHelper mPopupWindow;
+    private PopupDialog mPopupWindow;
 
-    PopupController(Activity activity, PopupHelper popupWindow) {
+    PopupController(Activity activity, PopupDialog popupWindow) {
         mActivity = activity;
         mPopupWindow = popupWindow;
     }
@@ -49,7 +49,7 @@ class PopupController {
         mPopupWindow.setElevation(elevation);                          // 设置PopupWindow的高度，类似于3D效果的阴影
     }
 
-    PopupHelper getPopupWindow() {
+    PopupDialog getPopupWindow() {
         return mPopupWindow;
     }
 
@@ -67,7 +67,7 @@ class PopupController {
     }
 
     @SuppressLint("NewApi")
-    void create() {
+    private void create() {
         mPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);     // 设置弹出窗口的宽
         mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);    // 设置弹出窗口的高
         mPopupWindow.setIgnoreCheekPress();                             // Events都是有大小的,当触摸点大于手指头大小时，则为脸颊事件
@@ -96,7 +96,7 @@ class PopupController {
 
         public boolean mTouchable;
 
-        public PopupHelper.OnViewHolderCallback mOnViewHolderCallback;
+        public PopupDialog.OnBindViewHolder mOnBindViewHolder;
 
         public Params(Activity activity) {
             mActivity = activity;
@@ -113,7 +113,7 @@ class PopupController {
             controller.setAnimationStyle(mAnimationStyle);
             controller.setElevation(mElevation);
             controller.setOutsideTouchable(mTouchable);
-            mOnViewHolderCallback.onCallback(ViewHolder.create(mPopupView), controller.getPopupWindow());
+            mOnBindViewHolder.onBinding(ViewHolder.create(mPopupView), controller.getPopupWindow());
             controller.create();
         }
 

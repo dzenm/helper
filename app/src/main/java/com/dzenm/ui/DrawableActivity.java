@@ -2,11 +2,8 @@ package com.dzenm.ui;
 
 import android.Manifest;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.ViewDataBinding;
@@ -15,12 +12,14 @@ import com.dzenm.R;
 import com.dzenm.databinding.ActivityDrawableBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.dialog.PhotoDialog;
+import com.dzenm.helper.dialog.PreviewDialog;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.permission.PermissionManager;
 import com.dzenm.helper.photo.PhotoHelper;
 import com.dzenm.helper.toast.ToastHelper;
 import com.dzenm.helper.view.PhotoLayout;
+import com.dzenm.helper.view.RatioImageView;
 
 import java.util.Arrays;
 
@@ -68,15 +67,9 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnL
         plAdd = findViewById(R.id.pl_add);
         plPreview = findViewById(R.id.pl_preview);
         plPreview.setPreview(true);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
 
-            }
-        }, 1000);
         addPhoto();
         previewPhoto();
-
     }
 
     private void addPhoto() {
@@ -117,13 +110,6 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnL
                 "/storage/emulated/0/DCIM/Camera/IMG_20190603_193257.jpg",
                 "/storage/emulated/0/DCIM/Camera/IMG_20190519_134904.jpg"
         };
-
-        plPreview.setOnItemClickListener(new PhotoLayout.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                ToastHelper.show("点击预览的是第: " + position);
-            }
-        });
         plPreview.setImageLoader(new MyImageLoader());
         plPreview.load(Arrays.asList(url));
     }

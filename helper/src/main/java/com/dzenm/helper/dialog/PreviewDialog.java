@@ -10,7 +10,6 @@ import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.draw.DrawableHelper;
-import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.view.ImageLoader;
 import com.dzenm.helper.view.RatioImageView;
@@ -27,10 +26,16 @@ import com.dzenm.helper.view.RatioImageView;
  */
 public class PreviewDialog extends AbsDialogFragment implements View.OnTouchListener {
 
-    private static final int NONE = -1;
-    private static final int MODE_DOWN = 0;
-    private static final int MODE_POINT_DOWN = 1;
-    private static final int MODE_ZOOM = 2;
+    private static final int EVENT_NONE = -1;
+    private static final int EVENT_DOWN = 0;
+    private static final int EVENT_POINTER_DOWN = 1;
+    private static final int EVENT_MOVE = 2;
+    private static final int EVENT_POINTER_UP = 3;
+
+    private static final int MODE_NONE = 11;
+    private static final int MODE_LONG_CLICK = 12;
+    private static final int MODE_ZOOM = 13;
+    private static final int MODE_MOVE = 14;
 
     private ImageLoader mImageLoader;
     private Object mImage;
@@ -39,8 +44,11 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
     private int mTouchDownX, mTouchDownY, mOffsetY, mOffsetX;
     private float mPointDistance = 0f;
     private PointF mMidPointF;
+    private long mLastTimeMillis = 0;
+    private OnLongClickListener mOnLongClickListener;
 
-    private int mMode = NONE;
+    private int mMode;
+    private int mEvent = EVENT_NONE;
     private float mLastScale = 1f;
     private boolean isZooming = false;
 
@@ -52,13 +60,18 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
         super(activity);
     }
 
-    public PreviewDialog loader(ImageLoader imageLoader) {
+    public PreviewDialog setImageLoader(ImageLoader imageLoader) {
         mImageLoader = imageLoader;
         return this;
     }
 
     public PreviewDialog load(Object image) {
         mImage = image;
+        return this;
+    }
+
+    public PreviewDialog setOnLongClickListener(OnLongClickListener onLongClickListener) {
+        mOnLongClickListener = onLongClickListener;
         return this;
     }
 
@@ -97,29 +110,45 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
         switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:           // 主控点放下
                 // 记录主触摸点坐标
-                mMode = MODE_DOWN;
+                mEvent = EVENT_DOWN;
+                mLastTimeMillis = System.currentTimeMillis();
                 mTouchDownX = (int) event.getX(0);
                 mTouchDownY = (int) event.getY(0);
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:   // 辅控点放下
-                mPointDistance = getPointDistance(event);
                 // 当两指间距大于40时，计算两指中心点
-                if (mPointDistance > 10f) {
+                if (getPointDistance(event) > 10f) {
+                    mEvent = EVENT_POINTER_DOWN;
                     mMidPointF = getPointMid(event);
                     setImageScaleAnimator(mMidPointF.x, mMidPointF.y, 1);
-//                    mMode = MODE_POINT_DOWN;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:           // 主(辅)控点移动
-                if (mMode == MODE_DOWN && !isZooming) {
+                if (mEvent == EVENT_DOWN && mMode != MODE_ZOOM) {
                     // 计算主控点偏移量
                     mOffsetX = (int) event.getX(0) - mTouchDownX;
                     mOffsetY = (int) event.getY(0) - mTouchDownY;
-                    float offset = (float) mOffsetY / (float) ScreenHelper.getDisplayHeight();
-                    setImageDismissAnimator(mOffsetX, mOffsetY, mOffsetY > 0 ? mDimAccount - offset : mDimAccount);
-                } else if (mMode == MODE_ZOOM && isZooming) {
+                    if (Math.abs(mOffsetX) > 10 || Math.abs(mOffsetY) > 10) {
+                        mMode = MODE_MOVE;
+                        mLastTimeMillis = 0;
+                        float offset = (float) mOffsetY / (float) ScreenHelper.getDisplayHeight();
+                        setImageDismissAnimator(mOffsetX, mOffsetY, mOffsetY > 0 ? mDimAccount - offset : mDimAccount);
+                    } else {
+                        if (mMode != MODE_LONG_CLICK) {
+                            long currentTimeMillis = System.currentTimeMillis();
+                            if (currentTimeMillis - mLastTimeMillis > 500) {
+                                mMode = MODE_LONG_CLICK;
+                                mLastTimeMillis = 0;
+                                if (mOnLongClickListener != null) {
+                                    mView.setBackgroundColor(getColor(android.R.color.black));
+                                    mOnLongClickListener.onLongClick();
+                                }
+                            }
+                        }
+                    }
+                } else if (mEvent == MODE_ZOOM && isZooming) {
 
-                } else if (mMode == MODE_POINT_DOWN) {
+                } else if (mEvent == EVENT_POINTER_DOWN) {
 //                    float newDistance = getPointDistance(event);
 //                    if (newDistance > 0f) {
 //                        mMode = MODE_ZOOM;
@@ -135,16 +164,25 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
 //                    setImageDismissAnimator(0, 0, mDimAccount);
 //                    mMode = MODE_DOWN;
 //                }
+                mEvent = EVENT_POINTER_UP;
                 break;
             case MotionEvent.ACTION_UP:             // 最后一个点抬起
-                if (mMode == MODE_DOWN && !isZooming) {
+                if (mEvent == EVENT_DOWN
+                        && mMode == MODE_MOVE
+                        && !isZooming) {
                     if (mOffsetY > ScreenHelper.getDisplayHeight() * 0.1) {
                         dismiss();
                     } else {
                         setImageDismissAnimator(0, 0, mDimAccount);
                     }
-                    mMode = NONE;
+                } else if (mEvent == EVENT_DOWN
+                        && mMode != MODE_MOVE
+                        && mMode != MODE_LONG_CLICK) {
+                    dismiss();
                 }
+                mLastTimeMillis = 0;
+                mMode = MODE_NONE;
+                mEvent = EVENT_NONE;
                 break;
         }
         // 注明消费此事件，不然无效果
@@ -177,6 +215,7 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
         mImageView.setTranslationY(translateY);
         mImageView.setScaleX(scale);
         mImageView.setScaleY(scale);
+        mImageView.setScaleY(scale);
         getWindow().setDimAmount(scale);
     }
 
@@ -196,5 +235,9 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
         float midX = (event.getX(0) + event.getX(1)) / 2;
         float midY = (event.getY(0) + event.getY(1)) / 2;
         return new PointF(midX, midY);
+    }
+
+    public interface OnLongClickListener {
+        void onLongClick();
     }
 }

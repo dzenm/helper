@@ -1,10 +1,7 @@
 package com.dzenm.ui;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.View;
 
@@ -30,10 +27,8 @@ import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.net.NetworkHelper;
 import com.dzenm.helper.photo.PhotoHelper;
-import com.dzenm.helper.popup.PopupHelper;
+import com.dzenm.helper.popup.PopupDialog;
 import com.dzenm.helper.toast.ToastHelper;
-
-import java.io.File;
 
 public class DialogActivity extends AbsBaseActivity implements View.OnClickListener {
 
@@ -106,8 +101,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
         } else if (view.getId() == R.id.tv_101) {
             DialogHelper.newInstance(this)
                     .setLayout(R.layout.dialog_info)
-                    .setUseDataBinding(true)
-                    .setOnBindingListener(new DialogHelper.OnBindingListener() {
+                    .setOnViewDataBinding(new DialogHelper.OnViewDataBinding() {
                         @Override
                         public void onBinding(ViewDataBinding binding, final AbsDialogFragment dialog) {
                             DialogInfoBinding infoBinding = (DialogInfoBinding) binding;
@@ -386,8 +380,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
 //                    FileHelper.getInstance().refreshGallery(filePath);
                     return true;
                 }
-            })
-                    .show();
+            }).show();
         } else if (view.getId() == R.id.tv_112) {
             MenuDialog.newInstance(this)
                     .setItem("测试", "第二个", "取消", "确定")
@@ -411,11 +404,12 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
-                                new PopupHelper.Builder(DialogActivity.this)
+                                new PopupDialog.Builder(DialogActivity.this)
                                         .setView(R.layout.dialog_login)
-                                        .setOnViewHolderCallback(new PopupHelper.OnViewHolderCallback() {
+                                        .setOnBindViewHolder(new PopupDialog.OnBindViewHolder() {
                                             @Override
-                                            public void onCallback(ViewHolder holder, final PopupHelper popupWindow) {
+                                            public void onBinding(ViewHolder holder,
+                                                          final PopupDialog popupWindow) {
                                                 holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {

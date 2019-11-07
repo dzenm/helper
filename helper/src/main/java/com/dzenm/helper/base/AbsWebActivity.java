@@ -46,8 +46,8 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     /**
      * 设置WebView
      *
-     * @param viewGroup   包裹WebView的ViewGroup, 必须设置
-     * @param progressBar 进度显示, 可有可无
+     * @param viewGroup   WebView的ViewGroup, 必须设置
+     * @param progressBar 进度条显示, 可有可无
      * @param url         初次加载的url
      */
     protected void setEnabledWebView(ViewGroup viewGroup, ProgressBar progressBar, String url) {
@@ -59,11 +59,11 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     /**
      * 设置webView属性
      *
-     * @param viewGroup
-     * @param url
+     * @param viewGroup WebView的ViewGroup, 必须设置
+     * @param url       初次加载的url
      */
     protected void setWebView(ViewGroup viewGroup, String url) {
-        // 避免WebView内存泄露。不在xml中定义 Webview ，而是在需要的时候在Activity中创建，并且Context使用 getApplicationgContext()
+        // 避免WebView内存泄露。不在xml中定义 WebView ，而是在需要的时候在Activity中创建，并且Context使用 getApplicationContext()
         getSupportActionBar().setTitle("正在加载中...");
 
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
@@ -72,7 +72,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
         mWebView.setLayoutParams(params);
         viewGroup.addView(mWebView);
 
-        logD("load url: " + url);
+        logD("current load url: " + url);
         // 方式一：加载一个网页
         mWebView.loadUrl(url);
 
@@ -92,8 +92,8 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     /**
      * 设置webClient属性
      *
-     * @param webView
-     * @param progressBar
+     * @param webView     加载网页的webView
+     * @param progressBar 进度条显示, 可有可无
      */
     protected void setWebClient(final WebView webView, final ProgressBar progressBar) {
         // 此方法可以在webview中打开链接而不会跳转到外部浏览器
@@ -362,7 +362,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     /**
      * 设置webSettings属性
      *
-     * @param webView
+     * @param webView 加载网页的webView
      */
     @SuppressLint("SetJavaScriptEnabled")
     protected void setWebSettings(WebView webView) {
@@ -440,7 +440,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     /**
      * 分享当前页面
      *
-     * @param prompt
+     * @param prompt 分享的文本内容
      */
     protected void share(String prompt) {
         ShareHelper.newInstance(this)

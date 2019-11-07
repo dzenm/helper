@@ -9,7 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.dzenm.helper.R;
+import com.dzenm.helper.dialog.PreviewDialog;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
@@ -187,7 +190,7 @@ public class PhotoLayout extends GridLayout {
      */
     private void newRatioImageView(Object object) {
         if (mCurrentPosition < mTotalNumber) {
-            RatioImageView imageView = addRatioImageView(mCurrentPosition);
+            RatioImageView imageView = addRatioImageView(object, mCurrentPosition);
             mImageLoader.onLoader(imageView, object);
         }
     }
@@ -283,12 +286,12 @@ public class PhotoLayout extends GridLayout {
      *
      * @return ImageView
      */
-    private RatioImageView addRatioImageView(int position) {
+    private RatioImageView addRatioImageView(Object object, int position) {
         // 预览图片时, 隐藏提示View
         if (isPreview && mEmptyRatioImageView != null && getChildCount() >= 1) {
             mEmptyRatioImageView.setVisibility(GONE);
         }
-        RatioImageView imageView = createRatioImageView(position);
+        RatioImageView imageView = createRatioImageView(object, position);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(mImageWidth, mImageHeight);
         RelativeLayout relativeLayout = new RelativeLayout(getContext());
         layoutParams.setMargins(mMargin, mMargin, mMargin, mMargin);
@@ -312,8 +315,8 @@ public class PhotoLayout extends GridLayout {
      * 创建显示图片的ImageView
      * * @return ImageView
      */
-    private RatioImageView createRatioImageView(final int currentPosition) {
-        RatioImageView imageView = new RatioImageView(getContext());
+    private RatioImageView createRatioImageView(final Object object, final int currentPosition) {
+        final RatioImageView imageView = new RatioImageView(getContext());
         imageView.setLayoutParams(new RelativeLayout.LayoutParams(mImageWidth, mImageHeight));
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         imageView.setTag(R.id.photo_layout_image_id, currentPosition);
@@ -322,20 +325,38 @@ public class PhotoLayout extends GridLayout {
             @Override
             public void onClick(View view) {
                 Logger.d(TAG + "click position is " + currentPosition);
-                if (mOnItemClickListener != null)
-                    mOnItemClickListener.onItemClick(view, currentPosition);
+                if (mOnItemClickListener == null) {
+                    previewImage(object);
+                } else {
+                    if (!mOnItemClickListener.onItemClick(imageView, currentPosition)) {
+                        previewImage(object);
+                    }
+                }
             }
         });
         imageView.setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Logger.d(TAG + "click position is " + currentPosition);
-                if (mOnItemLongClickListener != null)
-                    mOnItemLongClickListener.onItemLongClick(view, currentPosition);
+                Logger.d(TAG + "long click position is " + currentPosition);
+                if (mOnItemLongClickListener != null) {
+                    mOnItemLongClickListener.onItemLongClick(imageView, currentPosition);
+                }
                 return false;
             }
         });
         return imageView;
+    }
+
+    /**
+     * 预览图片
+     *
+     * @param object 预览的图片
+     */
+    private void previewImage(Object object) {
+        PreviewDialog.newInstance((AppCompatActivity) getContext())
+                .setImageLoader(mImageLoader)
+                .load(object)
+                .show();
     }
 
     /**
@@ -388,11 +409,11 @@ public class PhotoLayout extends GridLayout {
 
     public interface OnItemClickListener {
 
-        void onItemClick(View view, int position);
+        boolean onItemClick(RatioImageView imageView, int position);
     }
 
     public interface OnItemLongClickListener {
 
-        void onItemLongClick(View view, int position);
+        void onItemLongClick(RatioImageView imageView, int position);
     }
 }

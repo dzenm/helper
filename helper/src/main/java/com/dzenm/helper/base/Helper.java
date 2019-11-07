@@ -16,6 +16,10 @@ import com.dzenm.helper.toast.ToastHelper;
 public class Helper {
 
     public static void init(Context context) {
+        // 用于将捕捉到的异常保存为文件, 依赖FileHelper
+        CrashHelper.getInstance().init(context);
+        // 初始化APP文件夹, 有日志输出, 依赖Logger
+        FileHelper.getInstance().init(context);
         // 初始化Logger工具, 将打印的log保存文件, 依赖FileHelper
         Logger.getInstance().setDebug(false).init(context);
         // 初始化背景Drawable工具

@@ -15,11 +15,11 @@ import com.dzenm.helper.draw.DrawableHelper;
  * @author dinzhenyan
  * @date 2019-07-01 21:51
  * <pre>
- * new PopupHelper.Builder(this)
+ * new PopupDialog.Builder(this)
  *         .setView(R.layout.dialog_login)
- *         .setOnViewHolderCallback(new PopupHelper.OnViewHolderCallback() {
+ *         .setOnViewHolderCallback(new PopupDialog.OnViewHolderCallback() {
  *             @Override
- *             public void onCallback(ViewHolder holder, final PopupHelper popupWindow) {
+ *             public void onCallback(ViewHolder holder, final PopupDialog popupWindow) {
  *                 holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
  *                     @Override
  *                     public void onClick(View v) {
@@ -38,19 +38,19 @@ import com.dzenm.helper.draw.DrawableHelper;
  *         .showAsDropDown(binding.btn3);
  * </pre>
  */
-public class PopupHelper extends PopupWindow {
+public class PopupDialog extends PopupWindow {
 
     private final PopupController controller;
 
-    private PopupHelper(Activity activity) {
+    private PopupDialog(Activity activity) {
         this(activity, null);
     }
 
-    private PopupHelper(Activity activity, AttributeSet attrs) {
+    private PopupDialog(Activity activity, AttributeSet attrs) {
         this(activity, attrs, 0);
     }
 
-    private PopupHelper(Activity activity, AttributeSet attrs, int defStyleAttr) {
+    private PopupDialog(Activity activity, AttributeSet attrs, int defStyleAttr) {
         super(activity, attrs, defStyleAttr);
         controller = new PopupController(activity, this);
     }
@@ -74,10 +74,8 @@ public class PopupHelper extends PopupWindow {
         }
 
         /**
-         * 设置View， 使用resource ID引入
-         *
-         * @param resId
-         * @return
+         * @param resId 设置View， 使用resource ID引入
+         * @return this
          */
         public Builder setView(int resId) {
             params.mPopupView = LayoutInflater.from(params.mActivity).inflate(resId, null, false);
@@ -85,10 +83,8 @@ public class PopupHelper extends PopupWindow {
         }
 
         /**
-         * 设置View， 直接通过View对象引入
-         *
-         * @param view
-         * @return
+         * @param view 设置View， 直接通过View对象引入
+         * @return this
          */
         public Builder setView(View view) {
             params.mPopupView = view;
@@ -96,10 +92,8 @@ public class PopupHelper extends PopupWindow {
         }
 
         /**
-         * 设置动画样式
-         *
-         * @param animationStyle
-         * @return
+         * @param animationStyle 设置动画样式
+         * @return this
          */
         public Builder setAnimationStyle(int animationStyle) {
             params.mAnimationStyle = animationStyle;
@@ -107,10 +101,8 @@ public class PopupHelper extends PopupWindow {
         }
 
         /**
-         * 设置通过触摸外部可以取消显示dialog
-         *
-         * @param touchable
-         * @return
+         * @param touchable 设置通过触摸外部可以取消显示dialog
+         * @return this
          */
         public Builder setOutsideTouchable(boolean touchable) {
             params.mTouchable = touchable;
@@ -118,10 +110,8 @@ public class PopupHelper extends PopupWindow {
         }
 
         /**
-         * 设置背景
-         *
-         * @param background
-         * @return
+         * @param background 设置背景
+         * @return this
          */
         public Builder setBackground(Drawable background) {
             params.mBackground = background;
@@ -129,10 +119,8 @@ public class PopupHelper extends PopupWindow {
         }
 
         /**
-         * 设置Z轴产生的阴影
-         *
-         * @param elevation
-         * @return
+         * @param elevation 设置Z轴产生的阴影
+         * @return this
          */
         public Builder setElevation(int elevation) {
             params.mElevation = elevation;
@@ -140,10 +128,8 @@ public class PopupHelper extends PopupWindow {
         }
 
         /**
-         * 设置父控件的背景颜色
-         *
-         * @param background
-         * @return
+         * @param background 设置父控件的背景颜色
+         * @return this
          */
         public Builder setParentBackground(float background) {
             params.parentBackgroundAlpha = background;
@@ -151,30 +137,28 @@ public class PopupHelper extends PopupWindow {
         }
 
         /**
-         * 设置子View的属性
-         *
-         * @param onViewHolderCallback
-         * @return
+         * @param onBindViewHolder 设置子View的属性
+         * @return this
          */
-        public Builder setOnViewHolderCallback(OnViewHolderCallback onViewHolderCallback) {
-            params.mOnViewHolderCallback = onViewHolderCallback;
+        public Builder setOnBindViewHolder(OnBindViewHolder onBindViewHolder) {
+            params.mOnBindViewHolder = onBindViewHolder;
             return this;
         }
 
         /**
          * 最后调用该方法创建
          *
-         * @return
+         * @return {@link PopupDialog}
          */
-        public PopupHelper create() {
-            PopupHelper mP = new PopupHelper(params.mActivity);
+        public PopupDialog create() {
+            PopupDialog mP = new PopupDialog(params.mActivity);
             params.apply(mP.controller);
             return mP;
         }
     }
 
-    public interface OnViewHolderCallback {
+    public interface OnBindViewHolder {
 
-        void onCallback(ViewHolder holder, PopupHelper popupWindow);
+        void onBinding(ViewHolder holder, PopupDialog popupDialog);
     }
 }

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.base.AbsBaseActivity;
@@ -54,13 +53,13 @@ import java.util.List;
  *         PermissionManager.getInstance().onPermissionResult(requestCode, permissions, grantResults);
  *     }
  * </pre>
- *
+ *  如果继承的是{@link AbsBaseActivity}, 不用重写 {@link #onActivityResult} 和 {@link #onRequestPermissionsResult}
  * @author dinzhenyan
  * @date 2019-04-30 20:03
  * <p>
  * 权限请求管理工具类
  */
-public final class PermissionManager implements DialogHelper.OnConvertViewClickListener, OnActivityResult, OnRequestPermissionsResult {
+public final class PermissionManager implements DialogHelper.OnBindViewHolder, OnActivityResult, OnRequestPermissionsResult {
 
     private static final String TAG = PermissionManager.class.getSimpleName() + "|";
 
@@ -108,7 +107,6 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
     private OnPermissionListener mOnPermissionListener;
 
     private AppCompatActivity mActivity;
-    private Fragment mFragment;
 
     @SuppressLint("StaticFieldLeak")
     private static volatile PermissionManager sPermissionManager;
@@ -134,16 +132,9 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
         return this;
     }
 
-    public PermissionManager with(Fragment fragment) {
-        Logger.d(TAG + fragment.getClass().getSimpleName() + " is requesting permission");
-        mFragment = fragment;
-        return this;
-    }
-
-
     /**
      * @param requestMode {@link #mRequestMode}
-     * @return
+     * @return this
      */
     public PermissionManager mode(@Mode int requestMode) {
         mRequestMode = requestMode;
@@ -152,7 +143,7 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
 
     /**
      * @param permissions {@link #mAllPermissions}
-     * @return
+     * @return this
      */
     public PermissionManager load(String permissions) {
         load(new String[]{permissions});
@@ -161,7 +152,7 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
 
     /**
      * @param permissions {@link #mAllPermissions}
-     * @return
+     * @return this
      */
     public PermissionManager load(List<String> permissions) {
         load(permissions.toArray(new String[permissions.size()]));
@@ -170,7 +161,7 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
 
     /**
      * @param permissions {@link #mAllPermissions}
-     * @return
+     * @return this
      */
     public PermissionManager load(String[] permissions) {
         mAllPermissions = permissions;
@@ -179,7 +170,7 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
 
     /**
      * @param onPermissionListener {@link #mOnPermissionListener}
-     * @return
+     * @return this
      */
     public PermissionManager into(OnPermissionListener onPermissionListener) {
         mOnPermissionListener = onPermissionListener;
@@ -266,8 +257,6 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
 
     /**
      * 权限请求结果
-     *
-     * @param result
      */
     private void requestResult(boolean result) {
         if (mOnPermissionListener != null) mOnPermissionListener.onPermit(result);
@@ -288,8 +277,8 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
     /**
      * 过滤未授予的权限
      *
-     * @param permissions
-     * @return
+     * @param permissions 需要过滤的权限
+     * @return 过滤后的权限
      */
     private String[] filterPermission(String[] permissions) {
         if (permissions == null || permissions.length == 0) return null;
@@ -354,7 +343,7 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
         DialogHelper.newInstance(mActivity)
                 .setLayout(R.layout.dialog_permission_prompt)
                 .setCancel(false)
-                .setOnConvertViewClickListener(this)
+                .setOnBindViewHolder(this)
                 .setBackground(DrawableHelper.solid(android.R.color.white)
                         .radius(10)
                         .build())
@@ -362,7 +351,7 @@ public final class PermissionManager implements DialogHelper.OnConvertViewClickL
     }
 
     @Override
-    public void onConvertClick(ViewHolder holder, final AbsDialogFragment dialog) {
+    public void onBinding(ViewHolder holder, final AbsDialogFragment dialog) {
         ((TextView) holder.getView(R.id.tv_title)).setText("温馨提示");
         ((TextView) holder.getView(R.id.tv_message)).setText("程序运行所需以下权限");
         String permission = getPermissionPrompt();

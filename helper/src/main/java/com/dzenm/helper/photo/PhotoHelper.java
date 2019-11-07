@@ -140,7 +140,7 @@ public class PhotoHelper implements OnActivityResult {
         File file = createTempFile("/photo");
         if (intent.resolveActivity(mActivity.getPackageManager()) != null) {
             mGraphUri = FileHelper.getInstance().getUri(file);
-            mGraphFilePath = file.getAbsolutePath();
+            mGraphFilePath = file.getPath();
             // 添加Uri读取权限
             intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mGraphUri);
@@ -245,7 +245,6 @@ public class PhotoHelper implements OnActivityResult {
         onPhotoResult(requestCode, resultCode, data);
     }
 
-
     /**
      * 处理的回调结果
      *
@@ -253,7 +252,7 @@ public class PhotoHelper implements OnActivityResult {
      * @param resultCode  回调结果的判断标志
      * @param data        回调结果的数据
      */
-    private void onPhotoResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onPhotoResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == PhotoType.GRAPH && resultCode == Activity.RESULT_OK) {
             Logger.d(TAG + "拍照后的图片路径: " + mGraphFilePath);
             mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mGraphUri));

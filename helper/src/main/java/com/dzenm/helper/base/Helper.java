@@ -21,7 +21,7 @@ public class Helper {
         // 初始化APP文件夹, 有日志输出, 依赖Logger
         FileHelper.getInstance().init(context);
         // 初始化Logger工具, 将打印的log保存文件, 依赖FileHelper
-        Logger.getInstance().setDebug(false).init(context);
+        Logger.getInstance().setDebug().init(context);
         // 初始化背景Drawable工具
         DrawableHelper.getInstance().init(context);
         // 初始化Toa工具, 依赖BackGHelper

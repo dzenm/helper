@@ -100,7 +100,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
     }
 
     private void handlerCrashInfo(String crashInfo) {
-        if (Logger.isDebug()) {
+        if (Logger.getInstance().isDebug()) {
             String fileName = NAME + DateHelper.getCurrentTimeMillis() + SUFFIX;
             FileHelper.getInstance().newFile(getCrashDirect().getPath(), fileName, crashInfo);  // 保存当前文件
             FileHelper.getInstance().delete(getCrashDirect(), fileName);                        // 删除其它文件

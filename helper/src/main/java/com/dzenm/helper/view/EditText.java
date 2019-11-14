@@ -38,7 +38,7 @@ public class EditText extends AppCompatEditText implements View.OnFocusChangeLis
      * 晃动动画
      *
      * @param counts 1秒钟晃动多少下
-     * @return
+     * @return 平移动画
      */
     public Animation shakeAnimation(int counts) {
         Animation translateAnimation = new TranslateAnimation(0, 10, 0, 0);
@@ -69,7 +69,7 @@ public class EditText extends AppCompatEditText implements View.OnFocusChangeLis
      * 获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
      * getCompoundDrawables(left,top,right,bottom)[position]
      *
-     * @param context
+     * @param context 上下文
      */
     private void init(Context context) {
         clearDrawable = getCompoundDrawables()[2];
@@ -160,8 +160,8 @@ public class EditText extends AppCompatEditText implements View.OnFocusChangeLis
     /**
      * drawable 转换成 bitmap
      *
-     * @param drawable
-     * @return
+     * @param drawable 需要转换的drawable
+     * @return bitmap
      */
     private Bitmap drawableToBitamp(Drawable drawable) {
         int w = drawable.getIntrinsicWidth();

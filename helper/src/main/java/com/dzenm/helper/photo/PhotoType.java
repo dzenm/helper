@@ -14,11 +14,11 @@ import java.lang.annotation.RetentionPolicy;
 public @interface PhotoType {
 
     //  图库
-    int GRAPH = 1;
+    int GRAPH = 131;
 
     //  拍照
-    int GALLERY = 2;
+    int GALLERY = 132;
 
     //  裁剪
-    int CROP = 3;
+    int CROP = 133;
 }

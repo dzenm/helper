@@ -19,6 +19,8 @@ import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.ActivityHelper;
 import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.os.StatusBarHelper;
+import com.dzenm.helper.permission.PermissionManager;
+import com.dzenm.helper.photo.PhotoSelector;
 
 /**
  * @author dinzhenyan
@@ -198,12 +200,29 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mOnActivityResult.onResult(requestCode, resultCode, data);
+        onRequestActivityResult(requestCode, resultCode, data);
+    }
+
+    protected void onRequestActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        PermissionManager.getInstance().onActivityResult(requestCode, resultCode, data);
+        PhotoSelector.getInstance().onPhotoResult(requestCode, resultCode, data);
+        if (mOnActivityResult != null) {
+            mOnActivityResult.onResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        mOnRequestPermissionsResult.onResult(requestCode, permissions, grantResults);
+        onRequestSelfPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    public void onRequestSelfPermissionsResult(int requestCode,
+                                               @NonNull String[] permissions,
+                                               @NonNull int[] grantResults) {
+        PermissionManager.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (mOnRequestPermissionsResult != null) {
+            mOnRequestPermissionsResult.onResult(requestCode, permissions, grantResults);
+        }
     }
 }

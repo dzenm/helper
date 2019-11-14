@@ -15,7 +15,7 @@ import com.dzenm.helper.log.Logger;
  */
 class NetworkBroadcast extends BroadcastReceiver {
 
-    private static final String TAG = NetworkBroadcast.class.getSimpleName() + "|";
+    private static final String TAG = NetworkBroadcast.class.getSimpleName() + "| ";
 
     private boolean mRegister = false;
     private static volatile NetworkBroadcast sNetworkBroadcast;

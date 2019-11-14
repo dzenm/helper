@@ -32,7 +32,7 @@ public class ShareHelper {
     /**
      * 分享回掉的requestCode
      */
-    public static final int REQUEST_CODE = 1001;
+    public static final int REQUEST_CODE = 141;
 
     private Activity mActivity;
 

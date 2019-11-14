@@ -1,24 +1,26 @@
 package com.dzenm.helper.dialog;
 
+import android.Manifest;
 import android.view.Gravity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dzenm.helper.photo.PhotoHelper;
+import com.dzenm.helper.permission.PermissionManager;
+import com.dzenm.helper.photo.PhotoSelector;
 
 /**
  * @author dzenm
  * @date 2019-08-19 13:52
  * <pre>
- * PhotoDialog.newInstance(DrawableActivity.this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+ * PhotoDialog.newInstance(DrawableActivity.this).setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
  *     @Override
- *     public boolean onGallery(PhotoHelper helper, String filePath) {
+ *     public boolean onGallery(PhotoSelector helper, String filePath) {
  *         layout.load(FileHelper.getInstance().getPhoto(filePath));
  *         return false;
  *     }
  *
  *     @Override
- *     public boolean onGraph(PhotoHelper helper, String filePath) {
+ *     public boolean onGraph(PhotoSelector helper, String filePath) {
  *         layout.load(FileHelper.getInstance().getPhoto(filePath));
  *         return false;
  *     }
@@ -27,7 +29,7 @@ import com.dzenm.helper.photo.PhotoHelper;
  */
 public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickListener {
 
-    private PhotoHelper.OnSelectPhotoListener mOnSelectPhotoListener;
+    private PhotoSelector.OnSelectPhotoListener mOnSelectPhotoListener;
 
     public PhotoDialog(AppCompatActivity activity) {
         super(activity);
@@ -37,7 +39,7 @@ public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickLis
         return new PhotoDialog(activity);
     }
 
-    public PhotoDialog setOnSelectPhotoListener(PhotoHelper.OnSelectPhotoListener onSelectPhotoListener) {
+    public PhotoDialog setOnSelectPhotoListener(PhotoSelector.OnSelectPhotoListener onSelectPhotoListener) {
         mOnSelectPhotoListener = onSelectPhotoListener;
         return this;
     }
@@ -48,17 +50,17 @@ public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickLis
         setGravity(Gravity.BOTTOM);
         setDivide(true);
         setOnItemClickListener(this);
-        PhotoHelper.getInstance().with(mActivity)
+        PhotoSelector.getInstance().with(mActivity)
                 .setOnSelectPhotoListener(mOnSelectPhotoListener);
         super.initView();
     }
 
     @Override
-    public void onItemClick(Object tag) {
-        if (tag.equals("拍照")) {
-            PhotoHelper.getInstance().camera();
-        } else if (tag.equals("图片")) {
-            PhotoHelper.getInstance().gallery();
+    public void onItemClick(int position) {
+        if (position == 0) {
+            PhotoSelector.getInstance().camera();
+        } else if (position == 1) {
+            PhotoSelector.getInstance().gallery();
         }
     }
 }

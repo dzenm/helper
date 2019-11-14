@@ -197,6 +197,12 @@
         <item name="android:windowExitAnimation">@anim/dialog_alpha_out</item>
     </style>
 
+    <!--回弹效果-->
+    <style name="BaseDialog.Rebound.Animator" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_rebound_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_rebound_out</item>
+    </style>
+
     <!--EditText单行输入主题-->
     <style name="EditTextTheme" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">match_parent</item>

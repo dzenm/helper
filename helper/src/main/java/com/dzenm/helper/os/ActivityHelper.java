@@ -13,7 +13,7 @@ import java.util.Stack;
  */
 public class ActivityHelper {
 
-    private static final String TAG = ActivityHelper.class.getSimpleName() + "|";
+    private static final String TAG = ActivityHelper.class.getSimpleName() + "| ";
     private static volatile ActivityHelper sActivityHelper;
     private static Stack<Activity> sActivityStack;
     private static Stack<Service> sServiceStack;

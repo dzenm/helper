@@ -18,7 +18,7 @@ import com.dzenm.helper.log.Logger;
  */
 public final class PermissionSetting {
 
-    public static final String TAG = PermissionSetting.class.getSimpleName() + "|";
+    public static final String TAG = PermissionSetting.class.getSimpleName() + "| ";
     /*
      * 华为手机的一些包名常量
      */

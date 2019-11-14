@@ -44,7 +44,7 @@ import java.util.Enumeration;
  */
 public class NetworkHelper {
 
-    private static String TAG;
+    private static String TAG = NetworkHelper.class.getSimpleName() + "| ";
     private Context mContext;
     private static volatile NetworkBroadcast sNetworkBroadcast;
     private boolean isInitial = false;
@@ -71,10 +71,8 @@ public class NetworkHelper {
      */
     public NetworkHelper init(Context context) {
         if (!isInitial) {
-            TAG = context.getClass().getSimpleName() + "|";
             mContext = context;
             isInitial = true;
-            Logger.i(TAG + "network broadcast init");
         }
         return this;
     }
@@ -213,7 +211,7 @@ public class NetworkHelper {
                 @SuppressLint("WifiManagerPotentialLeak") WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 if (wifiManager == null) return null;
                 @SuppressLint("MissingPermission") WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-                Logger.d(TAG + "获取Wi-Fi网络IPv4地址: " + wifiInfo.getIpAddress());
+                Logger.i(TAG + "获取Wi-Fi网络IPv4地址: " + wifiInfo.getIpAddress());
                 return intIP2StringIP(wifiInfo.getIpAddress());             // 得到IPV4地址
             }
         } else {

@@ -1,7 +1,6 @@
 package com.dzenm.ui;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Gravity;
 import android.view.View;
 
@@ -26,7 +25,7 @@ import com.dzenm.helper.dialog.ViewHolder;
 import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.net.NetworkHelper;
-import com.dzenm.helper.photo.PhotoHelper;
+import com.dzenm.helper.photo.PhotoSelector;
 import com.dzenm.helper.popup.PopupDialog;
 import com.dzenm.helper.toast.ToastHelper;
 
@@ -368,12 +367,11 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
             ToastHelper.show("开始下载...");
             DownloadHelper.newInstance(this)
                     .setUrl(url)
-                    .setFilePath(Environment.getExternalStorageDirectory().getPath())
                     .startDownload();
         } else if (view.getId() == R.id.tv_111) {
-            PhotoDialog.newInstance(this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+            PhotoDialog.newInstance(this).setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
                 @Override
-                public boolean onCrop(PhotoHelper helper, String filePath) {
+                public boolean onCrop(PhotoSelector helper, String filePath) {
                     logD("the filePath: " + filePath);
 //                    String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
 //                    FileHelper.getInstance().copyFile(filePath, file);
@@ -387,10 +385,10 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setRadiusCard(2f)
                     .setOnItemClickListener(new MenuDialog.OnItemClickListener() {
                         @Override
-                        public void onItemClick(Object tag) {
-                            if (tag.equals("测试")) {
+                        public void onItemClick(int position) {
+                            if (position == 0) {
                                 ToastHelper.show("测试");
-                            } else if (tag.equals("取消")) {
+                            } else if (position == 2) {
                                 ToastHelper.show("取消");
                             }
                         }
@@ -409,7 +407,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         .setOnBindViewHolder(new PopupDialog.OnBindViewHolder() {
                                             @Override
                                             public void onBinding(ViewHolder holder,
-                                                          final PopupDialog popupWindow) {
+                                                                  final PopupDialog popupWindow) {
                                                 holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {

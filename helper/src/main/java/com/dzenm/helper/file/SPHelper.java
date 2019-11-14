@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.dzenm.helper.log.Logger;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +14,8 @@ import java.util.Set;
  * @date 2019-07-27 17:10
  */
 public class SPHelper {
+
+    private static final String TAG = SPHelper.class.getSimpleName() + "| ";
 
     /************************************* 需要在Application中初始化 *********************************/
     private Context mContext;
@@ -31,9 +35,9 @@ public class SPHelper {
     /************************************* 方式一：自定义SharedPreferences文件名 *********************************/
 
     /**
-     * 初始化，建议放在Application
+     * 初始化，放在Application
      *
-     * @param context
+     * @param context 上下文
      */
     public void init(Context context) {
         mContext = context;
@@ -43,14 +47,15 @@ public class SPHelper {
      * 获取SharedPreference文件
      *
      * @param sp SharedPreferences文件名
-     * @return
+     * @return SharedPreferences
      */
     private SharedPreferences getSharedPreferences(String sp) {
+        Logger.d(TAG + "sharedPreferences file name: " + sp);
         return mContext.getSharedPreferences(sp, Context.MODE_PRIVATE);
     }
 
     /**
-     * 存数据
+     * 保存数据
      *
      * @param sp    SharedPreferences文件名
      * @param key   存储对象的key
@@ -71,19 +76,21 @@ public class SPHelper {
         } else if (value instanceof Set) {
             editor.putStringSet(key, (Set<String>) value);
         }
+        Logger.d(TAG + "save from: " + sp + ", key: " + key + ", value: " + value);
         return editor.commit();
     }
 
     /**
-     * 取一个数据
+     * 获取数据
      *
      * @param sp       SharedPreferences文件名
      * @param key      获取对象的key
      * @param defValue 获取数据的默认值（当key不存在时）
-     * @return
+     * @return 数据
      */
     public Object get(String sp, String key, Object defValue) {
         SharedPreferences sharedPreferences = getSharedPreferences(sp);
+        Logger.d(TAG + "get sharePreferences from: " + sp + ", key: " + key);
         if (defValue instanceof String) {
             return sharedPreferences.getString(key, String.valueOf(defValue));
         } else if (defValue instanceof Integer) {
@@ -114,10 +121,10 @@ public class SPHelper {
     }
 
     /**
-     * 返回所有的键值对
+     * 获取所有的键值对
      *
      * @param sp 需要操作的SharedPreference文件名
-     * @return
+     * @return 所有键值对
      */
     public Map<String, ?> getAll(String sp) {
         return getSharedPreferences(sp).getAll();
@@ -128,7 +135,7 @@ public class SPHelper {
      *
      * @param sp  需要操作的SharedPreference文件名
      * @param key 需要查询是否存在的键
-     * @return
+     * @return 是否存在指定的键值对
      */
     public boolean contains(String sp, String key) {
         return getSharedPreferences(sp).contains(key);
@@ -146,26 +153,26 @@ public class SPHelper {
                 .clear();
     }
 
-    /************************************* 方式二：初始化一个文件名 *********************************/
+    /************************************* 方式二：初始化全局文件名 *********************************/
 
     private SharedPreferences mSharedPreferences;   // 全局SharedPreferences
     private SharedPreferences.Editor mEditor;       // 全局Editor
 
     /**
-     * 初始化，建议放在Application
+     * 初始化，放在Application
      *
-     * @param context
+     * @param context 上下文
      * @param sp      初始化的文件名
      */
     @SuppressLint("CommitPrefEdits")
     public void init(Context context, String sp) {
         mContext = context;
-        mSharedPreferences = mContext.getSharedPreferences(sp, Context.MODE_PRIVATE);
+        mSharedPreferences = getSharedPreferences(sp);
         mEditor = mSharedPreferences.edit();
     }
 
     /**
-     * 存一个数据
+     * 保存数据
      *
      * @param key   存储对象的key
      * @param value 存储对象的值
@@ -184,17 +191,19 @@ public class SPHelper {
         } else if (value instanceof Set) {
             mEditor.putStringSet(key, (Set<String>) value);
         }
+        Logger.d(TAG + "key: " + key + ", value: " + value);
         return mEditor.commit();
     }
 
     /**
-     * 取一个数据
+     * 获取数据
      *
      * @param key      获取对象的key
      * @param defValue 获取数据的默认值（当key不存在时）
-     * @return
+     * @return 获取的数据内容
      */
     public Object get(String key, Object defValue) {
+        Logger.d(TAG + "get sharePreferences key: " + key);
         if (defValue instanceof String) {
             return mSharedPreferences.getString(key, String.valueOf(defValue));
         } else if (defValue instanceof Integer) {
@@ -211,7 +220,6 @@ public class SPHelper {
         return null;
     }
 
-
     /**
      * 移除某个key对应的值
      *
@@ -225,7 +233,7 @@ public class SPHelper {
     /**
      * 返回所有的键值对
      *
-     * @return
+     * @return 所有的键值对
      */
     public Map<String, ?> getAll() {
         return mSharedPreferences.getAll();
@@ -234,8 +242,8 @@ public class SPHelper {
     /**
      * 是否存在该键值对
      *
-     * @param key
-     * @return
+     * @param key 查询的键
+     * @return 是否存在这个key
      */
     public boolean contains(String key) {
         return mSharedPreferences.contains(key);

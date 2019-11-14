@@ -5,11 +5,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.dzenm.helper.log.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author dinzhenyan
+ * @date 2019-04-30 20:03
+ * <pre>
+ * List<Fragment> fragments = new ArrayList<>();
+ * fragments.add(f1);
+ * fragments.add(f2);
+ * FragmentHelper fragmentHelper = FragmentHelper.newInstance();
+ * fragmentHelper.with(this)
+ *         .container(R.id.frame_layout)
+ *         .addToStack(fragments);
+ * fragmentHelper.show(f1);
+ * </pre>
+ */
 public class FragmentHelper {
 
+    private static final String TAG = FragmentHelper.class.getSimpleName() + "| ";
     private AppCompatActivity mActivity;
     private Fragment mFragment;
     private List<Fragment> mFragments;
@@ -43,6 +60,7 @@ public class FragmentHelper {
                 transaction.add(mResourceID, f).hide(f);
             }
         }
+        Logger.d(TAG + "添加Fragment个数: " + mFragments.size());
         transaction.commitAllowingStateLoss();
     }
 
@@ -63,6 +81,7 @@ public class FragmentHelper {
                 transaction.show(currentFragment);
             }
         }
+        Logger.d(TAG + "show fragment: " + currentFragment.getClass().getSimpleName());
         transaction.commitAllowingStateLoss();
     }
 
@@ -75,12 +94,14 @@ public class FragmentHelper {
                 transaction.show(currentFragment);
             }
         }
+        Logger.d(TAG + "show child fragment: " + currentFragment.getClass().getSimpleName());
         transaction.commitAllowingStateLoss();
     }
 
     private boolean isShow(int position) {
-        return get(position).isAdded() && (get(position).isVisible() ||
-                !get(position).isHidden());
+        return get(position).isAdded()
+                && (get(position).isVisible()
+                || !get(position).isHidden());
     }
 
     public FragmentHelper hide() {

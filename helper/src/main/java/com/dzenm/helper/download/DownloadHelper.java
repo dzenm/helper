@@ -16,11 +16,14 @@ import android.os.Message;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.file.FileType;
 import com.dzenm.helper.file.SPHelper;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
+import com.dzenm.helper.permission.PermissionManager;
 import com.dzenm.helper.task.WeakHandler;
 import com.dzenm.helper.toast.ToastHelper;
 
@@ -29,7 +32,6 @@ import java.io.File;
 /**
  * @author dinzhenyan
  * @date 2019-07-01 14:46
- *
  * <pre>
  * DownloadHelper.newInstance(this)
  *        .setUrl(url)
@@ -44,7 +46,7 @@ import java.io.File;
  */
 public class DownloadHelper {
 
-    private static final String TAG = DownloadHelper.class.getSimpleName() + "|";
+    private static final String TAG = DownloadHelper.class.getSimpleName() + "| ";
 
     private static final long DOWNLOAD_DEFAULT_ID = 0L;
     private static final long DOWNLOAD_ERROR_ID = -1L;
@@ -80,6 +82,11 @@ public class DownloadHelper {
     private OnDownloadListener mOnDownloadListener;
 
     /**
+     * 检查权限, 自定义的权限的检测、申请 {@link }
+     */
+    private OnCheckSelfPermissionListener mOnCheckSelfPermissionListener;
+
+    /**
      * 下载apk文件的url {@link #setUrl(String)}
      */
     private String mUrl;
@@ -105,8 +112,6 @@ public class DownloadHelper {
      */
     private boolean isRunningDownload = false;
 
-    private boolean isDefaultPath = true;
-
     private @NotificationType
     int mNotificationType = NotificationType.NOTIFICATION_VISIBLE_NOTIFY_COMPLETED;
 
@@ -119,7 +124,6 @@ public class DownloadHelper {
         mDownloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         mDownloadReceiver = new DownloadReceiver();
         mFileName = OsHelper.getAppName(context) + ".apk";
-        mFilePath = FileHelper.getInstance().getFolder("/apk").getPath();
     }
 
     /**
@@ -137,7 +141,6 @@ public class DownloadHelper {
      */
     public DownloadHelper setFilePath(String filePath) {
         mFilePath = filePath;
-        isDefaultPath = false;
         return this;
     }
 
@@ -185,6 +188,15 @@ public class DownloadHelper {
     }
 
     /**
+     * @param listener 检测权限 {@link #mOnCheckSelfPermissionListener}
+     * @return this
+     */
+    public DownloadHelper setOnCheckSelfPermissionListener(OnCheckSelfPermissionListener listener) {
+        mOnCheckSelfPermissionListener = listener;
+        return this;
+    }
+
+    /**
      * @return 是否正在下载
      */
     public boolean isRunningDownload() {
@@ -195,20 +207,36 @@ public class DownloadHelper {
      * 开始下载
      */
     public void startDownload() {
-        checkPermissionAndDownloadFile();
+        if (mOnCheckSelfPermissionListener == null) {
+            // 检查权限
+            PermissionManager.getInstance()
+                    .with((AppCompatActivity) mContext)
+                    .load(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE})
+                    .into(new PermissionManager.OnPermissionListener() {
+                        @Override
+                        public void onPermit(boolean isGrant) {
+                            checkPermissionAndDownloadFile(isGrant);
+                        }
+                    }).request();
+        } else {
+            checkPermissionAndDownloadFile(mOnCheckSelfPermissionListener.onCheckPermission());
+        }
     }
 
     /**
      * 检测权限和是否已经下载过
      */
-    private void checkPermissionAndDownloadFile() {
-        if (OsHelper.isGrant(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            if (isDefaultPath) {
-                mFilePath = mFilePath + File.separator + mVersionName;
+    private void checkPermissionAndDownloadFile(boolean isGrant) {
+        if (isGrant) {
+            if (TextUtils.isEmpty(mFilePath)) {
+                mFilePath = FileHelper.getInstance().getFolder("/apk").getPath() + File.separator + mVersionName;
             }
 
             String filePath = (String) SPHelper.getInstance().get(DOWNLOAD_PREF, mVersionName, "");
-            if (!TextUtils.isEmpty(filePath)) {
+            if (TextUtils.isEmpty(filePath)) {
+                downloadFile();
+            } else {
                 File file = new File(filePath);
                 if (file.exists() && file.isFile()) {
                     Logger.d(TAG + "已下载过文件, 版本号: " + mVersionName + ", 文件路径" + filePath);
@@ -216,8 +244,6 @@ public class DownloadHelper {
                 } else {
                     downloadFile();
                 }
-            } else {
-                downloadFile();
             }
         } else {
             // No permission to write to /storage/emulated/0/360/Helper.apk:
@@ -642,5 +668,13 @@ public class DownloadHelper {
          * @param msg 下载失败的错误信息
          */
         void onFailed(String msg);
+    }
+
+    public interface OnCheckSelfPermissionListener {
+
+        /**
+         * @return 权限检测的结果
+         */
+        boolean onCheckPermission();
     }
 }

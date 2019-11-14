@@ -1,5 +1,6 @@
 package com.dzenm.helper.photo;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -12,14 +13,14 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.dzenm.helper.base.AbsBaseActivity;
-import com.dzenm.helper.base.OnActivityResult;
 import com.dzenm.helper.date.DateHelper;
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.file.FileType;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
+import com.dzenm.helper.permission.PermissionManager;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -31,11 +32,11 @@ import java.util.List;
  * <p>
  * 照片相关的工具类
  * <pre>
- * PhotoHelper.getInstance()
+ * PhotoSelector.getInstance()
  *        .with(this)
- *        .setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+ *        .setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
  *            @Override
- *            public boolean onGallery(PhotoHelper helper, String filePath) {
+ *            public boolean onGallery(PhotoSelector selector, String filePath) {
  *                InfoDialog.newInstance(MainActivity.this)
  *                        .setTitle("图片选择回调")
  *                        .setMessage(filePath)
@@ -52,15 +53,15 @@ import java.util.List;
  *        }).selectGallery();
  *
  *  重写onActivityResult方法
- *  PhotoHelper.getInstance().onPhotoResult(requestCode, resultCode, data);
+ *  PhotoSelector.getInstance().onPhotoResult(requestCode, resultCode, data);
  * </pre>
  */
-public class PhotoHelper implements OnActivityResult {
+public class PhotoSelector {
 
-    private final String TAG = PhotoHelper.class.getSimpleName() + "|";
+    private final String TAG = PhotoSelector.class.getSimpleName() + "| ";
 
     @SuppressLint("FieldLeak")
-    private static volatile PhotoHelper sPhotoHelper;
+    private static volatile PhotoSelector sPhotoSelector;
     private Activity mActivity;
 
     /**
@@ -82,22 +83,18 @@ public class PhotoHelper implements OnActivityResult {
 
     private OnSelectPhotoListener mOnSelectPhotoListener;
 
-    private PhotoHelper() {
+    private PhotoSelector() {
     }
 
-    public static PhotoHelper getInstance() {
-        if (sPhotoHelper == null) synchronized (PhotoHelper.class) {
-            if (sPhotoHelper == null) sPhotoHelper = new PhotoHelper();
+    public static PhotoSelector getInstance() {
+        if (sPhotoSelector == null) synchronized (PhotoSelector.class) {
+            if (sPhotoSelector == null) sPhotoSelector = new PhotoSelector();
         }
-        return sPhotoHelper;
+        return sPhotoSelector;
     }
 
-    public PhotoHelper with(Activity activity) {
+    public PhotoSelector with(Activity activity) {
         mActivity = activity;
-        mAspectX = mAspectY = mOutputWidth = mOutputHeight = 0;
-        if (mActivity instanceof AbsBaseActivity) {
-            ((AbsBaseActivity) mActivity).setOnActivityResult(this);
-        }
         return this;
     }
 
@@ -108,7 +105,7 @@ public class PhotoHelper implements OnActivityResult {
      * @param y 裁剪图片的宽度
      * @return this
      */
-    public PhotoHelper ratio(int x, int y) {
+    public PhotoSelector ratio(int x, int y) {
         mAspectX = x;
         mAspectY = y;
         return this;
@@ -121,13 +118,13 @@ public class PhotoHelper implements OnActivityResult {
      * @param height 输出图片的高度
      * @return this
      */
-    public PhotoHelper size(int width, int height) {
+    public PhotoSelector size(int width, int height) {
         mOutputWidth = width;
         mOutputHeight = height;
         return this;
     }
 
-    public PhotoHelper setOnSelectPhotoListener(OnSelectPhotoListener onSelectPhotoListener) {
+    public PhotoSelector setOnSelectPhotoListener(OnSelectPhotoListener onSelectPhotoListener) {
         mOnSelectPhotoListener = onSelectPhotoListener;
         return this;
     }
@@ -136,27 +133,51 @@ public class PhotoHelper implements OnActivityResult {
      * 打开相机拍照
      */
     public void camera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = createTempFile("/photo");
-        if (intent.resolveActivity(mActivity.getPackageManager()) != null) {
-            mGraphUri = FileHelper.getInstance().getUri(file);
-            mGraphFilePath = file.getPath();
-            // 添加Uri读取权限
-            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mGraphUri);
-            mActivity.startActivityForResult(intent, PhotoType.GRAPH);
-        } else {
-            mOnSelectPhotoListener.onError("打开相机失败");
-        }
+        PermissionManager.getInstance()
+                .with((AppCompatActivity) mActivity)
+                .load(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .into(new PermissionManager.OnPermissionListener() {
+                    @Override
+                    public void onPermit(boolean isGrant) {
+                        if (isGrant) {
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            File file = createTempFile("/photo");
+                            if (intent.resolveActivity(mActivity.getPackageManager()) != null) {
+                                mGraphUri = FileHelper.getInstance().getUri(file);
+                                mGraphFilePath = file.getPath();
+                                // 添加Uri读取权限
+                                intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, mGraphUri);
+                                mActivity.startActivityForResult(intent, PhotoType.GRAPH);
+                            } else {
+                                mOnSelectPhotoListener.onError("打开相机失败");
+                            }
+                        } else {
+                            mOnSelectPhotoListener.onError("未授予照相机权限");
+                        }
+                    }
+                }).request();
     }
 
     /**
      * 打开图库选择图片
      */
     public void gallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, FileType.IMAGE);
-        mActivity.startActivityForResult(intent, PhotoType.GALLERY);
+        PermissionManager.getInstance()
+                .with((AppCompatActivity) mActivity)
+                .load(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .into(new PermissionManager.OnPermissionListener() {
+                    @Override
+                    public void onPermit(boolean isGrant) {
+                        if (isGrant) {
+                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, FileType.IMAGE);
+                            mActivity.startActivityForResult(intent, PhotoType.GALLERY);
+                        } else {
+                            mOnSelectPhotoListener.onError("未获取存储权限");
+                        }
+                    }
+                }).request();
     }
 
     /**
@@ -240,11 +261,6 @@ public class PhotoHelper implements OnActivityResult {
         return BitmapFactory.decodeFile(imagePath, options);
     }
 
-    @Override
-    public void onResult(int requestCode, int resultCode, @Nullable Intent data) {
-        onPhotoResult(requestCode, resultCode, data);
-    }
-
     /**
      * 处理的回调结果
      *
@@ -256,6 +272,8 @@ public class PhotoHelper implements OnActivityResult {
         if (requestCode == PhotoType.GRAPH && resultCode == Activity.RESULT_OK) {
             Logger.d(TAG + "拍照后的图片路径: " + mGraphFilePath);
             mActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mGraphUri));
+            String file = FileHelper.getInstance().getRealFilePath(mGraphUri);
+            Logger.d(TAG + "拍照后的图片uri转换路径: " + file);
             if (mOnSelectPhotoListener.onGraph(this, mGraphFilePath)) {
                 crop(mGraphUri);
             }
@@ -372,17 +390,17 @@ public class PhotoHelper implements OnActivityResult {
     public static abstract class OnSelectPhotoListener implements OnPhotoListener {
 
         @Override
-        public boolean onGraph(PhotoHelper helper, String filePath) {
+        public boolean onGraph(PhotoSelector selector, String filePath) {
             return true;
         }
 
         @Override
-        public boolean onGallery(PhotoHelper helper, String filePath) {
+        public boolean onGallery(PhotoSelector selector, String filePath) {
             return true;
         }
 
         @Override
-        public boolean onCrop(PhotoHelper helper, String filePath) {
+        public boolean onCrop(PhotoSelector selector, String filePath) {
             return true;
         }
 
@@ -397,25 +415,25 @@ public class PhotoHelper implements OnActivityResult {
         /**
          * 照相回调
          *
-         * @param helper   用于图片的uri和路径之间的操作
+         * @param selector 用于图片的uri和路径之间的操作
          * @param filePath 图片所在的路径
          * @return 返回true表示进行默认的操作(裁剪), 返回false表示自定义拍照的操作
          */
-        boolean onGraph(PhotoHelper helper, String filePath);
+        boolean onGraph(PhotoSelector selector, String filePath);
 
         /**
-         * @param helper   用于图片的uri和路径之间的操作
+         * @param selector 用于图片的uri和路径之间的操作
          * @param filePath 图片的路径
          * @return 返回true表示进行默认的操作(裁剪), 返回false表示自定义选择图片的操作
          */
-        boolean onGallery(PhotoHelper helper, String filePath);
+        boolean onGallery(PhotoSelector selector, String filePath);
 
         /**
-         * @param helper   用于图片的uri和路径之间的操作
+         * @param selector 用于图片的uri和路径之间的操作
          * @param filePath 图片的路径
          * @return 是否删除裁剪之后的图片
          */
-        boolean onCrop(PhotoHelper helper, String filePath);
+        boolean onCrop(PhotoSelector selector, String filePath);
 
         /**
          * 在选择过程中未到达预期的效果(也就是产生错误), 调用该方法

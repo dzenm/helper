@@ -1,6 +1,5 @@
 package com.dzenm.helper.log;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -8,6 +7,8 @@ import android.os.Build;
 import android.os.Looper;
 import android.os.Process;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.dzenm.helper.date.DateHelper;
 import com.dzenm.helper.file.FileHelper;
@@ -41,6 +42,8 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
     private Context mContext;
     private Thread.UncaughtExceptionHandler mDefaultExceptionHandle;            // 系统默认的UncaughtException处理类
     private static CrashHelper sCrashHelper;
+    private OnCrashExceptionMessageListener mOnCrashExceptionMessageListener;   // 自定义处理异常信息
+    private boolean isCache = true;                                             // 是否保存为本地文件
 
     private CrashHelper() {
     }
@@ -59,6 +62,16 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
         return this;
     }
 
+    public CrashHelper setCache(boolean cache) {
+        isCache = cache;
+        return this;
+    }
+
+    public CrashHelper setOnCrashExceptionMessageListener(OnCrashExceptionMessageListener listener) {
+        mOnCrashExceptionMessageListener = listener;
+        return this;
+    }
+
     /**
      * 当程序中有未被捕获的异常，系统将会自动调用uncaughtException方法
      *
@@ -66,7 +79,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
      * @param ex     未捕获的异常
      */
     @Override
-    public void uncaughtException(Thread thread, Throwable ex) {
+    public void uncaughtException(@NonNull Thread thread, @NonNull Throwable ex) {
         if (catchCaughtException(ex) && mDefaultExceptionHandle != null) {     // 如果系统提供了默认处理，则交给系统处理，否则就自己结束
             mDefaultExceptionHandle.uncaughtException(thread, ex);
         } else {
@@ -77,8 +90,8 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
     /**
      * 收集捕获的异常信息
      *
-     * @param ex
-     * @return
+     * @param ex 异常信息
+     * @return 是否捕捉异常
      */
     private boolean catchCaughtException(Throwable ex) {
         if (ex == null) return false;
@@ -99,21 +112,25 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
         return true;
     }
 
-    private void handlerCrashInfo(String crashInfo) {
-        if (Logger.getInstance().isDebug()) {
+    private void handlerCrashInfo(String crashMessage) {
+        if (isCache) {
             String fileName = NAME + DateHelper.getCurrentTimeMillis() + SUFFIX;
-            FileHelper.getInstance().newFile(getCrashDirect().getPath(), fileName, crashInfo);  // 保存当前文件
-            FileHelper.getInstance().delete(getCrashDirect(), fileName);                        // 删除其它文件
-        } else {
+            // 保存当前文件
+            FileHelper.getInstance().newFile(getCrashDirect().getPath(), fileName, crashMessage);
+            // 删除其它文件
+            FileHelper.getInstance().delete(getCrashDirect(), fileName);
+        }
+        if (mOnCrashExceptionMessageListener != null) {
             // 上传到服务器
+            mOnCrashExceptionMessageListener.onHandlerMessage(crashMessage);
         }
     }
 
     /**
      * 输出异常信息
      *
-     * @param ex
-     * @return
+     * @param ex 异常信息
+     * @return 格式化信息
      */
     private String outputExceptionInfo(Throwable ex) {
         Logger.e(TAG + "开始输出异常信息");
@@ -156,9 +173,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
                 info.put("App版本号", packageInfo.versionCode + "");   // App版本号
             }
 
-        } catch (PackageManager.NameNotFoundException e) {
-            Logger.e(TAG + "收集设备参数信息失败: " + e);
-        } catch (IllegalAccessException e) {
+        } catch (PackageManager.NameNotFoundException | IllegalAccessException e) {
             Logger.e(TAG + "收集设备参数信息失败: " + e);
         }
         Logger.e(TAG + "收集设备参数信息完成");
@@ -168,9 +183,9 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
     /**
      * 收集所需信息
      *
-     * @param throwable
-     * @param info
-     * @return
+     * @param throwable 异常信息
+     * @param info      设备信息
+     * @return 汇总信息
      */
     private String collectCrashInfo(String throwable, Map<String, String> info) {
         StringBuilder stringBuffer = new StringBuilder();                      // 输出手机、系统、软件信息
@@ -196,5 +211,9 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
      */
     private File getCrashDirect() {
         return FileHelper.getInstance().getFolder(PATH);
+    }
+
+    public interface OnCrashExceptionMessageListener {
+        void onHandlerMessage(String message);
     }
 }

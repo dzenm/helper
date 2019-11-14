@@ -121,6 +121,15 @@ public final class AnimatorHelper {
         return R.style.BaseDialog_Alpha_Animator;
     }
 
+    /**
+     * 回弹效果
+     *
+     * @return res/values/style
+     */
+    public static int rebound() {
+        return R.style.BaseDialog_Rebound_Animator;
+    }
+
     public static void play(Drawable drawable) {
         if ((drawable instanceof Animatable)) ((Animatable) drawable).start();
     }

@@ -38,7 +38,9 @@ public class MainActivity extends AbsBaseActivity {
         fragments.add(f2);
 
         fragmentHelper = FragmentHelper.newInstance();
-        fragmentHelper.with(this).container(R.id.frame_layout).addToStack(fragments);
+        fragmentHelper.with(this)
+                .container(R.id.frame_layout)
+                .addToStack(fragments);
         fragmentHelper.show(f1);
     }
 

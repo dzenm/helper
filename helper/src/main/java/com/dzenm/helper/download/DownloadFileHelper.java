@@ -25,7 +25,7 @@ import java.io.File;
  */
 public class DownloadFileHelper {
 
-    private static final String TAG = DownloadFileHelper.class.getSimpleName() + "|";
+    private static final String TAG = DownloadFileHelper.class.getSimpleName() + "| ";
     private static final long DOWNLOAD_DEFAULT_ID = 0L;
     private static final long DOWNLOAD_ERROR_ID = -1L;
 

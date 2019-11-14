@@ -16,8 +16,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.base.AbsBaseActivity;
-import com.dzenm.helper.base.OnActivityResult;
-import com.dzenm.helper.base.OnRequestPermissionsResult;
 import com.dzenm.helper.dialog.AbsDialogFragment;
 import com.dzenm.helper.dialog.DialogHelper;
 import com.dzenm.helper.dialog.InfoDialog;
@@ -39,7 +37,7 @@ import java.util.List;
  *                     .into(this)
  *                     .requestPermission();
  *
- *    @Override
+ *     @Override
  *     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
  *         super.onActivityResult(requestCode, resultCode, data);
  *         if (mMode != PermissionManager.MODE_ONCE) {
@@ -53,29 +51,29 @@ import java.util.List;
  *         PermissionManager.getInstance().onPermissionResult(requestCode, permissions, grantResults);
  *     }
  * </pre>
- *  如果继承的是{@link AbsBaseActivity}, 不用重写 {@link #onActivityResult} 和 {@link #onRequestPermissionsResult}
+ *
  * @author dinzhenyan
  * @date 2019-04-30 20:03
  * <p>
  * 权限请求管理工具类
  */
-public final class PermissionManager implements DialogHelper.OnBindViewHolder, OnActivityResult, OnRequestPermissionsResult {
+public final class PermissionManager implements DialogHelper.OnBindViewHolder {
 
-    private static final String TAG = PermissionManager.class.getSimpleName() + "|";
+    private static final String TAG = PermissionManager.class.getSimpleName() + "| ";
 
     /**
      * 权限请求之后, 会回调onRequestPermissionsResult()方法, 需要通过requestCode去接收权限请求的结果
      */
-    private static final int REQUEST_PERMISSION = 100;
+    private static final int REQUEST_PERMISSION = 121;
 
     /**
      * 当权限请求被拒绝之后, 提醒用户进入设置权限页面手动打开所需的权限, 用于接收回调的结果
      */
-    static final int REQUEST_SETTING = 101;
+    static final int REQUEST_SETTING = 122;
 
-    public static final int MODE_ONCE = 1001;
-    public static final int MODE_ONCE_INFO = 1002;
-    public static final int MODE_REPEAT = 1003;
+    public static final int MODE_ONCE = 1;
+    public static final int MODE_ONCE_INFO = 2;
+    public static final int MODE_REPEAT = 3;
 
     @IntDef({MODE_ONCE, MODE_ONCE_INFO, MODE_REPEAT})
     @Retention(RetentionPolicy.SOURCE)
@@ -125,10 +123,6 @@ public final class PermissionManager implements DialogHelper.OnBindViewHolder, O
     public PermissionManager with(AppCompatActivity activity) {
         Logger.d(TAG + activity.getClass().getSimpleName() + " is requesting permission");
         mActivity = activity;
-        if (mActivity instanceof AbsBaseActivity) {
-            ((AbsBaseActivity) mActivity).setOnRequestPermissionsResult(this);
-            ((AbsBaseActivity) mActivity).setOnActivityResult(this);
-        }
         return this;
     }
 
@@ -213,8 +207,7 @@ public final class PermissionManager implements DialogHelper.OnBindViewHolder, O
      *
      * @param requestCode 请求时的标志位
      */
-    @Override
-    public void onResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_SETTING) request();
     }
 
@@ -226,8 +219,7 @@ public final class PermissionManager implements DialogHelper.OnBindViewHolder, O
      * @param permissions  未授权的权限调用请求权限的权限
      * @param grantResults 用于判断是否授权 grantResults[i] == PackageManager.PERMISSION_GRANTED
      */
-    @Override
-    public void onResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (REQUEST_PERMISSION == requestCode) {
             // 第一次请求的处理结果，过滤已授予的权限
             mPermissions = filterPermission(permissions);

@@ -1,9 +1,7 @@
 package com.dzenm.ui;
 
-import android.Manifest;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.ViewDataBinding;
@@ -12,14 +10,10 @@ import com.dzenm.R;
 import com.dzenm.databinding.ActivityDrawableBinding;
 import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.dialog.PhotoDialog;
-import com.dzenm.helper.dialog.PreviewDialog;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.file.FileHelper;
-import com.dzenm.helper.permission.PermissionManager;
-import com.dzenm.helper.photo.PhotoHelper;
-import com.dzenm.helper.toast.ToastHelper;
+import com.dzenm.helper.photo.PhotoSelector;
 import com.dzenm.helper.view.PhotoLayout;
-import com.dzenm.helper.view.RatioImageView;
 
 import java.util.Arrays;
 
@@ -79,29 +73,19 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnL
 
     @Override
     public void onLoad(final PhotoLayout layout) {
-        PermissionManager.getInstance().with(this).load(
-                new String[]{Manifest.permission.CAMERA,
-                        Manifest.permission.READ_EXTERNAL_STORAGE})
-                .into(new PermissionManager.OnPermissionListener() {
-                    @Override
-                    public void onPermit(boolean isGrant) {
-                        if (isGrant) {
-                            PhotoDialog.newInstance(DrawableActivity.this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
-                                @Override
-                                public boolean onGallery(PhotoHelper helper, String filePath) {
-                                    layout.load(FileHelper.getInstance().getPhoto(filePath));
-                                    return false;
-                                }
+        PhotoDialog.newInstance(this).setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
+            @Override
+            public boolean onGallery(PhotoSelector selector, String filePath) {
+                layout.load(FileHelper.getInstance().getPhoto(filePath));
+                return false;
+            }
 
-                                @Override
-                                public boolean onGraph(PhotoHelper helper, String filePath) {
-                                    layout.load(FileHelper.getInstance().getPhoto(filePath));
-                                    return false;
-                                }
-                            }).show();
-                        }
-                    }
-                }).request();
+            @Override
+            public boolean onGraph(PhotoSelector selector, String filePath) {
+                layout.load(FileHelper.getInstance().getPhoto(filePath));
+                return false;
+            }
+        }).show();
     }
 
     private void previewPhoto() {

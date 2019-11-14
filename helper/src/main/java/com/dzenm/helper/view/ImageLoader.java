@@ -7,5 +7,5 @@ package com.dzenm.helper.view;
  */
 public interface ImageLoader {
 
-    void onLoader(RatioImageView imageView, Object object);
+    void onLoader(RatioImageView imageView, Object image);
 }

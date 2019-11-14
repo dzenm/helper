@@ -46,11 +46,11 @@ import java.util.List;
  *  plAdd = findViewById(R.id.pl_add);
  *  plAdd.setOnPhotoListener(this);
  *  添加图片的回调
- *  PhotoHelper.getInstance()
+ *  PhotoSelector.getInstance()
  *       .with(DrawableActivity.this)
- *       .setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+ *       .setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
  *           @Override
- *           public boolean onGallery(PhotoHelper helper, String filePath) {
+ *           public boolean onGallery(PhotoSelector helper, String filePath) {
  *               Bitmap bitmap = FileHelper.getInstance().getPhoto(filePath);
  *               layout.load(bitmap);
  *               layout.loader(new MyImageLoader());
@@ -165,16 +165,16 @@ public class PhotoLayout extends GridLayout {
         mImageLoader = imageLoader;
     }
 
-    public void load(List lists) {
-        setTotalNumber(lists.size());
-        for (Object object : lists) load(object);
+    public void load(List images) {
+        setTotalNumber(images.size());
+        for (Object image : images) load(image);
     }
 
-    public void load(final Object object) {
+    public void load(final Object image) {
         post(new Runnable() {
             @Override
             public void run() {
-                newRatioImageView(object);
+                newRatioImageView(image);
             }
         });
     }
@@ -186,12 +186,12 @@ public class PhotoLayout extends GridLayout {
     /**
      * 创建RatioImageView
      *
-     * @param object 图片
+     * @param image 图片
      */
-    private void newRatioImageView(Object object) {
+    private void newRatioImageView(Object image) {
         if (mCurrentPosition < mTotalNumber) {
-            RatioImageView imageView = addRatioImageView(object, mCurrentPosition);
-            mImageLoader.onLoader(imageView, object);
+            RatioImageView imageView = addRatioImageView(image, mCurrentPosition);
+            mImageLoader.onLoader(imageView, image);
         }
     }
 
@@ -277,7 +277,7 @@ public class PhotoLayout extends GridLayout {
                 if (mOnLoadPhotoListener != null) mOnLoadPhotoListener.onLoad(PhotoLayout.this);
             }
         });
-        DrawableHelper.pressed(R.color.colorLightGray, R.color.colorHint).into(imageView);
+        DrawableHelper.ripple(R.color.colorLightGray, R.color.colorHint).into(imageView);
         return imageView;
     }
 

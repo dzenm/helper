@@ -15,7 +15,7 @@ import com.dzenm.helper.dialog.InfoDialog;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.os.ScreenHelper;
-import com.dzenm.helper.photo.PhotoHelper;
+import com.dzenm.helper.photo.PhotoSelector;
 import com.dzenm.helper.share.ShareHelper;
 import com.dzenm.helper.toast.ToastHelper;
 
@@ -91,9 +91,9 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
                         }
                     }).share();
         } else if (view.getId() == R.id.tv_102) {
-            PhotoHelper.getInstance().with(this).setOnSelectPhotoListener(new PhotoHelper.OnSelectPhotoListener() {
+            PhotoSelector.getInstance().with(this).setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
                 @Override
-                public boolean onGallery(PhotoHelper helper, String filePath) {
+                public boolean onGallery(PhotoSelector helper, String filePath) {
                     InfoDialog.newInstance(OthersActivity.this)
                             .setTitle("图片选择回调")
                             .setMessage(filePath)

@@ -330,8 +330,6 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     /************************************* 以下为实现过程 *********************************/
 
-    public AbsDialogFragment() {
-    }
 
     public AbsDialogFragment(AppCompatActivity activity) {
         mActivity = activity;

@@ -1,6 +1,5 @@
 package com.dzenm.helper.log;
 
-import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,14 +27,16 @@ import java.util.Arrays;
  */
 public class Logger {
 
-    private static final String TAG = Logger.class.getSimpleName() + "|";
+    private static final String TAG = Logger.class.getSimpleName() + "| ";
 
     private static final String SUFFIX = ".txt";            // 日志文件后缀
 
-    private static String logcatPath;                       // log文件路径
+    private static volatile Logger sInstance = null;
+
+    private static String mTag = "DZY";                     // 日志TAG
+    private String mLogcatPath;                             // log文件路径
     private LogDumper mLogDumper;                           // log输出文件线程
     private int mPID;                                       // 进程的pid
-    private static String mTag = "DZY";                     // 日志TAG
 
     public static final int LEBEL = 0;
     public static final int VERBOSE = 1;
@@ -44,11 +45,11 @@ public class Logger {
     public static final int WARN = 4;
     public static final int ERROR = 5;
     public static final int WTF = 6;
-    public static final int ONTHING = 7;
+    public static final int RELEASE = 7;
 
-    @IntDef({LEBEL, VERBOSE, DEBUG, INFO, WARN, ERROR, WTF, ONTHING})
+    @IntDef({LEBEL, VERBOSE, DEBUG, INFO, WARN, ERROR, WTF, RELEASE})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface Level {
+    private @interface Level {
     }
 
     private @Level
@@ -58,13 +59,11 @@ public class Logger {
         mPID = android.os.Process.myPid();
     }
 
-    private static volatile Logger instance = null;
-
     public static Logger getInstance() {
-        if (instance == null) synchronized (Logger.class) {
-            if (instance == null) instance = new Logger();
+        if (sInstance == null) synchronized (Logger.class) {
+            if (sInstance == null) sInstance = new Logger();
         }
-        return instance;
+        return sInstance;
     }
 
     /**
@@ -72,8 +71,8 @@ public class Logger {
      *
      * @return this
      */
-    public Logger setDebug() {
-        sLevel = LEBEL;
+    public Logger setDebug(boolean isDebug) {
+        setLevel(isDebug ? LEBEL : RELEASE);
         return this;
     }
 
@@ -138,12 +137,12 @@ public class Logger {
     /**
      * 初始化日志存储目录（需要先申请文件读写权限）
      */
-    public Logger init(Context context) {
-        logcatPath = FileHelper.getInstance().getFolder("/log").getAbsolutePath();
-        if (TextUtils.isEmpty(logcatPath)) {
-            logcatPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "log";
+    public Logger init() {
+        mLogcatPath = FileHelper.getInstance().getFolder("/log").getAbsolutePath();
+        if (TextUtils.isEmpty(mLogcatPath)) {
+            mLogcatPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "log";
         }
-        Logger.d(TAG + "日志存储目录: " + logcatPath);
+        Logger.d(TAG + "日志存储目录: " + mLogcatPath);
         return this;
     }
 
@@ -152,7 +151,7 @@ public class Logger {
      */
     public void start() {
         if (mLogDumper == null) {
-            mLogDumper = new LogDumper(String.valueOf(mPID), logcatPath);
+            mLogDumper = new LogDumper(String.valueOf(mPID), mLogcatPath);
         }
         if (!mLogDumper.isAlive()) {
             mLogDumper.start();
@@ -186,7 +185,7 @@ public class Logger {
      */
     private class LogDumper extends Thread {
 
-        private Process logcatProcess;
+        private Process mLogcatProcess;
         private BufferedReader mBufferedReader;
         private FileOutputStream mFileOutputStream;
 
@@ -198,11 +197,12 @@ public class Logger {
         LogDumper(String pid, String dir) {
             try {
                 mPID = pid;
-                mFileOutputStream = new FileOutputStream(new File(dir, DateHelper.getCurrentTimeMillis() + SUFFIX));
+                mFileOutputStream = new FileOutputStream(
+                        new File(dir, DateHelper.getCurrentTimeMillis() + SUFFIX));
+                cache(sLevel);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            cache(sLevel);
         }
 
         private void cache(int level) {
@@ -233,8 +233,9 @@ public class Logger {
         public void run() {
             super.run();
             try {
-                logcatProcess = Runtime.getRuntime().exec(mCmds);
-                mBufferedReader = new BufferedReader(new InputStreamReader(logcatProcess.getInputStream()), 1024);
+                mLogcatProcess = Runtime.getRuntime().exec(mCmds);
+                mBufferedReader = new BufferedReader(new InputStreamReader(
+                        mLogcatProcess.getInputStream()), 1024);
                 String line;
                 while (mRunning && (line = mBufferedReader.readLine()) != null) {
                     if (!mRunning) {
@@ -244,18 +245,19 @@ public class Logger {
                         continue;
                     }
                     if (mFileOutputStream != null && line.contains(mPID)) {
-                        mFileOutputStream.write(("| " + DateHelper.getCurrentTimeMillis() + " | " + line + "\n").getBytes());
+                        String textLine = "| " + DateHelper.getCurrentTimeMillis() + " | " + line + "\n";
+                        mFileOutputStream.write(textLine.getBytes());
                     }
                 }
                 mBufferedReader.close();
                 mFileOutputStream.close();
-                logcatProcess.destroy();
+                mLogcatProcess.destroy();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if (logcatProcess != null) {
-                    logcatProcess.destroy();
-                    logcatProcess = null;
+                if (mLogcatProcess != null) {
+                    mLogcatProcess.destroy();
+                    mLogcatProcess = null;
                 }
                 if (mBufferedReader != null) {
                     try {

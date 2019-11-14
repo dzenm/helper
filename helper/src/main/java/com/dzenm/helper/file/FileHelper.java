@@ -56,7 +56,7 @@ import java.util.List;
  */
 public class FileHelper {
 
-    private static final String TAG = FileHelper.class.getSimpleName() + "|";
+    private static final String TAG = FileHelper.class.getSimpleName() + "| ";
     private Context mContext;
     private String mAppFolder;              // app名称目录
     private String mPersonFolder;           // 个人账号文件夹
@@ -98,11 +98,11 @@ public class FileHelper {
     public FileHelper init(Context context, String companyFolder, String appName) {
         mContext = context;
         if (TextUtils.isEmpty(companyFolder)) {
-            createAppFolder(appName);                 // 创建根目录文件夹(无公司时, 以App名称作为根目录文件夹)
-        } else if (TextUtils.isEmpty(appName)) {
-            createAppFolder(companyFolder);           // 创建根目录文件夹(无App名称时, 以公司名称作为根目录文件夹)
+            // 创建根目录文件夹(无公司时, 以App名称作为根目录文件夹)
+            createAppFolder(appName);
         } else {
-            createAppFolder(companyFolder + File.separator + appName); // 创建根目录文件夹(公司+App名称)
+            // 创建根目录文件夹(公司+App名称)
+            createAppFolder(companyFolder + File.separator + appName);
         }
         return this;
     }
@@ -257,8 +257,8 @@ public class FileHelper {
                 }
                 return null;
             } else {                                // 其他类似于media这样的图片，和android4.4以下获取图片path方法类似
-                Logger.d(TAG + "file is not google photo");
-                return getDataColumn(mContext, uri, "external-path", null);
+                Logger.d(TAG + "file is media");
+                return getDataColumn(mContext, uri, null, null);
             }
         }
         // 3. 判断是否是文件形式 File
@@ -279,17 +279,18 @@ public class FileHelper {
      * @return 文件uri
      */
     private String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
-        try (Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, selection, selectionArgs, null)) {
+        String filePath = null;
+        String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME};
+        try (Cursor cursor = context.getContentResolver().query(uri, projection, selection,
+                selectionArgs, null)) {
             if (cursor != null && cursor.moveToFirst()) {
-                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA);
-                Logger.d(TAG + "uri path from content resolver is " + cursor.getString(columnIndex));
-                return cursor.getString(columnIndex);
+                filePath = cursor.getString(cursor.getColumnIndexOrThrow(projection[0]));
+                cursor.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Logger.d(TAG + "uri path from content resolver is not found, the path is: " + uri.getPath());
-        return uri.getPath();
+        return filePath;
     }
 
     /**

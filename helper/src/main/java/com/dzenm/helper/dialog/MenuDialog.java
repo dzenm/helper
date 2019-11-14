@@ -229,12 +229,13 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        for (final String mItem : mItems) {
-            if (v.getTag() == mItem) {
+        for (int i = 0; i < mItems.length; i++) {
+            if (v.getTag() == mItems[i]) {
+                final int position = i;
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mOnItemClickListener.onItemClick(mItem);
+                        mOnItemClickListener.onItemClick(position);
                         dismiss();
                     }
                 }, 150);
@@ -244,6 +245,6 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Object tag);
+        void onItemClick(int position);
     }
 }

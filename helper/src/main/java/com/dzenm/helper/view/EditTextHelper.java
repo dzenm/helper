@@ -1,10 +1,12 @@
 package com.dzenm.helper.view;
 
-import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,11 +25,9 @@ public class EditTextHelper implements TextWatcher {
     }
 
     /**
-     * 添加需要监听的View
-     *
-     * @param view
+     * @param view 添加需要监听的View
      */
-    public void addView(@Nullable TextView... view) {
+    public void addView(@NonNull TextView... view) {
         if (textViews == null) {
             textViews = Arrays.asList(view);
         } else {
@@ -40,9 +40,7 @@ public class EditTextHelper implements TextWatcher {
     }
 
     /**
-     * 移除需要监听的View，避免造成内存泄露
-     *
-     * @param views
+     * @param views 移除需要监听的View，避免造成内存泄露
      */
     public void removeView(@Nullable TextView... views) {
         if (textViews == null) return;

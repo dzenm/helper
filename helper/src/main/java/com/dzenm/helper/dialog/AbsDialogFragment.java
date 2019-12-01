@@ -74,7 +74,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      * 当 {@link #mGravity} 的值为 {@link Gravity} CENTER 从中间缩放显示
      * 自定义动画调用 {@link #setAnimator(int)}
      */
-    protected int mAnimator = AnimatorHelper.shrink();
+    protected int mAnimator = AnimatorHelper.expand();
 
     /**
      * 主要颜色, 除了灰色和白色之外的颜色, 默认为蓝色为主色

@@ -244,7 +244,7 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
         setEditTextStyle(tvCountdown, etUsername, etPassword, etVerifyCode, line_1, line_2);
 
         // 校验多个EditText是否输入了文本
-        mEditTextChangeHelper.setEditText(etUsername, etPassword, etVerifyCode)
+        mEditTextChangeHelper.addView(etUsername, etPassword, etVerifyCode)
                 .verify(true);
     }
 

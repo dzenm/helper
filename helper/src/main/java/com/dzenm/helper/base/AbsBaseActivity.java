@@ -37,7 +37,7 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        beforeSetContentView();
+        initializeCreate();
         if (layoutId() != -1) {
             if (isDataBinding()) {
                 ViewDataBinding v = DataBindingUtil.setContentView(this, layoutId());
@@ -51,7 +51,7 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
         }
     }
 
-    protected void beforeSetContentView() {
+    protected void initializeCreate() {
         ActivityHelper.getInstance().add(this);                         // 添加Activity到Stack管理
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS); // 设置切换页面动画开关
         mPromptDialog = PromptDialog.newInstance(this);

@@ -22,6 +22,14 @@ import java.io.File;
 /**
  * @author dzenm
  * @date 2019-09-01 10:33
+ *
+ * <pre>
+ * DownloadFileHelper(this@MainActivity)
+ *        .setUrl(url)
+ *        .setShowRunningNotification(true)
+ *        .setFileFolder(Environment.getExternalStorageDirectory().path)
+ *        .download()
+ * </pre>
  */
 public class DownloadFileHelper {
 

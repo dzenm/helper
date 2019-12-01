@@ -49,7 +49,7 @@ public class SPHelper {
      * @param sp SharedPreferences文件名
      * @return SharedPreferences
      */
-    private SharedPreferences getSharedPreferences(String sp) {
+    public SharedPreferences getSharedPreferences(String sp) {
         Logger.d(TAG + "sharedPreferences file name: " + sp);
         return mContext.getSharedPreferences(sp, Context.MODE_PRIVATE);
     }

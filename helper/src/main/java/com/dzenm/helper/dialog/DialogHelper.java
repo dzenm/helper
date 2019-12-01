@@ -31,27 +31,27 @@ import androidx.databinding.ViewDataBinding;
  * DataBinding使用方法
  * <pre>
  * DialogHelper.newInstance(this)
- *                     .setLayout(R.layout.dialog_info)
- *                     .setOnViewDataBinding(new DialogHelper.OnViewDataBinding() {
- *                         @Override
- *                         public void onBinding(ViewDataBinding binding, final AbsDialogFragment dialog) {
- *                             DialogInfoBinding infoBinding = (DialogInfoBinding) binding;
- *                             infoBinding.etMessage.setVisibility(View.VISIBLE);
- *                             infoBinding.etMessage.setText("这是使用dataBinding的结果");
- *                             infoBinding.tvNegative.setOnClickListener(new View.OnClickListener() {
- *                                 @Override
- *                                 public void onClick(View v) {
- *                                     dialog.dismiss();
- *                                 }
+ *         .setLayout(R.layout.dialog_info)
+ *         .setOnViewDataBinding(new DialogHelper.OnViewDataBinding() {
+ *             @Override
+ *             public void onBinding(ViewDataBinding binding, final AbsDialogFragment dialog) {
+ *                 DialogInfoBinding infoBinding = (DialogInfoBinding) binding;
+ *                 infoBinding.etMessage.setVisibility(View.VISIBLE);
+ *                 infoBinding.etMessage.setText("这是使用dataBinding的结果");
+ *                 infoBinding.tvNegative.setOnClickListener(new View.OnClickListener() {
+ *                     @Override
+ *                     public void onClick(View v) {
+ *                          dialog.dismiss();
+ *                     }
+ *                 });
+ *                 infoBinding.tvPositive.setOnClickListener(new View.OnClickListener() {
+ *                     @Override
+ *                     public void onClick(View v) {
+ *                         dialog.dismiss();
+ *                     }
  *                             });
- *                             infoBinding.tvPositive.setOnClickListener(new View.OnClickListener() {
- *                                 @Override
- *                                 public void onClick(View v) {
- *                                     dialog.dismiss();
- *                                 }
- *                             });
- *                         }
- *                     }).show();
+ *             }
+ *         }).show();
  * </pre>
  */
 @SuppressLint("ValidFragment")
@@ -183,7 +183,6 @@ public class DialogHelper extends AbsDialogFragment {
     public interface OnViewDataBinding<T extends AbsDialogFragment> {
         void onBinding(ViewDataBinding binding, T dialog);
     }
-
 
     public interface OnBindViewHolder<T extends AbsDialogFragment> {
         void onBinding(ViewHolder holder, T dialog);

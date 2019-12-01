@@ -1,11 +1,9 @@
 package com.dzenm.helper.dialog;
 
-import android.Manifest;
 import android.view.Gravity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.dzenm.helper.permission.PermissionManager;
 import com.dzenm.helper.photo.PhotoSelector;
 
 /**

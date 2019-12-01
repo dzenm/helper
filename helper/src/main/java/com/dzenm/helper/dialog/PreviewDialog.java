@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.draw.DrawableHelper;
+import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.view.ImageLoader;
 import com.dzenm.helper.view.RatioImageView;
@@ -29,8 +30,6 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
     private static final int EVENT_NONE = -1;
     private static final int EVENT_DOWN = 0;
     private static final int EVENT_POINTER_DOWN = 1;
-    private static final int EVENT_MOVE = 2;
-    private static final int EVENT_POINTER_UP = 3;
 
     private static final int MODE_NONE = 11;
     private static final int MODE_LONG_CLICK = 12;
@@ -115,144 +114,109 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
         int actionMasked = event.getActionMasked(); // 获得多点触控检测点
         switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:
-                actionDownEvent(event);
+                // 主控点放下, 记录主触摸点触摸的状态, 时间, 坐标
+                mEvent = EVENT_DOWN;
+                mLastTimeMillis = System.currentTimeMillis();
+                mTouchDownX = (int) event.getX(0);
+                mTouchDownY = (int) event.getY(0);
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-                actionPointDownEvent(event);
+                // 辅控点放下, 当两指间距大于40时，设置两指之间的距离, 触摸的状态, 计算两指的中心点, 并重新设置缩放中心点
+                float pointDistance = getPointDistance(event);
+                if (pointDistance > 10f) {
+                    mPointDistance = pointDistance;
+                    mEvent = EVENT_POINTER_DOWN;
+                    mMidPointF = getPointMid(event);
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
-                actionMoveEvent(event);
+                // 主(辅)控点移动
+                // 1. 单指移动时, 移动事件或者长按事件
+                // 2. 双指移动时, 缩放事件
+                // 3. 放大之后的单指移动, 移动事件
+                // 计算主控点偏移量
+                int offsetX = (int) event.getX(0) - mTouchDownX;
+                mOffsetY = (int) event.getY(0) - mTouchDownY;
+                if (mEvent == EVENT_DOWN && mMode != MODE_ZOOM) {    // 单指移动时, 移动事件或者长按事件
+                    // 距离小于一定值时, 时间大于500毫秒, 为长按事件, 否则为移动事件
+                    if (mMode != MODE_LONG_CLICK && (Math.abs(offsetX) > 40 || Math.abs(mOffsetY) > 40)) {
+                        // 移动事件, 重新设置背景透明, 根据移动距离设置ImageView的偏移
+                        mMode = MODE_MOVE;
+                        mLastTimeMillis = 0;
+                        mView.setBackgroundColor(getColor(android.R.color.transparent));
+                        float offset = (float) mOffsetY / (float) ScreenHelper.getDisplayHeight();
+                        setImageDismissAnimator(offsetX, mOffsetY,
+                                mOffsetY > 0 ? mDimAccount - offset : mDimAccount);
+                    } else if (mMode != MODE_MOVE && mMode != MODE_LONG_CLICK
+                            && Math.abs(offsetX) < 40 && Math.abs(mOffsetY) < 40) {
+                        // 长按事件, 设置黑色背景, dialog重叠时不能覆盖上一层dialog的遮罩层
+                        long currentTimeMillis = System.currentTimeMillis();
+                        if (currentTimeMillis - mLastTimeMillis > 500) {
+                            mMode = MODE_LONG_CLICK;
+                            mLastTimeMillis = 0;
+                            mView.setBackgroundColor(getColor(android.R.color.black));
+                            if (mOnLongClickListener != null) {
+                                mOnLongClickListener.onLongClick();
+                            }
+                        }
+                    }
+                } else if (mEvent == EVENT_POINTER_DOWN) {  // 双指移动时, 缩放事件
+                    float newDistance = getPointDistance(event);
+//            int offsetPointX = (int) event.getX(1) - mTouchDownX;
+//            int offsetPointY = (int) event.getY(1) - mTouchDownY;
+                    if (newDistance > 50f) {
+                        if (mMode == MODE_ZOOM) {
+                            mCurrentScale = mLastScale + newDistance / mPointDistance;
+                        } else {
+                            mMode = MODE_ZOOM;
+                            setImageScaleAnimator(mMidPointF.x, mMidPointF.y, 1f);
+                            mCurrentScale = newDistance / mPointDistance;
+                        }
+                        mImageView.setScaleX(mCurrentScale);
+                        mImageView.setScaleY(mCurrentScale);
+                    }
+//        } else if (mEvent == EVENT_DOWN) {          // 放大之后的单指移动, 移动事件
+//            setImageDismissAnimator(offsetX, offsetY, mLastScale);
+                }
+                Logger.d("MODE_ZOOM: " + mMode);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-                actionPointUpEvent();
+                // 双指缩放时, 非最后一个触控点抬起
+                if (mMode == MODE_ZOOM) {
+                    if (mCurrentScale <= 1f) {
+                        mImageView.setScaleX(1f);
+                        mImageView.setScaleY(1f);
+                        mCurrentScale = mLastScale = 0f;
+                    } else {
+                        mLastScale = mCurrentScale;
+                    }
+                }
                 break;
             case MotionEvent.ACTION_UP:
-                actionUpEvent();
+                // 最后一个手指抬起
+                if (mMode == MODE_ZOOM) {          // 缩放状态
+                    if (mEvent == EVENT_DOWN) {
+                        mLastZoomMovePointF = new PointF(mTouchDownX, mTouchDownY);
+                    }
+                } else if (mEvent == EVENT_DOWN) {  // 单指状态
+                    if (mMode == MODE_MOVE) {
+                        // 移动过后离开屏幕, 往下滑动超过一定距离时, 关闭dialog, 否则恢复至初始状态
+                        if (mOffsetY > ScreenHelper.getDisplayHeight() * 0.1) {
+                            dismiss();
+                        } else {
+                            setImageDismissAnimator(0, 0, mDimAccount);
+                        }
+                    } else if (mMode != MODE_LONG_CLICK) {  // 单击关闭dialog
+                        dismiss();
+                    }
+                    mLastTimeMillis = 0;
+                    mMode = MODE_NONE;
+                    mEvent = EVENT_NONE;
+                }
                 break;
         }
         // 注明消费此事件，不然无效果
         return true;
-    }
-
-    /**
-     * 主控点放下, 记录主触摸点触摸的状态, 时间, 坐标
-     *
-     * @param event 触摸事件
-     */
-    private void actionDownEvent(MotionEvent event) {
-        mEvent = EVENT_DOWN;
-        mLastTimeMillis = System.currentTimeMillis();
-        mTouchDownX = (int) event.getX(0);
-        mTouchDownY = (int) event.getY(0);
-    }
-
-    /**
-     * 辅控点放下, 当两指间距大于40时，设置两指之间的距离, 触摸的状态, 计算两指的中心点, 并重新设置缩放中心点
-     *
-     * @param event 触摸事件
-     */
-    private void actionPointDownEvent(MotionEvent event) {
-        float pointDistance = getPointDistance(event);
-        if (pointDistance > 10f) {
-            mPointDistance = pointDistance;
-            mEvent = EVENT_POINTER_DOWN;
-            mMidPointF = getPointMid(event);
-        }
-    }
-
-    /**
-     * 主(辅)控点移动
-     * 1. 单指移动时, 移动事件或者长按事件
-     * 2. 双指移动时, 缩放事件
-     * 3. 放大之后的单指移动, 移动事件
-     *
-     * @param event 触摸事件
-     */
-    private void actionMoveEvent(MotionEvent event) {
-        // 计算主控点偏移量
-        int offsetX = (int) event.getX(0) - mTouchDownX;
-        int offsetY = (int) event.getY(0) - mTouchDownY;
-        if (mEvent == EVENT_DOWN && mMode != MODE_ZOOM) {    // 单指移动时, 移动事件或者长按事件
-            // 距离小于一定值时, 时间大于500毫秒, 为长按事件, 否则为移动事件
-            if (mMode != MODE_LONG_CLICK && (Math.abs(offsetX) > 40 || Math.abs(offsetY) > 40)) {
-                // 移动事件, 重新设置背景透明, 根据移动距离设置ImageView的偏移
-                mMode = MODE_MOVE;
-                mLastTimeMillis = 0;
-                mView.setBackgroundColor(getColor(android.R.color.transparent));
-                float offset = (float) offsetY / (float) ScreenHelper.getDisplayHeight();
-                setImageDismissAnimator(offsetX, offsetY,
-                        offsetY > 0 ? mDimAccount - offset : mDimAccount);
-            } else if (mMode != MODE_MOVE && mMode != MODE_LONG_CLICK
-                    && Math.abs(offsetX) < 40 && Math.abs(offsetY) < 40) {
-                // 长按事件, 设置黑色背景, dialog重叠时不能覆盖上一层dialog的遮罩层
-                long currentTimeMillis = System.currentTimeMillis();
-                if (currentTimeMillis - mLastTimeMillis > 500) {
-                    mMode = MODE_LONG_CLICK;
-                    mLastTimeMillis = 0;
-                    mView.setBackgroundColor(getColor(android.R.color.black));
-                    if (mOnLongClickListener != null) {
-                        mOnLongClickListener.onLongClick();
-                    }
-                }
-            }
-        } else if (mEvent == EVENT_POINTER_DOWN) {  // 双指移动时, 缩放事件
-            float newDistance = getPointDistance(event);
-//            int offsetPointX = (int) event.getX(1) - mTouchDownX;
-//            int offsetPointY = (int) event.getY(1) - mTouchDownY;
-            if (newDistance > 50f) {
-                if (mMode == MODE_ZOOM) {
-                    mCurrentScale = mLastScale + newDistance / mPointDistance;
-                } else {
-                    mMode = MODE_ZOOM;
-                    setImageScaleAnimator(mMidPointF.x, mMidPointF.y, 1f);
-                    mCurrentScale = newDistance / mPointDistance;
-                }
-                mImageView.setScaleX(mCurrentScale);
-                mImageView.setScaleY(mCurrentScale);
-            }
-        } else if (mEvent == EVENT_DOWN) {          // 放大之后的单指移动, 移动事件
-            setImageDismissAnimator(offsetX, offsetY, mLastScale);
-        }
-    }
-
-    /**
-     * 双指缩放时, 非最后一个触控点抬起
-     */
-    private void actionPointUpEvent() {
-        if (mMode == MODE_ZOOM) {
-            if (mCurrentScale <= 1f) {
-                mImageView.setScaleX(1f);
-                mImageView.setScaleY(1f);
-                mCurrentScale = mLastScale = 0f;
-            } else {
-                mLastScale = mCurrentScale;
-            }
-        }
-    }
-
-    /**
-     * 最后一个手指抬起
-     */
-    private void actionUpEvent() {
-        if (mMode == MODE_ZOOM ) {          // 缩放状态
-            if (mEvent == EVENT_DOWN) {
-                mLastZoomMovePointF = new PointF(mTouchDownX, mTouchDownY);
-            }
-        } else if (mEvent == EVENT_DOWN) {  // 单指状态
-            if (mMode == MODE_MOVE) {
-                // 移动过后离开屏幕, 往下滑动超过一定距离时, 关闭dialog, 否则恢复至初始状态
-                if (mOffsetY > ScreenHelper.getDisplayHeight() * 0.1) {
-                    dismiss();
-                } else {
-                    setImageDismissAnimator(0, 0, mDimAccount);
-                }
-            } else if (mMode != MODE_LONG_CLICK) {  // 单击关闭dialog
-                dismiss();
-            }
-            mLastTimeMillis = 0;
-            mMode = MODE_NONE;
-            mEvent = EVENT_NONE;
-        }
     }
 
     /**

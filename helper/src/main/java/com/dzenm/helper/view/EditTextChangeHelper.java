@@ -1,7 +1,5 @@
 package com.dzenm.helper.view;
 
-import androidx.annotation.NonNull;
-
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -9,12 +7,21 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.dzenm.helper.R;
 
 /**
  * @author dinzhenyan
  * @date 2019-05-26 17:40
  * 验证输入框的内容
+ * <pre>
+ * EditTextChangeHelper mEditTextChangeHelper = EditTextChangeHelper.newInstance();
+ * // 校验多个EditText是否输入了文本
+ * mEditTextChangeHelper.setEditText(etUsername, etPassword, etVerifyCode)
+ *       .verify(true);
+ * mEditTextChangeHelper.verify(false)
+ * </pre>
  */
 public class EditTextChangeHelper implements OnTextChangeListener, View.OnFocusChangeListener {
 
@@ -44,10 +51,10 @@ public class EditTextChangeHelper implements OnTextChangeListener, View.OnFocusC
     /**
      * 设定需要监听的EditText
      *
-     * @param editTexts
-     * @return
+     * @param editTexts 所有联动的EditText
+     * @return this
      */
-    public EditTextChangeHelper setEditText(@NonNull EditText... editTexts) {
+    public EditTextChangeHelper addView(@NonNull EditText... editTexts) {
         // 设置EditText的监听事件
         for (EditText edit : editTexts) {
             edit.addTextChangedListener(new CustomEditText(edit, this));
@@ -60,10 +67,10 @@ public class EditTextChangeHelper implements OnTextChangeListener, View.OnFocusC
     /**
      * 设置hint文本
      *
-     * @param texts
-     * @return
+     * @param texts 提示文本内容
+     * @return this
      */
-    public EditTextChangeHelper setText(@NonNull String... texts) {
+    public EditTextChangeHelper addText(@NonNull String... texts) {
         mTexts = texts;
         return this;
     }
@@ -72,7 +79,7 @@ public class EditTextChangeHelper implements OnTextChangeListener, View.OnFocusC
      * 验证需要监听的EditText是否全部输入了文本
      *
      * @param reset 是否重置EditText为初始内容
-     * @return
+     * @return this
      */
     public boolean verify(boolean reset) {
         for (int i = 0; i < mEditTexts.length; i++) {
@@ -80,7 +87,9 @@ public class EditTextChangeHelper implements OnTextChangeListener, View.OnFocusC
             String text = null;
 
             // hint可为空
-            if (mTexts != null) text = mTexts[i];
+            if (mTexts != null) {
+                text = mTexts[i];
+            }
 
             if (reset) {
                 verify(false, editText, text);
@@ -101,8 +110,8 @@ public class EditTextChangeHelper implements OnTextChangeListener, View.OnFocusC
      * 验证输入的内容，并作出相应的反馈
      *
      * @param error    是否出现错误
-     * @param editText
-     * @param texts
+     * @param editText 校验的EditText
+     * @param texts    校验后的文本内容
      */
     private void verify(boolean error, EditText editText, String texts) {
         // 设置背景
@@ -133,7 +142,7 @@ public class EditTextChangeHelper implements OnTextChangeListener, View.OnFocusC
 
     /**
      * @param state    设置背景的状态
-     * @param editText
+     * @param editText 设置的EditText
      */
     private void setBackgroundState(boolean state, EditText editText) {
         editText.setBackgroundResource(state ? backgroundError : backgroundNormal);

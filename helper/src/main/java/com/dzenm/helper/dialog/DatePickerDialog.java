@@ -2,8 +2,9 @@ package com.dzenm.helper.dialog;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.date.DateHelper;
@@ -37,6 +38,9 @@ import java.util.List;
 @SuppressLint("ValidFragment")
 public class DatePickerDialog extends PickerDialog {
 
+    /**
+     * 日期选择起点, 终点
+     */
     public static final String DEFAULT_START_YEAR = "1970";
     public static final String DEFAULT_END_YEAR = "2100";
 
@@ -372,4 +376,3 @@ public class DatePickerDialog extends PickerDialog {
         executeAnimator(pvUnit);             // 动画延时
     }
 }
-

@@ -41,8 +41,12 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
                 .into(binding.tvDraw);
         DrawableHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
                 .into(binding.tvPreview);
+        DrawableHelper
+                .radiusBL(20f)
+                .radiusTR(20f)
+                .stroke(1, R.color.colorDarkBlue)
+                .into(binding.tvDrawableStroke);
 
-        logD("test log");
         binding.tvDraw.setOnClickListener(this);
         binding.tvPreview.setOnClickListener(this);
         binding.ivHeader.setOnClickListener(this);

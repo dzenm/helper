@@ -104,15 +104,16 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
             }
         }).start();
 
-        String throwable = outputExceptionInfo(ex);                                // 输出异常信息
-        Map<String, String> info = collectDeviceInfo();                            // 收集设备参数信息
-        String crashInfo = collectCrashInfo(throwable, info);                      // 收集崩溃日志的信息
+        String exception = printCrashExceptionMessage(ex);                         // 输出异常信息
+        Map<String, String> phoneMessage = printPhoneMessage();                    // 收集设备参数信息
+        String crashMessage = printSystemMessage(exception, phoneMessage);       // 收集崩溃日志的信息
 
-        handlerCrashInfo(crashInfo);
+        handlerCrashExceptionMessage(crashMessage);
+        Process.killProcess(Process.myPid());                                      // 退出应用
         return true;
     }
 
-    private void handlerCrashInfo(String crashMessage) {
+    private void handlerCrashExceptionMessage(String crashMessage) {
         if (isCache) {
             String fileName = NAME + DateHelper.getCurrentTimeMillis() + SUFFIX;
             // 保存当前文件
@@ -122,7 +123,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
         }
         if (mOnCrashExceptionMessageListener != null) {
             // 上传到服务器
-            mOnCrashExceptionMessageListener.onHandlerMessage(crashMessage);
+            mOnCrashExceptionMessageListener.onHandlerMessage(mContext, crashMessage);
         }
     }
 
@@ -132,7 +133,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
      * @param ex 异常信息
      * @return 格式化信息
      */
-    private String outputExceptionInfo(Throwable ex) {
+    private String printCrashExceptionMessage(Throwable ex) {
         Logger.e(TAG + "开始输出异常信息");
         Writer writer = new StringWriter();
         PrintWriter printWriter = new PrintWriter(writer);
@@ -152,13 +153,14 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
     /**
      * 收集设备参数信息
      */
-    private Map<String, String> collectDeviceInfo() {
+    private Map<String, String> printPhoneMessage() {
         Logger.e(TAG + "开始收集设备参数信息");
         Map<String, String> info = new HashMap<String, String>();                      // 用来存储设备信息
         try {
             // 获取设备硬件信息
             Field[] fields = Build.class.getDeclaredFields();
-            for (Field field : fields) { // 迭代Build的字段key-value 此处的信息主要是为了在服务器端手机各种版本手机报错的原因
+            // 迭代Build的字段key-value 此处的信息主要是为了在服务器端手机各种版本手机报错的原因
+            for (Field field : fields) {
                 field.setAccessible(true);
                 info.put(field.getName(), field.get("").toString());
             }
@@ -187,7 +189,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
      * @param info      设备信息
      * @return 汇总信息
      */
-    private String collectCrashInfo(String throwable, Map<String, String> info) {
+    private String printSystemMessage(String throwable, Map<String, String> info) {
         StringBuilder stringBuffer = new StringBuilder();                      // 输出手机、系统、软件信息
         stringBuffer.append("-------- 开始收集设备信息 --------\n");
 
@@ -214,6 +216,6 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
     }
 
     public interface OnCrashExceptionMessageListener {
-        void onHandlerMessage(String message);
+        void onHandlerMessage(Context context, String message);
     }
 }

@@ -138,6 +138,14 @@ public class DateHelper {
     }
 
     /**
+     * @param datetime 格式必须为yyyy-MM-dd HH:mm:ss
+     * @return 日期转时间戳 例：2019-11-14 09:42:34 转换的结果 1573695754000
+     */
+    public static long dateTimeSecondToTimestamp(String datetime) {
+        return parseDate(DATE_TIME_SECOND, datetime).getTime();
+    }
+
+    /**
      * @param datetime 格式必须为yyyy-MM-dd
      * @return 日期转时间戳 例：2019-11-14 转换的结果 1573660800000
      */

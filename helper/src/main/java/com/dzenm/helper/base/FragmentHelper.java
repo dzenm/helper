@@ -30,7 +30,7 @@ public class FragmentHelper {
     private AppCompatActivity mActivity;
     private Fragment mFragment;
     private List<Fragment> mFragments;
-    private int mResourceID;
+    private int mFrameLayoutId;
 
     public static FragmentHelper newInstance() {
         return new FragmentHelper();
@@ -47,7 +47,7 @@ public class FragmentHelper {
     }
 
     public FragmentHelper container(int resourceID) {
-        mResourceID = resourceID;
+        mFrameLayoutId = resourceID;
         return this;
     }
 
@@ -57,11 +57,11 @@ public class FragmentHelper {
         for (Fragment f : fragments) {
             if (!f.isAdded()) {
                 mFragments.add(f);
-                transaction.add(mResourceID, f).hide(f);
+                transaction.add(mFrameLayoutId, f).hide(f);
             }
         }
-        Logger.d(TAG + "添加Fragment个数: " + mFragments.size());
         transaction.commitAllowingStateLoss();
+        Logger.d(TAG + "添加Fragment个数: " + mFragments.size());
     }
 
     public int size() {

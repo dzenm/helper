@@ -1,6 +1,5 @@
 package com.dzenm.helper.base;
 
-import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.nfc.NdefRecord;
@@ -10,12 +9,11 @@ import android.nfc.tech.MifareUltralight;
 import android.provider.Settings;
 import android.widget.TextView;
 
+import com.dzenm.helper.date.DateHelper;
 import com.dzenm.helper.dialog.InfoDialog;
-import com.dzenm.helper.log.Logger;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 /**
@@ -23,33 +21,54 @@ import java.util.Arrays;
  * @date 2019-04-30 20:03
  * <p>
  * <pre>
- *     <!--开发nfc的权限-->
- *     <uses-permission android:name="android.permission.NFC"/>
- *     <!--声明只有带有nfc功能的手机才能下载你在google市场发布的具有NFC功能的app-->
- *     <uses-feature android:name="android.hardware.nfc"
- *                   android:required="true" />
+ * <!--开发nfc的权限-->
+ * <uses-permission android:name="android.permission.NFC"/>
+ * <!--声明只有带有nfc功能的手机才能下载你在google市场发布的具有NFC功能的app-->
+ * <uses-feature android:name="android.hardware.nfc"
+ *               android:required="true" />
  * </pre>
  */
 public abstract class AbsNfcActivity extends AbsBaseActivity {
 
-    private static final boolean isDebug = true;
-    private static final boolean isAppend = false;
-    private static final boolean isShowDialog = false;
-
     // show text log
-    protected TextView mTextView;
+    private TextView mTextView;
     private NfcAdapter mNfcAdapter;
 
     // nfc info
     protected Tag mTag;
 
+    private boolean isShowDialog = false, isAutoDetection;
+
     private PendingIntent mPendingIntent;
-    @SuppressLint("SimpleDateFormat")
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+    /**
+     * @param autoDetection 设置自动检测是否支持NFC和NFC开启状态
+     */
+    public void setAutoDetection(boolean autoDetection) {
+        isAutoDetection = autoDetection;
+    }
+
+    /**
+     * @param textView 显示NFC状态的TextView
+     */
+    protected void setTextView(TextView textView) {
+        mTextView = textView;
+    }
+
+    /**
+     * @param showDialog 是否通过dialog显示NFC的状态
+     */
+    public void setShowDialog(boolean showDialog) {
+        isShowDialog = showDialog;
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
+        findingNfc();
+    }
+
+    protected void findingNfc() {
         // 获取NFC的Adapter
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         // 创建一个PendingIntent, 当检测到一条NFC消息, 就会通过PendingIntent执行此Intent并调用窗口
@@ -60,14 +79,16 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // 检查是否支持NFC
-        isNfcAvailable(mNfcAdapter);
+        if (isAutoDetection) {
+            // 检查是否支持NFC
+            checkNfcAvailable(mNfcAdapter);
+        }
     }
 
     /**
      * 检查NFC是否可用
      */
-    private void isNfcAvailable(NfcAdapter nfcAdapter) {
+    private void checkNfcAvailable(NfcAdapter nfcAdapter) {
         if (nfcAdapter == null) {           // 判断设备是否支持NFC功能
             unavailableNfc();
         } else {
@@ -79,16 +100,16 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
      * NFC不可用
      */
     protected void unavailableNfc() {
-        log("该设备不支持支持NFC功能");
+        log("当前设备不支持NFC功能");
     }
 
     /**
      * NFC可用
      */
     protected void availableNfc(NfcAdapter nfcAdapter) {
-        log("该设备支持NFC");
+        log("当前设备支持NFC");
         if (!nfcAdapter.isEnabled()) {     // 判断设备NFC功能是否打开
-            getDefaultDialogSetting("NFC功能未打开, 不能使用该功能, 请进入NFC设置页面手动打开?")
+            getDefaultDialogSetting("NFC未开启, 暂无法使用NFC功能, 是否进入NFC设置页面手动开启?")
                     .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
                         @Override
                         public boolean onClick(InfoDialog infoDialog, boolean b) {
@@ -114,14 +135,12 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
         mTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         // 获取卡片的UID
         String uid = byteArrayToHex(mTag.getId());
-        getNfcUid(uid);
+        readNfcUid(uid);
     }
 
     /**
-     * 将NFC卡ID字节数据转成String
-     *
-     * @param bytes
-     * @return
+     * @param bytes NFC卡ID字节数据
+     * @return 十六进制String
      */
     protected String byteArrayToHex(byte[] bytes) {
         int i, in;
@@ -138,11 +157,9 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
     }
 
     /**
-     * 读取NFC的UID
-     *
-     * @param uid
+     * @param uid 读取NFC的UID
      */
-    protected void getNfcUid(String uid) {
+    protected void readNfcUid(String uid) {
 
     }
 
@@ -156,10 +173,8 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
     }
 
     /**
-     * 解析NDEF文本数据，从第三个字节开始，后面的文本数据
-     *
-     * @param ndefRecord
-     * @return
+     * @param ndefRecord NDEF文本记录
+     * @return 从第三个字节开始，后面的文本数据
      */
     protected String parseTextRecord(NdefRecord ndefRecord) {
         /**
@@ -195,7 +210,7 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
     }
 
     /**
-     * MifareUltralight数据格式
+     * 是否是MifareUltralight数据格式
      */
     protected void isExistMifareUltralight() {
         boolean hasMifareUltralight = false;
@@ -215,9 +230,7 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
     }
 
     /**
-     * 读取MifareUltralight格式数据
-     *
-     * @return
+     * @return MifareUltralight格式数据
      */
     protected String readMifareUltralightData() {
         MifareUltralight mifareUltralight = MifareUltralight.get(mTag);
@@ -234,9 +247,7 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
     }
 
     /**
-     * 写入MifareUltralight格式数据
-     *
-     * @param data
+     * @param data 写入MifareUltralight格式的数据
      */
     protected void writeMifareUltralightData(String data) {
         if (data.length() < 22) {
@@ -258,52 +269,23 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
         }
     }
 
-    /**
-     * 显示文本dialog
-     *
-     * @param message
-     */
-    protected void showDialog(String message) {
-        getDefaultDialogSetting(message)
-                .setButtonText("确定")
-                .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
-                    @Override
-                    public boolean onClick(InfoDialog dialog, boolean confirm) {
-                        return true;
-                    }
-                }).show();
-    }
-
     private InfoDialog getDefaultDialogSetting(String message) {
         return InfoDialog.newInstance(this).setTitle("").setMessage(message);
     }
 
     /**
-     * 打印log日志
-     *
-     * @param text
+     * @param message 打印log日志的信息
      */
-    protected void log(String text) {
-        if (!isDebug) return;
-        Logger.d(getTime() + ": " + text + "\n");
+    protected void log(String message) {
+        String log = DateHelper.getCurrentTimeMillis() + ": " + message + "\n";
+        logD(log);
         if (isShowDialog) {
-            showDialog(text);
-        } else {
-            if (mTextView == null) return;
-            if (isAppend) {
-                mTextView.append(getTime() + ": " + text + "\n");
-            } else {
-                mTextView.setText(text);
-            }
+            getDefaultDialogSetting(message)
+                    .setButtonText("确定")
+                    .setOnDialogClickListener(null)
+                    .show();
+        } else if (mTextView == null) {
+            mTextView.setText(message);
         }
-    }
-
-    /**
-     * 格式化时间
-     *
-     * @return
-     */
-    protected String getTime() {
-        return simpleDateFormat.format(System.currentTimeMillis());
     }
 }

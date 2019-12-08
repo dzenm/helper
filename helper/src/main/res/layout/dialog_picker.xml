@@ -16,7 +16,7 @@
             android:paddingLeft="@dimen/padding_big"
             android:paddingRight="@dimen/padding_big"
             android:text="@string/dialog_btn_cancel"
-            android:textSize="@dimen/subtitle_text_size" />
+            android:textSize="@dimen/text_size_subtitle" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/dialog_info"
-            android:textSize="@dimen/appbar_text_size" />
+            android:textSize="@dimen/text_size_appbar" />
 
         <TextView
             android:id="@+id/tv_confirm"
@@ -36,7 +36,7 @@
             android:paddingLeft="@dimen/padding_big"
             android:paddingRight="@dimen/padding_big"
             android:text="@string/dialog_btn_confirm"
-            android:textSize="@dimen/subtitle_text_size" />
+            android:textSize="@dimen/text_size_subtitle" />
 
     </RelativeLayout>
 
@@ -63,7 +63,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/dialog_year"
-            android:textSize="@dimen/subtitle_text_size" />
+            android:textSize="@dimen/text_size_subtitle" />
 
         <com.dzenm.helper.view.PickerView
             android:id="@+id/pv_secondary"
@@ -78,7 +78,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/dialog_month"
-            android:textSize="@dimen/subtitle_text_size" />
+            android:textSize="@dimen/text_size_subtitle" />
 
         <com.dzenm.helper.view.PickerView
             android:id="@+id/pv_unit"
@@ -93,6 +93,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/dialog_day"
-            android:textSize="@dimen/subtitle_text_size" />
+            android:textSize="@dimen/text_size_subtitle" />
     </LinearLayout>
 </LinearLayout>

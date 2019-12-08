@@ -15,7 +15,7 @@
         android:paddingRight="@dimen/padding_big"
         android:text="@string/dialog_info"
         android:textColor="@color/colorPrimaryTextDark"
-        android:textSize="@dimen/title_text_size"
+        android:textSize="@dimen/text_size_title"
         android:textStyle="bold" />
 
     <EditText
@@ -27,7 +27,7 @@
         android:inputType="textMultiLine"
         android:maxLines="3"
         android:minLines="1"
-        android:textSize="@dimen/main_body_text_size" />
+        android:textSize="@dimen/text_size_main_body" />
 
     <View
         android:layout_width="match_parent"

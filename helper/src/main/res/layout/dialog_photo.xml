@@ -11,7 +11,7 @@
         android:gravity="center"
         android:padding="@dimen/margin_normal"
         android:text="@string/dialog_graph"
-        android:textSize="@dimen/subtitle_text_size" />
+        android:textSize="@dimen/text_size_subtitle" />
 
     <View
         android:id="@+id/line_1"
@@ -25,7 +25,7 @@
         android:gravity="center"
         android:padding="@dimen/margin_normal"
         android:text="@string/dialog_gallery"
-        android:textSize="@dimen/subtitle_text_size" />
+        android:textSize="@dimen/text_size_subtitle" />
 
     <View
         android:id="@+id/line_2"
@@ -39,5 +39,5 @@
         android:gravity="center"
         android:padding="@dimen/margin_normal"
         android:text="@string/dialog_btn_cancel"
-        android:textSize="@dimen/subtitle_text_size" />
+        android:textSize="@dimen/text_size_subtitle" />
 </LinearLayout>

@@ -54,6 +54,7 @@
 
     <!--avatar size-->
     <dimen name="avatar_big_size">64dp</dimen>                  <!--用户头像尺寸-->
+    <dimen name="avatar_medium_size">48dp</dimen>               <!--用户头像尺寸-->
     <dimen name="avatar_small_size">40dp</dimen>                <!--用户头像尺寸-->
 
     <!--alignment baseline-->
@@ -69,21 +70,23 @@
 
     <!-- ======================== 常用字号大小 ========================= -->
 
-    <dimen name="prompt_text_size">12sp</dimen>                 <!--小字提示-->
+    <dimen name="text_size_small_prompt">8sp</dimen>            <!--小字提示-->
+    <dimen name="text_size_smaller_prompt">10sp</dimen>         <!--小字提示-->
+    <dimen name="text_size_prompt">12sp</dimen>                 <!--小字提示-->
 
-    <dimen name="main_body_text_size">14sp</dimen>              <!--正文/按钮文字-->
-    <dimen name="main_body_text_size_desktop">13sp</dimen>
+    <dimen name="text_size_main_body_desktop">13sp</dimen>
+    <dimen name="text_size_main_body">14sp</dimen>              <!--正文/按钮文字-->
 
-    <dimen name="title_text_size">18sp</dimen>                  <!--标题-->
-    <dimen name="subtitle_text_size">16sp</dimen>               <!--小标题-->
-    <dimen name="subtitle_text_size_desktop">15sp</dimen>       <!--桌面小标题文本-->
+    <dimen name="text_size_title">18sp</dimen>                  <!--标题-->
+    <dimen name="text_size_subtitle">16sp</dimen>               <!--小标题-->
+    <dimen name="text_size_subtitle_desktop">15sp</dimen>       <!--桌面小标题文本-->
 
-    <dimen name="appbar_text_size">20sp</dimen>                 <!--Appbar文字-->
-    <dimen name="headline_text_size">24sp</dimen>               <!--大标题-->
+    <dimen name="text_size_appbar">20sp</dimen>                 <!--Appbar文字-->
+    <dimen name="text_size_headline">24sp</dimen>               <!--大标题-->
 
-    <dimen name="oversize_small_text_size">36sp</dimen>        <!--超大号文字-->
-    <dimen name="oversize_medium_text_size">45sp</dimen>
-    <dimen name="oversize_big_text_size">56sp</dimen>
-    <dimen name="oversize_text_size">112sp</dimen>
+    <dimen name="text_size_oversize_small">36sp</dimen>        <!--超大号文字-->
+    <dimen name="text_size_oversize_medium">45sp</dimen>
+    <dimen name="text_size_oversize_big">56sp</dimen>
+    <dimen name="text_size_oversize">112sp</dimen>
 
 </resources>

@@ -8,110 +8,171 @@ import androidx.fragment.app.FragmentTransaction;
 import com.dzenm.helper.log.Logger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author dinzhenyan
  * @date 2019-04-30 20:03
+ *
  * <pre>
+ * HomeFragment f1 = new HomeFragment();
+ * PersonalFragment f2 = new PersonalFragment();
  * List<Fragment> fragments = new ArrayList<>();
  * fragments.add(f1);
  * fragments.add(f2);
- * FragmentHelper fragmentHelper = FragmentHelper.newInstance();
- * fragmentHelper.with(this)
- *         .container(R.id.frame_layout)
- *         .addToStack(fragments);
+ *
+ * FragmentHelper fragmentHelper = new FragmentHelper(this);
+ * fragmentHelper.inflate(R.id.frame_layout, fragments);
  * fragmentHelper.show(f1);
  * </pre>
  */
 public class FragmentHelper {
 
     private static final String TAG = FragmentHelper.class.getSimpleName() + "| ";
+
     private AppCompatActivity mActivity;
     private Fragment mFragment;
+
     private List<Fragment> mFragments;
-    private int mFrameLayoutId;
+    private int mFrameLayoutResId;
 
-    public static FragmentHelper newInstance() {
-        return new FragmentHelper();
-    }
-
-    public FragmentHelper with(AppCompatActivity activity) {
+    public FragmentHelper(AppCompatActivity activity) {
         mActivity = activity;
-        return this;
     }
 
-    public FragmentHelper with(Fragment fragment) {
+    public FragmentHelper(Fragment fragment) {
         mFragment = fragment;
+    }
+
+    /**
+     * @param resId     FrameLayout id in layout
+     * @param fragments 管理的Fragment
+     * @return this
+     */
+    public FragmentHelper inflate(int resId, @NonNull Fragment[] fragments) {
+        mFrameLayoutResId = resId;
+        addToStack(Arrays.asList(fragments));
         return this;
     }
 
-    public FragmentHelper container(int resourceID) {
-        mFrameLayoutId = resourceID;
+    /**
+     * @param resId     FrameLayout id in layout
+     * @param fragments 管理的Fragment
+     * @return this
+     */
+    public FragmentHelper inflate(int resId, @NonNull List<Fragment> fragments) {
+        mFrameLayoutResId = resId;
+        addToStack(fragments);
         return this;
     }
 
-    public void addToStack(@NonNull List<Fragment> fragments) {
+    private void addToStack(@NonNull List<Fragment> fragments) {
         mFragments = new ArrayList<>();
-        FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
-        for (Fragment f : fragments) {
-            if (!f.isAdded()) {
-                mFragments.add(f);
-                transaction.add(mFrameLayoutId, f).hide(f);
-            }
-        }
-        transaction.commitAllowingStateLoss();
-        Logger.d(TAG + "添加Fragment个数: " + mFragments.size());
+        mFragments.addAll(fragments);
     }
 
-    public int size() {
-        return mFragments.size();
-    }
-
-    public Fragment get(int position) {
-        return mFragments.get(position);
-    }
-
-    public void show(Fragment currentFragment) {
-        FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
-        for (int i = 0; i < size(); i++) {
-            if (isShow(i) && get(i) != currentFragment) {
-                transaction.hide(get(i));
-            } else {
-                transaction.show(currentFragment);
-            }
-        }
-        Logger.d(TAG + "show fragment: " + currentFragment.getClass().getSimpleName());
-        transaction.commitAllowingStateLoss();
-    }
-
-    public void showChild(Fragment currentFragment) {
-        FragmentTransaction transaction = mFragment.getChildFragmentManager().beginTransaction();
-        for (int i = 0; i < size(); i++) {
-            if (isShow(i) && get(i) != currentFragment) {
-                transaction.hide(get(i));
-            } else {
-                transaction.show(currentFragment);
-            }
-        }
-        Logger.d(TAG + "show child fragment: " + currentFragment.getClass().getSimpleName());
-        transaction.commitAllowingStateLoss();
-    }
-
-    private boolean isShow(int position) {
-        return get(position).isAdded()
-                && (get(position).isVisible()
-                || !get(position).isHidden());
-    }
-
-    public FragmentHelper hide() {
-        FragmentTransaction transaction = mActivity.getSupportFragmentManager().beginTransaction();
-        for (int i = 0; i < size(); i++) {
-            if (isShow(i)) {
-                transaction.hide(get(i));
+    /**
+     * 显示Activity的子Fragment
+     *
+     * @param fragment 需要显示的子Fragment
+     * @return this
+     */
+    public FragmentHelper show(Fragment fragment) {
+        FragmentTransaction transaction = getFragmentTransaction(mActivity);
+        for (Fragment f : mFragments) {
+            if (f == fragment) {
+                if (f.isAdded()) {
+                    if (f.isHidden()) {
+                        transaction.show(fragment);
+                        Logger.d(TAG + getName(mActivity) + " show fragment: " + fragment.getClass().getSimpleName());
+                    }
+                } else {
+                    transaction.add(mFrameLayoutResId, fragment);
+                    Logger.d(TAG + getName(mActivity) + " add fragment: " + fragment.getClass().getSimpleName());
+                }
+            } else if (f.isAdded() && f.isVisible()) {
+                transaction.hide(f);
             }
         }
         transaction.commitAllowingStateLoss();
         return this;
+    }
+
+    /**
+     * 隐藏Activity的子Fragment
+     *
+     * @param fragment 隐藏的Fragment
+     */
+    public void hide(Fragment fragment) {
+        FragmentTransaction transaction = getFragmentTransaction(mActivity);
+        hide(transaction, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+    /**
+     * 显示Fragment的子Fragment
+     *
+     * @param fragment 需要显示的子Fragment
+     * @return this
+     */
+    public FragmentHelper showChild(Fragment fragment) {
+        FragmentTransaction transaction = getFragmentTransaction(mFragment);
+        for (Fragment f : mFragments) {
+            if (f == fragment) {
+                if (f.isAdded()) {
+                    if (f.isHidden()) {
+                        transaction.show(fragment);
+                        Logger.d(TAG + getName(mFragment) + " show fragment: " + getName(fragment));
+                    }
+                } else {
+                    transaction.add(mFrameLayoutResId, fragment);
+                    Logger.d(TAG + getName(mFragment) + " add fragment: " + getName(fragment));
+                }
+            } else if (f.isAdded() && f.isVisible()) {
+                transaction.hide(f);
+            }
+        }
+        transaction.commitAllowingStateLoss();
+        return this;
+    }
+
+    /**
+     * 隐藏Fragment的子Fragment
+     *
+     * @param fragment 隐藏的Fragment
+     */
+    public void hideChild(Fragment fragment) {
+        FragmentTransaction transaction = getFragmentTransaction(mFragment);
+        hide(transaction, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+    /**
+     * 隐藏Fragment
+     *
+     * @param transaction 事物管理
+     * @param fragment    需要隐藏的Fragment
+     */
+    private void hide(FragmentTransaction transaction, Fragment fragment) {
+        if (fragment.isAdded() && fragment.isVisible()) {
+            transaction.hide(fragment);
+        }
+    }
+
+    private FragmentTransaction getFragmentTransaction(AppCompatActivity activity) {
+        return activity.getSupportFragmentManager().beginTransaction();
+    }
+
+    private FragmentTransaction getFragmentTransaction(Fragment fragment) {
+        return fragment.getChildFragmentManager().beginTransaction();
+    }
+
+    public String getName(AppCompatActivity activity) {
+        return activity.getClass().getSimpleName();
+    }
+
+    public String getName(Fragment fragment) {
+        return fragment.getClass().getSimpleName();
     }
 }

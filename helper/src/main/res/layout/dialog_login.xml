@@ -15,7 +15,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/dialog_login"
-            android:textSize="@dimen/title_text_size" />
+            android:textSize="@dimen/text_size_title" />
 
         <TextView
             android:id="@+id/tv_register"
@@ -24,7 +24,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="@string/dialog_register"
-            android:textSize="@dimen/title_text_size" />
+            android:textSize="@dimen/text_size_title" />
     </LinearLayout>
 
     <EditText

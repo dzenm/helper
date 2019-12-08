@@ -22,7 +22,7 @@
             android:ellipsize="end"
             android:maxHeight="@dimen/avatar_big_size"
             android:maxLines="1"
-            android:textSize="@dimen/appbar_text_size" />
+            android:textSize="@dimen/text_size_appbar" />
 
         <TextView
             android:id="@+id/tv_message"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:maxLines="5"
             android:minLines="1"
-            android:textSize="@dimen/subtitle_text_size" />
+            android:textSize="@dimen/text_size_subtitle" />
 
         <com.dzenm.helper.view.EditText
             android:id="@+id/et_message"
@@ -43,7 +43,7 @@
             android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@dimen/padding_small"
             android:textCursorDrawable="@drawable/edit_cursor_drawable"
-            android:textSize="@dimen/subtitle_text_size"
+            android:textSize="@dimen/text_size_subtitle"
             android:visibility="gone" />
 
         <View

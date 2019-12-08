@@ -69,7 +69,9 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
         if (layoutId() != -1) {
             if (isDataBinding()) {
                 ViewDataBinding v = DataBindingUtil.inflate(inflater, layoutId(), container, false);
-                mDecorView = v.getRoot();
+                if (v != null) {
+                    mDecorView = v.getRoot();
+                }
                 initializeView(savedInstanceState, v);
             } else {
                 mDecorView = inflater.inflate(layoutId(), container, false);

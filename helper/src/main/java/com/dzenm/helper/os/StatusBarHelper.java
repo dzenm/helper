@@ -15,7 +15,6 @@ import androidx.annotation.ColorRes;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.dzenm.helper.R;
@@ -201,13 +200,13 @@ public class StatusBarHelper {
         ViewGroup contentView = activity.findViewById(android.R.id.content);
         View rootView = contentView.getChildAt(0);
         int statusBarHeight = getStatusBarHeight(activity);
-        if (rootView instanceof CoordinatorLayout) {
-            CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView;
-            coordinatorLayout.setStatusBarBackgroundColor(calculateColorByAlpha(color, statusBarAlpha));
-        } else {
-            contentView.setPadding(0, statusBarHeight, 0, 0);
-            contentView.setBackgroundColor(calculateColorByAlpha(color, statusBarAlpha));
-        }
+//        if (rootView instanceof CoordinatorLayout) {
+//            CoordinatorLayout coordinatorLayout = (CoordinatorLayout) rootView;
+//            coordinatorLayout.setStatusBarBackgroundColor(calculateColorByAlpha(color, statusBarAlpha));
+//        } else {
+//        }
+        contentView.setPadding(0, statusBarHeight, 0, 0);
+        contentView.setBackgroundColor(calculateColorByAlpha(color, statusBarAlpha));
         setColor(activity, android.R.color.transparent);
     }
 

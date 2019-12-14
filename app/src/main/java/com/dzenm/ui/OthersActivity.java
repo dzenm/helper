@@ -55,7 +55,7 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
                     .setTitle("请输入要分享的内容")
                     .setMessage("新月已生飞鸟外，落霞更在夕阳西")
                     .setButtonText("分享", "取消")
-                    .setOnDialogClickListener(new EditDialog.OnEditClickListener() {
+                    .setOnClickListener(new EditDialog.OnEditClickListener() {
                         @Override
                         public boolean onClick(EditDialog dialog, boolean confirm) {
                             if (confirm) {
@@ -97,7 +97,7 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
                     InfoDialog.newInstance(OthersActivity.this)
                             .setTitle("图片选择回调")
                             .setMessage(filePath)
-                            .setOnDialogClickListener(null)
+                            .setOnClickListener(null)
                             .show();
                     binding.ivImage.setImageBitmap(FileHelper.getInstance().getPhoto(filePath));
                     return false;

@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -19,6 +21,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.dzenm.helper.R;
+import com.dzenm.helper.animator.AnimatorHelper;
+import com.dzenm.helper.animator.OptAnimationLoader;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
@@ -37,7 +41,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     /**
      * 根布局, 用于设置dialog显示颜色和圆角大小, 以及dialog的长宽, 或者寻找子View的ID
      */
-    protected View mView;
+    protected View mView, mContentView;
 
     /**
      * dialog显示的背景, 通过设置根布局的背景mView.setBackground(mBackground)设置dialog的背景
@@ -128,6 +132,8 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      */
     protected float mRadiusCard = DEFAULT_RADIUS;
 
+    protected Dialog mDialog;
+
     /**
      * 是否在View和View之间添加分割线 {@link #setDivide(boolean)}
      */
@@ -135,15 +141,10 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     protected boolean isMaterialDesign = false;
 
-    protected boolean isDefaultBackground = true;
+    protected boolean isDefaultBackground = true, isDefaultGravity = true,
+            isDefaultMargin = true, isDefaultAnimator = true;
 
-    protected boolean isDefaultGravity = true;
-
-    protected boolean isDefaultMargin = true;
-
-    protected boolean isDefaultAnimator = true;
-
-    protected OnDialogClickListener mOnDialogClickListener;
+    protected OnClickListener mOnClickListener;
 
     static {
         // 开启在TextView的drawableTop或者其他额外方式使用矢量图渲染
@@ -250,11 +251,11 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     }
 
     /**
-     * @param onDialogClickListener dialog的点击事件
+     * @param onClickListener dialog的点击事件
      * @return this
      */
-    public <T extends AbsDialogFragment> T setOnDialogClickListener(OnDialogClickListener onDialogClickListener) {
-        mOnDialogClickListener = onDialogClickListener;
+    public <T extends AbsDialogFragment> T setOnClickListener(OnClickListener onClickListener) {
+        mOnClickListener = onClickListener;
         return (T) this;
     }
 
@@ -330,7 +331,6 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     /************************************* 以下为实现过程 *********************************/
 
-
     public AbsDialogFragment(AppCompatActivity activity) {
         mActivity = activity;
     }
@@ -375,10 +375,19 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
+        mDialog = getDialog();
+        if (mDialog == null) {
+            return null;
+        }
         // 去掉dialog的标题，需要在setContentView()之前
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        mContentView = getWindow().getDecorView().findViewById(android.R.id.content);
         if (layoutId() != -1) mView = inflater.inflate(layoutId(), null);
         setDefaultTextColor();
 
@@ -421,12 +430,12 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        if (getDialog() != null) {
+        if (mDialog != null) {
             // 解决Dialog内存泄漏
             try {
-                getDialog().setOnShowListener(null);
-                getDialog().setOnDismissListener(null);
-                getDialog().setOnCancelListener(null);
+                mDialog.setOnShowListener(null);
+                mDialog.setOnDismissListener(null);
+                mDialog.setOnCancelListener(null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -443,6 +452,9 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      * 初始化dialog参数
      */
     private void initializeDialogParams() {
+//        Animation startAnimator = OptAnimationLoader.loadAnimation(mActivity,
+//                R.anim.dialog_scale_shrink_in);
+//        mContentView.setAnimation(startAnimator);
         setDialogMargin(mView);
         setAnimatorStyle();
         setWindowProperty(getWindow());
@@ -492,7 +504,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      */
     protected void setWindowProperty(Window window) {
         // 设置是否可以通过点击dialog之外的区域取消显示dialog
-        getDialog().setCanceledOnTouchOutside(isTouchInOutSideCancel);
+        mDialog.setCanceledOnTouchOutside(isTouchInOutSideCancel);
 
         // 设置dialog显示的位置。
         WindowManager.LayoutParams attributes = window.getAttributes();
@@ -504,6 +516,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
         // dialog动画
         window.setWindowAnimations(mAnimator);
+
         // dialog背景
         mView.setBackground(mBackground);
 
@@ -521,9 +534,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     }
 
     protected Window getWindow() {
-        Dialog dialog = getDialog();
-        if (dialog == null) return mActivity.getWindow();
-        Window window = getDialog().getWindow();
+        Window window = mDialog.getWindow();
         if (window == null) return mActivity.getWindow();
         return window;
     }
@@ -558,15 +569,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
         return mActivity.getResources().getColor(id);
     }
 
-    /**
-     * @param id 尺寸id(位于 res/values/dimen.xml)
-     * @return dp值
-     */
-    protected float getDimension(int id) {
-        return mActivity.getResources().getDimension(id);
-    }
-
-    public interface OnDialogClickListener<T extends AbsDialogFragment> {
+    private interface OnDialogClickListener<T extends AbsDialogFragment> {
 
         /**
          * @param dialog  当前显示的Dialog
@@ -574,6 +577,14 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
          * @return 返回true表示，点击之后会dismiss dialog， 返回false不dismiss dialog
          */
         boolean onClick(T dialog, boolean confirm);
+    }
+
+    public abstract static class OnClickListener<T extends AbsDialogFragment> implements OnDialogClickListener<T> {
+
+        @Override
+        public boolean onClick(T dialog, boolean confirm) {
+            return true;
+        }
     }
 
 }

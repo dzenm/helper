@@ -95,14 +95,6 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
      */
     private boolean catchCaughtException(Throwable ex) {
         if (ex == null) return false;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                Toast.makeText(mContext, "程序发生崩溃，请重新打开", Toast.LENGTH_SHORT).show();
-                Looper.loop();
-            }
-        }).start();
 
         String exception = printCrashExceptionMessage(ex);                         // 输出异常信息
         Map<String, String> phoneMessage = printPhoneMessage();                    // 收集设备参数信息

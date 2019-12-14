@@ -4,10 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.app.AppCompatDialog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +11,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatDialog;
+
 import com.dzenm.helper.R;
+import com.dzenm.helper.animator.AnimatorHelper;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
@@ -53,7 +55,6 @@ public abstract class AbsDialog extends AppCompatDialog {
      * 做一些限制, 改变居中时的宽度
      */
     protected int mCenterWidth = ScreenHelper.getDisplayWidth() - 10 * mMargin;
-
 
     /**
      * dialog显示的位置，默认显示在中间, 调用 {@link Gravity} 里的值设置
@@ -110,7 +111,7 @@ public abstract class AbsDialog extends AppCompatDialog {
 
     protected boolean isDefaultAnimator = true;
 
-    protected OnDialogClickListener mOnDialogClickListener;
+    protected OnClickListener mOnClickListener;
 
     static {
         // 开启在TextView的drawableTop或者其他额外方式使用矢量图渲染
@@ -209,14 +210,13 @@ public abstract class AbsDialog extends AppCompatDialog {
     }
 
     /**
-     * @param onDialogClickListener dialog的点击事件
+     * @param onClickListener dialog的点击事件
      * @return this
      */
-    public <T extends AbsDialog> T setOnDialogClickListener(OnDialogClickListener onDialogClickListener) {
-        mOnDialogClickListener = onDialogClickListener;
+    public <T extends AbsDialog> T setOnDialogClickListener(OnClickListener onClickListener) {
+        mOnClickListener = onClickListener;
         return (T) this;
     }
-
 
     /**
      * 创建并显示Dialog，放在最后调用
@@ -389,12 +389,19 @@ public abstract class AbsDialog extends AppCompatDialog {
         return mGravity == Gravity.CENTER;
     }
 
-    public interface OnDialogClickListener<T extends AbsDialog> {
+    private interface OnDialogClickListener<T extends AbsDialog> {
         /**
          * @param dialog  Dialog
          * @param confirm 是否是确定按钮，通过这个判断点击的是哪个按钮
          * @return 返回true表示，点击之后会dismiss dialog， 返回false不dismiss dialog
          */
         boolean onClick(T dialog, boolean confirm);
+    }
+
+    public abstract static class OnClickListener<T extends AbsDialog> implements OnDialogClickListener<T> {
+        @Override
+        public boolean onClick(T dialog, boolean confirm) {
+            return true;
+        }
     }
 }

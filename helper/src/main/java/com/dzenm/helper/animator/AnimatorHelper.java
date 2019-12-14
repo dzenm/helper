@@ -1,4 +1,4 @@
-package com.dzenm.helper.dialog;
+package com.dzenm.helper.animator;
 
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;

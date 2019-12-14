@@ -291,7 +291,7 @@ public final class PermissionManager implements DialogHelper.OnBindViewHolder {
         String negativeText = mRequestMode == MODE_REPEAT ? "进入授权" : isRationaleAll() ? "进入授权" : "取消";
         getInfoDialog("拒绝授予权限将导致程序运行出现不可预料的错误, 请前往设置手动授予权限")
                 .setButtonText("手动设置", negativeText)
-                .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+                .setOnClickListener(new InfoDialog.OnInfoClickListener() {
                     @Override
                     public boolean onClick(InfoDialog dialog, boolean confirm) {
                         if (confirm) {  // 点击确定按钮,进入设置页面
@@ -318,7 +318,7 @@ public final class PermissionManager implements DialogHelper.OnBindViewHolder {
     private void openFailedDialog() {
         getInfoDialog("拒绝授予程序运行需要的权限, 将出现不可预知的错误, 请授予权限后继续操作")
                 .setButtonText("确定")
-                .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+                .setOnClickListener(new InfoDialog.OnInfoClickListener() {
                     @Override
                     public boolean onClick(InfoDialog dialog, boolean confirm) {
                         // 回调请求结果

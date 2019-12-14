@@ -271,7 +271,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
             public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
                 InfoDialog.newInstance(AbsWebActivity.this)
                         .setTitle("是否确定？")
-                        .setMessage(message).setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+                        .setMessage(message).setOnClickListener(new InfoDialog.OnInfoClickListener() {
                     @Override
                     public boolean onClick(InfoDialog dialog, boolean confirm) {
                         if (confirm) {
@@ -292,11 +292,11 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
                 EditDialog.newInstance(AbsWebActivity.this)
                         .setTitle(message)
                         .setMessage(defaultValue)
-                        .setOnDialogClickListener(new EditDialog.OnEditClickListener() {
+                        .setOnClickListener(new EditDialog.OnEditClickListener() {
                             @Override
                             public boolean onClick(EditDialog dialog, boolean confirm) {
                                 if (confirm) {
-                                    result.confirm(((EditDialog) dialog).getMessage());
+                                    result.confirm((dialog).getMessage());
                                 } else {
                                     result.cancel();
                                 }

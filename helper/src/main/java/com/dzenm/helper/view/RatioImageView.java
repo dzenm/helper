@@ -145,7 +145,7 @@ public class RatioImageView extends AppCompatImageView {
     public void draw(Canvas canvas) {
         // 保存图片
         int w = getWidth(), h = getHeight();
-        canvas.saveLayer(getRectF(), null, Canvas.ALL_SAVE_FLAG);
+        canvas.saveLayer(getOriginRectF(), null, Canvas.ALL_SAVE_FLAG);
         super.draw(canvas);
 
         mPaint.reset();
@@ -174,7 +174,7 @@ public class RatioImageView extends AppCompatImageView {
             float radius = (Math.min(w, h) / 2.0f);
             targetPath.addCircle(w / 2.0f, h / 2.0f, radius, Path.Direction.CW);
         } else {
-            targetPath.addRoundRect(getRectF(), getRadii(0), Path.Direction.CW);
+            targetPath.addRoundRect(getOriginRectF(), getRadii(0), Path.Direction.CW);
         }
         // 将目标图片的Path和原始图片的Path取目标图片没有的部分, 裁剪原始图片
         path.op(targetPath, Path.Op.DIFFERENCE);
@@ -187,9 +187,9 @@ public class RatioImageView extends AppCompatImageView {
      * @return 原图片大小的Path
      */
     private Path getOriginImagePath() {
-        Path imagePath = new Path();
-        imagePath.addRect(getRectF(), Path.Direction.CW);
-        return imagePath;
+        Path path = new Path();
+        path.addRect(getOriginRectF(), Path.Direction.CW);
+        return path;
     }
 
     /**
@@ -211,7 +211,7 @@ public class RatioImageView extends AppCompatImageView {
      *
      * @return 和原图片大小相同的区域
      */
-    private RectF getRectF() {
+    private RectF getOriginRectF() {
         return new RectF(0, 0, getWidth(), getHeight());
     }
 

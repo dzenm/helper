@@ -149,6 +149,6 @@ public class EditDialog extends InfoDialog implements TextWatcher {
 
     }
 
-    public interface OnEditClickListener extends OnDialogClickListener<EditDialog> {
+    public abstract static class OnEditClickListener extends OnClickListener<EditDialog> {
     }
 }

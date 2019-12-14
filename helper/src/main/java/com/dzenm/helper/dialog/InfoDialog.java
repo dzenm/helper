@@ -251,12 +251,11 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
     }
 
     @Override
-    public InfoDialog setOnDialogClickListener(OnDialogClickListener onDialogClickListener) {
-        return super.setOnDialogClickListener(onDialogClickListener);
+    public InfoDialog setOnClickListener(OnClickListener onClickListener) {
+        return super.setOnClickListener(onClickListener);
     }
 
     /************************************* 以下为实现过程 *********************************/
-
     public InfoDialog(AppCompatActivity activity) {
         super(activity);
     }
@@ -478,21 +477,21 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        if (mOnDialogClickListener != null) {
-            if (view.getId() == R.id.tv_positive) {
-                if (mOnDialogClickListener.onClick(this, true)) dismiss();
-            } else if (view.getId() == R.id.tv_negative) {
-                if (mOnDialogClickListener == null) {
-                    dismiss();
-                } else {
-                    if (mOnDialogClickListener.onClick(this, false)) dismiss();
-                }
+        if (view.getId() == R.id.tv_positive) {
+            if (mOnClickListener == null) {
+                dismiss();
+            } else {
+                if (mOnClickListener.onClick(this, true)) dismiss();
             }
-        } else {
-            dismiss();
+        } else if (view.getId() == R.id.tv_negative) {
+            if (mOnClickListener == null) {
+                dismiss();
+            } else {
+                if (mOnClickListener.onClick(this, false)) dismiss();
+            }
         }
     }
 
-    public interface OnInfoClickListener extends OnDialogClickListener<InfoDialog> {
+    public abstract static class OnInfoClickListener extends OnClickListener<InfoDialog> {
     }
 }

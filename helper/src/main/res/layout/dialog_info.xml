@@ -7,10 +7,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_title_icon"
-            android:layout_width="@dimen/icon_size_normal"
-            android:layout_height="@dimen/icon_size_normal"
+            android:layout_width="@dimen/icon_size_big"
+            android:layout_height="@dimen/icon_size_big"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/padding_big"
             android:visibility="gone" />
@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxHeight="@dimen/avatar_big_size"
+            android:textStyle="bold"
             android:maxLines="1"
             android:textSize="@dimen/text_size_appbar" />
 

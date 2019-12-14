@@ -162,7 +162,7 @@ public class PickerDialog extends AbsDialogFragment implements View.OnClickListe
         DrawableHelper.radiusTL(mRadiusCard)
                 .pressed(android.R.color.transparent, mPressedColor)
                 .into(tvCancel);
-        DrawableHelper.radiusBR(mRadiusCard)
+        DrawableHelper.radiusTR(mRadiusCard)
                 .pressed(android.R.color.transparent, mPressedColor)
                 .into(tvConfirm);
 

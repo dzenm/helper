@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.R;
+import com.dzenm.helper.animator.AnimatorHelper;
 import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.download.NotificationType;
 import com.dzenm.helper.draw.DrawableHelper;
@@ -368,7 +369,7 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
                 .setTitle(title)
                 .setMessage(msg)
                 .setButtonText("确定")
-                .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+                .setOnClickListener(new InfoDialog.OnInfoClickListener() {
                     @Override
                     public boolean onClick(InfoDialog dialog, boolean confirm) {
                         return true;

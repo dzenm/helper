@@ -235,7 +235,11 @@ public class NetworkHelper {
      * 打开设置网络界面
      */
     public static void setNetworkSetting(final Context context) {
-        InfoDialog.newInstance((AppCompatActivity) context).setTitle("网络异常提示").setMessage("网络连接不可用,是否进行设置?").setButtonText("设置", "取消").setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+        InfoDialog.newInstance((AppCompatActivity) context)
+                .setTitle("网络异常提示")
+                .setMessage("网络连接不可用,是否进行设置?")
+                .setButtonText("设置", "取消")
+                .setOnClickListener(new InfoDialog.OnInfoClickListener() {
             @Override
             public boolean onClick(InfoDialog dialog, boolean confirm) {
                 if (confirm) {
@@ -254,7 +258,11 @@ public class NetworkHelper {
      */
     public static void setNetworkError(Context context) {
         //提示对话框
-        InfoDialog.newInstance((AppCompatActivity) context).setTitle("网络异常提示").setMessage("网络连接异常，请再试一次?").setButtonText("确定").setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+        InfoDialog.newInstance((AppCompatActivity) context)
+                .setTitle("网络异常提示")
+                .setMessage("网络连接异常，请再试一次?")
+                .setButtonText("确定")
+                .setOnClickListener(new InfoDialog.OnInfoClickListener() {
             @Override
             public boolean onClick(InfoDialog dialog, boolean confirm) {
                 return true;

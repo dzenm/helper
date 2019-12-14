@@ -126,9 +126,9 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setMessage("Material Design样式下的dialog必须有标题的, 如果没有设置, 将有一个默认的标题：\"温馨提示\", " +
                             "其它样式是可以设置无标题的, 千万别忘了设置message, 否则将不会有任务提示出现在dialog, 仅仅有两个按钮存在")
                     .setMaterialDesign(true)
-                    .setOnDialogClickListener(new InfoDialog.OnDialogClickListener<InfoDialog>() {
+                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
                         @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
+                        public boolean onClick(final InfoDialog dialog, boolean confirm) {
                             if (confirm) {
                                 InfoDialog.newInstance(DialogActivity.this)
                                         .setMessage("这是一个Material Design样式的dialog, 在代码里未设置标题, " +
@@ -153,7 +153,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setButtonTextColor(android.R.color.holo_blue_light)
                     .setButtonText("文本", "颜色")
                     .setMaterialDesign(true)
-                    .setOnDialogClickListener(new InfoDialog.OnDialogClickListener<InfoDialog>() {
+                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
@@ -188,7 +188,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setMessage("有时候存在只需要一个按钮的情况, 所以预置了单按钮的选项, 只需要设置一个按钮的文本内容, " +
                             "将会自动只显示一个按钮")
                     .setButtonText("普通样式", "Material Design")
-                    .setOnDialogClickListener(new InfoDialog.OnDialogClickListener<InfoDialog>() {
+                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
@@ -214,7 +214,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setMessage("直接设置圆角, 通过setRadiusCard方法设置, 如果设置了背景, 那么将会复杂一些, " +
                             "设置了背景之后也还是需要设置setRadiusCard, 因为按钮点击时有按压效果的圆角")
                     .setButtonText("圆角", "背景加圆角")
-                    .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+                    .setOnClickListener(new InfoDialog.OnInfoClickListener() {
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
@@ -241,7 +241,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setMessage("当dialog显示在center时, 基本上不需要设置margin, 但如果一定需要设置, " +
                             "也可以通过setMargin方法设置, 一般显示的bottom或者top时, 设置margin可以显示出不一样的效果")
                     .setButtonText("无边距", "有边距")
-                    .setOnDialogClickListener(new InfoDialog.OnDialogClickListener<InfoDialog>() {
+                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
@@ -274,7 +274,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                             "当前显示的是一个IOS样式的dialog")
                     .setButtonText("无分割线", "Material Design")
                     .setDivide(true)
-                    .setOnDialogClickListener(new InfoDialog.OnDialogClickListener<InfoDialog>() {
+                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
@@ -307,7 +307,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setMessage("dialog的位置是通过Gravity类来设置, 常用的有bottom和top")
                     .setButtonText("bottom", "top")
                     .setMaterialDesign(true)
-                    .setOnDialogClickListener(new InfoDialog.OnDialogClickListener<InfoDialog>() {
+                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
@@ -333,7 +333,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
             InfoDialog.newInstance(this)
                     .setMessage("查看编辑框显示风格")
                     .setButtonText("无边框", "有边框")
-                    .setOnDialogClickListener(new InfoDialog.OnDialogClickListener<InfoDialog>() {
+                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
@@ -398,7 +398,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setTitle("提示")
                     .setMessage("PopupWindow覆盖在dialog之上")
                     .setGravity(Gravity.TOP)
-                    .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+                    .setOnClickListener(new InfoDialog.OnInfoClickListener() {
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
@@ -435,7 +435,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .setTitle("提示")
                     .setMessage("日期选择器")
                     .setButtonText("循环查看", "指定初始日期")
-                    .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+                    .setOnClickListener(new InfoDialog.OnInfoClickListener() {
                         @Override
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {

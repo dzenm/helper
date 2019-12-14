@@ -110,7 +110,7 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
         log("当前设备支持NFC");
         if (!nfcAdapter.isEnabled()) {     // 判断设备NFC功能是否打开
             getDefaultDialogSetting("NFC未开启, 暂无法使用NFC功能, 是否进入NFC设置页面手动开启?")
-                    .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+                    .setOnClickListener(new InfoDialog.OnInfoClickListener() {
                         @Override
                         public boolean onClick(InfoDialog infoDialog, boolean b) {
                             if (b) {
@@ -282,7 +282,7 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
         if (isShowDialog) {
             getDefaultDialogSetting(message)
                     .setButtonText("确定")
-                    .setOnDialogClickListener(null)
+                    .setOnClickListener(null)
                     .show();
         } else if (mTextView == null) {
             mTextView.setText(message);

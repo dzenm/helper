@@ -78,7 +78,7 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
                 InfoDialog.newInstance(this)
                         .setTitle("提示")
                         .setMessage("是否前往设置页面打开通知权限")
-                        .setOnDialogClickListener(new InfoDialog.OnInfoClickListener() {
+                        .setOnClickListener(new InfoDialog.OnInfoClickListener() {
                             @Override
                             public boolean onClick(InfoDialog dialog, boolean confirm) {
                                 if (confirm) {

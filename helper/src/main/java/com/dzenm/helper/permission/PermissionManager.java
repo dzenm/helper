@@ -334,8 +334,8 @@ public final class PermissionManager implements DialogHelper.OnBindViewHolder {
     private void openPromptPermissionDialog() {
         DialogHelper.newInstance(mActivity)
                 .setLayout(R.layout.dialog_permission_prompt)
-                .setCancel(false)
                 .setOnBindViewHolder(this)
+                .setCancel(false)
                 .setBackground(DrawableHelper.solid(android.R.color.white)
                         .radius(10)
                         .build())

@@ -1,14 +1,18 @@
 package com.dzenm.helper.dialog;
 
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.CountDownTimer;
-import androidx.annotation.IntDef;
-import androidx.appcompat.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.draw.DrawableHelper;
@@ -42,7 +46,6 @@ import java.lang.annotation.RetentionPolicy;
  *        }).show();
  * </pre>
  */
-@SuppressLint("ValidFragment")
 public class LoginDialog extends AbsDialogFragment implements View.OnClickListener {
 
     private static final int TYPE_LOGIN = 101;
@@ -145,56 +148,6 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
         return this;
     }
 
-    @Override
-    public LoginDialog setMargin(int margin) {
-        return super.setMargin(margin);
-    }
-
-    @Override
-    public LoginDialog setGravity(int gravity) {
-        return super.setGravity(gravity);
-    }
-
-    @Override
-    public LoginDialog setAnimator(int animator) {
-        return super.setAnimator(animator);
-    }
-
-    @Override
-    public LoginDialog setBackground(Drawable background) {
-        return super.setBackground(background);
-    }
-
-    @Override
-    public LoginDialog setCenterWidth(int width) {
-        return super.setCenterWidth(width);
-    }
-
-    @Override
-    public LoginDialog setPrimaryColor(int primaryColor) {
-        return super.setPrimaryColor(primaryColor);
-    }
-
-    @Override
-    public LoginDialog setSecondaryColor(int secondaryColor) {
-        return super.setSecondaryColor(secondaryColor);
-    }
-
-    @Override
-    public LoginDialog setTranslucent(boolean translucent) {
-        return super.setTranslucent(translucent);
-    }
-
-    @Override
-    public LoginDialog setCancel(boolean cancel) {
-        return super.setCancel(cancel);
-    }
-
-    @Override
-    public LoginDialog setTouchInOutSideCancel(boolean cancel) {
-        return super.setTouchInOutSideCancel(cancel);
-    }
-
     /************************************* 以下为实现过程 *********************************/
 
     public LoginDialog(AppCompatActivity activity) {
@@ -208,7 +161,7 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
     }
 
     @Override
-    protected void initView() {
+    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
         tvLogin = findViewById(R.id.tv_login);
         tvRegister = findViewById(R.id.tv_register);
 
@@ -234,11 +187,11 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
         tvCountdown.setOnClickListener(this);
 
         // 登陆按钮和取消按钮点击颜色效果
-        DrawableHelper.radiusBR(mRadiusCard).pressed(mPressedColor).into(tvConfirm);
-        DrawableHelper.radiusBL(mRadiusCard).pressed(mPressedColor).into(tvCancel);
+        DrawableHelper.radiusBR(mBackgroundRadius).pressed(mPressedColor).into(tvConfirm);
+        DrawableHelper.radiusBL(mBackgroundRadius).pressed(mPressedColor).into(tvCancel);
 
         // 默认Tab及Tab文本点击颜色样式
-        setClickChangeTabStyle(tvLogin, tvRegister, mRadiusCard, 0f);
+        setClickChangeTabStyle(tvLogin, tvRegister, mBackgroundRadius, 0f);
 
         // 设置输入框是否是Material Design颜色样式
         setEditTextStyle(tvCountdown, etUsername, etPassword, etVerifyCode, line_1, line_2);
@@ -327,10 +280,10 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
         if (mTabType == type) return;
         mTabType = type;
         if (isTabLogin()) {             // 当前选中的Tab为登陆按钮
-            setClickChangeTabStyle(tvLogin, tvRegister, mRadiusCard, 0);
+            setClickChangeTabStyle(tvLogin, tvRegister, mBackgroundRadius, 0);
             setLoginType(false);
         } else {                        // 当前选中的Tab为注册按钮
-            setClickChangeTabStyle(tvRegister, tvLogin, 0, mRadiusCard);
+            setClickChangeTabStyle(tvRegister, tvLogin, 0, mBackgroundRadius);
             setLoginType(true);
         }
         reset();

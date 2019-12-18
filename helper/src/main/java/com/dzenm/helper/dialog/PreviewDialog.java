@@ -1,12 +1,15 @@
 package com.dzenm.helper.dialog;
 
-import android.annotation.SuppressLint;
 import android.graphics.PointF;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.draw.DrawableHelper;
@@ -85,10 +88,8 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
         return true;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
-    protected void initView() {
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
         RelativeLayout relativeLayout = new RelativeLayout(mActivity);
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -97,6 +98,7 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
         mImageView.setLayoutParams(imageParams);
 
         relativeLayout.setOnTouchListener(this);
+        relativeLayout.setLayoutParams(imageParams);
         relativeLayout.addView(mImageView);
         mView = relativeLayout;
         mBackground = DrawableHelper.solid(android.R.color.transparent).build();

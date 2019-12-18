@@ -1,14 +1,17 @@
 package com.dzenm.helper.dialog;
 
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.draw.DrawableHelper;
@@ -34,7 +37,6 @@ import com.dzenm.helper.os.OsHelper;
  *          .show();
  * </pre>
  */
-@SuppressLint("ValidFragment")
 public class MenuDialog extends AbsDialogFragment implements View.OnClickListener {
 
     /**
@@ -67,70 +69,10 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
         return this;
     }
 
-    @Override
-    public MenuDialog setMargin(int margin) {
-        return super.setMargin(margin);
-    }
-
-    @Override
-    public MenuDialog setGravity(int gravity) {
-        return super.setGravity(gravity);
-    }
-
-    @Override
-    public MenuDialog setAnimator(int animator) {
-        return super.setAnimator(animator);
-    }
-
-    @Override
-    public MenuDialog setBackground(Drawable background) {
-        return super.setBackground(background);
-    }
-
-    @Override
-    public MenuDialog setCenterWidth(int width) {
-        return super.setCenterWidth(width);
-    }
-
-    @Override
-    public MenuDialog setPrimaryColor(int primaryColor) {
-        return super.setPrimaryColor(primaryColor);
-    }
-
-    @Override
-    public MenuDialog setSecondaryColor(int secondaryColor) {
-        return super.setSecondaryColor(secondaryColor);
-    }
-
-    @Override
-    public MenuDialog setTranslucent(boolean translucent) {
-        return super.setTranslucent(translucent);
-    }
-
-    @Override
-    public MenuDialog setCancel(boolean cancel) {
-        return super.setCancel(cancel);
-    }
-
-    @Override
-    public MenuDialog setTouchInOutSideCancel(boolean cancel) {
-        return super.setTouchInOutSideCancel(cancel);
-    }
-
-    @Override
-    public MenuDialog setDivide(boolean divide) {
-        return super.setDivide(divide);
-    }
-
-    @Override
-    public MenuDialog setRadiusCard(float radiusCard) {
-        return super.setRadiusCard(radiusCard);
-    }
-
     /************************************* 以下为实现过程 *********************************/
 
     @Override
-    protected void initView() {
+    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
         setTouchInOutSideCancel(true);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -201,11 +143,11 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
             return new float[]{0, 0, 0, 0};
         } else {
             if (position == 0 && items.length > 1) {
-                return new float[]{mRadiusCard, mRadiusCard, 0, 0};
+                return new float[]{mBackgroundRadius, mBackgroundRadius, 0, 0};
             } else if (position == items.length - 1 && items.length > 1) {
-                return new float[]{0, 0, mRadiusCard, mRadiusCard};
+                return new float[]{0, 0, mBackgroundRadius, mBackgroundRadius};
             } else if (items.length == 1) {
-                return new float[]{mRadiusCard, mRadiusCard, mRadiusCard, mRadiusCard};
+                return new float[]{mBackgroundRadius, mBackgroundRadius, mBackgroundRadius, mBackgroundRadius};
             } else {
                 return new float[]{0, 0, 0, 0};
             }

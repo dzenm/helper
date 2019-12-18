@@ -1,10 +1,10 @@
 package com.dzenm.helper.dialog;
 
-import android.annotation.SuppressLint;
 import android.app.DownloadManager;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.R;
@@ -37,7 +38,6 @@ import com.dzenm.helper.view.ProgressBar;
  *         .update();
  * </pre>
  */
-@SuppressLint("ValidFragment")
 public class UpGradeDialog extends AbsDialogFragment implements View.OnClickListener, DownloadHelper.OnDownloadListener {
 
     /**
@@ -200,46 +200,6 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
         return this;
     }
 
-    @Override
-    public UpGradeDialog setMargin(int margin) {
-        return super.setMargin(margin);
-    }
-
-    @Override
-    public UpGradeDialog setGravity(int gravity) {
-        return super.setGravity(gravity);
-    }
-
-    @Override
-    public UpGradeDialog setAnimator(int animator) {
-        return super.setAnimator(animator);
-    }
-
-    @Override
-    public UpGradeDialog setBackground(Drawable background) {
-        return super.setBackground(background);
-    }
-
-    @Override
-    public UpGradeDialog setTranslucent(boolean translucent) {
-        return super.setTranslucent(translucent);
-    }
-
-    @Override
-    public UpGradeDialog setCancel(boolean cancel) {
-        return super.setCancel(cancel);
-    }
-
-    @Override
-    public UpGradeDialog setTouchInOutSideCancel(boolean cancel) {
-        return super.setTouchInOutSideCancel(cancel);
-    }
-
-    @Override
-    public UpGradeDialog setRadiusCard(float radiusCard) {
-        return super.setRadiusCard(radiusCard);
-    }
-
     /************************************* 以下为实现过程 *********************************/
 
     @Override
@@ -259,7 +219,7 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
     }
 
     @Override
-    protected void initView() {
+    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
         ImageView ivHead = findViewById(R.id.iv_header);
         TextView tvVersion = findViewById(R.id.tv_version);
         TextView tvSize = findViewById(R.id.tv_size);
@@ -291,12 +251,12 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
             tvDesc.setTextColor(mSecondaryTextColor);
         }
 
-        DrawableHelper.solid(android.R.color.white).radiusBR(mRadiusCard).radiusBL(mRadiusCard).into(llContent);
+        DrawableHelper.solid(android.R.color.white).radiusBR(mBackgroundRadius).radiusBL(mBackgroundRadius).into(llContent);
 
         // 升级按钮
         tvUpgrade = findViewById(R.id.tv_upgrade);
         tvUpgrade.setOnClickListener(this);
-        DrawableHelper.radius(mRadiusCard)
+        DrawableHelper.radius(mBackgroundRadius)
                 .pressed(mStyleColor, mPressedColor)
                 .textColor(android.R.color.white, mStyleColor)
                 .into(tvUpgrade);
@@ -308,7 +268,11 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
     }
 
     @Override
-    protected void setLayoutParams(ViewGroup.MarginLayoutParams layoutParams) {
+    protected void setLayoutParams(
+            ViewGroup.MarginLayoutParams layoutParams,
+            int centerWidth,
+            int margin
+    ) {
         // 设置dialog的宽度
         layoutParams.width = (int) (ScreenHelper.getDisplayWidth() * 0.7);
     }

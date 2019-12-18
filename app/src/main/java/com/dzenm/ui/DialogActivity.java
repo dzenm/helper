@@ -195,14 +195,14 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                 InfoDialog.newInstance(DialogActivity.this)
                                         .setTitle("温馨提示")
                                         .setMessage("这是普通效果的单按钮设置")
-                                        .setPrimaryColor(R.color.colorDarkBlue)
                                         .setButtonText("确定")
+                                        .setPrimaryColor(R.color.colorDarkBlue)
                                         .show();
                             } else {
                                 InfoDialog.newInstance(DialogActivity.this)
                                         .setMessage("这是Material Design样式下的单按钮效果")
-                                        .setMaterialDesign(true)
                                         .setButtonText("确定")
+                                        .setMaterialDesign(true)
                                         .show();
                             }
                             return false;
@@ -382,7 +382,6 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
         } else if (view.getId() == R.id.tv_112) {
             MenuDialog.newInstance(this)
                     .setItem("测试", "第二个", "取消", "确定")
-                    .setRadiusCard(2f)
                     .setOnItemClickListener(new MenuDialog.OnItemClickListener() {
                         @Override
                         public void onItemClick(int position) {
@@ -392,7 +391,8 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                 ToastHelper.show("取消");
                             }
                         }
-                    }).show();
+                    }).setRadiusCard(2f)
+                    .show();
         } else if (view.getId() == R.id.tv_113) {
             InfoDialog.newInstance(this)
                     .setTitle("提示")
@@ -440,27 +440,28 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                         public boolean onClick(InfoDialog dialog, boolean confirm) {
                             if (confirm) {
                                 DatePickerDialog.newInstance(DialogActivity.this)
+                                        .setRange("1970/1/1", "2019/8/1")
                                         .setLoop(true)
                                         .setTitle("")
-                                        .setRange("1970/1/1", "2019/8/1")
                                         .setOnSelectedCallback(new DatePickerDialog.OnSelectedCallback() {
                                             @Override
                                             public void onSelect(String date) {
 
                                             }
-                                        }).setMargin(0)
+                                        })
+                                        .setMargin(0)
                                         .show();
                             } else {
                                 DatePickerDialog.newInstance(DialogActivity.this)
-                                        .setSelected("2019-02-01")
                                         .setSeparator("-")
-                                        .setPrimaryColor(android.R.color.holo_green_light)
+                                        .setSelected("2019-02-01")
                                         .setOnSelectedCallback(new DatePickerDialog.OnSelectedCallback() {
                                             @Override
                                             public void onSelect(String date) {
                                                 ToastHelper.show(date);
                                             }
-                                        }).show();
+                                        }).setPrimaryColor(android.R.color.holo_green_light)
+                                        .show();
                             }
                             return false;
                         }

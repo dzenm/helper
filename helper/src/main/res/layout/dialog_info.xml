@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxHeight="@dimen/avatar_big_size"
-            android:textStyle="bold"
+            android:gravity="center"
             android:maxLines="1"
             android:textSize="@dimen/text_size_appbar" />
 
@@ -30,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="5"
+            android:gravity="center"
             android:minLines="1"
             android:textSize="@dimen/text_size_subtitle" />
 

@@ -2,11 +2,16 @@ package com.dzenm.helper.dialog;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.annotation.SuppressLint;
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.draw.DrawableHelper;
@@ -18,7 +23,6 @@ import java.util.ArrayList;
  * @author dzenm
  * @date 2019-08-25 22:54
  */
-@SuppressLint("ValidFragment")
 public class PickerDialog extends AbsDialogFragment implements View.OnClickListener, PickerView.onSelectListener {
 
     /**
@@ -129,7 +133,7 @@ public class PickerDialog extends AbsDialogFragment implements View.OnClickListe
     }
 
     @Override
-    protected void initView() {
+    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
         pvPrimary = findViewById(R.id.pv_primary);
         pvSecondary = findViewById(R.id.pv_secondary);
         pvUnit = findViewById(R.id.pv_unit);
@@ -159,10 +163,10 @@ public class PickerDialog extends AbsDialogFragment implements View.OnClickListe
         if (mTitle != null) tvTitle.setText(mTitle);
 
         // 设置按钮背景
-        DrawableHelper.radiusTL(mRadiusCard)
+        DrawableHelper.radiusTL(mBackgroundRadius)
                 .pressed(android.R.color.transparent, mPressedColor)
                 .into(tvCancel);
-        DrawableHelper.radiusTR(mRadiusCard)
+        DrawableHelper.radiusTR(mBackgroundRadius)
                 .pressed(android.R.color.transparent, mPressedColor)
                 .into(tvConfirm);
 
@@ -173,7 +177,8 @@ public class PickerDialog extends AbsDialogFragment implements View.OnClickListe
         setSelectedData();
     }
 
-    protected void initialViewData() { }
+    protected void initialViewData() {
+    }
 
     /**
      * 初始化List
@@ -227,7 +232,8 @@ public class PickerDialog extends AbsDialogFragment implements View.OnClickListe
     }
 
     @Override
-    public void onSelect(PickerView pickerView) { }
+    public void onSelect(PickerView pickerView) {
+    }
 
     /**
      * 联动的动画

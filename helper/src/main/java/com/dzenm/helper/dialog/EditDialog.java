@@ -1,14 +1,18 @@
 package com.dzenm.helper.dialog;
 
-import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.draw.DrawableHelper;
@@ -38,10 +42,7 @@ import com.dzenm.helper.view.EditText;
  *      }).show();
  * </pre>
  */
-@SuppressLint("ValidFragment")
 public class EditDialog extends InfoDialog implements TextWatcher {
-
-    private EditText editText;
 
     /************************************* 以下为自定义方法 *********************************/
 
@@ -55,17 +56,16 @@ public class EditDialog extends InfoDialog implements TextWatcher {
 
     @Override
     public String getMessage() {
-        return editText.getText().toString();
+        return binding.etMessage.getText().toString();
     }
 
     /************************************* 以下为实现过程 *********************************/
 
     @Override
-    protected void initView() {
-        super.initView();
-
-        editText = findViewById(R.id.et_message);
-        tvMessage.setVisibility(View.GONE);
+    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
+        super.initView(inflater, container, savedInstanceState2);
+        binding.tvMessage.setVisibility(View.GONE);
+        EditText editText = binding.etMessage;
         editText.setVisibility(View.VISIBLE);
 
         if (isShowCenter()) {
@@ -74,7 +74,7 @@ public class EditDialog extends InfoDialog implements TextWatcher {
             setEditTextMessageLayoutParams(isDivide ? 20 : 16, 32);
         }
 
-        int color = isDefaultBackground ? R.color.colorDivideDark : android.R.color.white;
+        int color = isDefaultBackground ? R.color.colorDivideDark : R.color.colorDivideLight;
         if (isMaterialDesign || !isDivide) {
             setEditUnderLineStyle(editText, getColor(color));
         } else {
@@ -112,20 +112,21 @@ public class EditDialog extends InfoDialog implements TextWatcher {
     }
 
     private void setEditTextMessageLayoutParams(int topMargin, int bottomMargin) {
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) editText.getLayoutParams();
+        LinearLayout.LayoutParams layoutParams =
+                (LinearLayout.LayoutParams) binding.etMessage.getLayoutParams();
         layoutParams.leftMargin = OsHelper.dp2px(20);
         layoutParams.topMargin = OsHelper.dp2px(topMargin);
         layoutParams.rightMargin = OsHelper.dp2px(20);
         layoutParams.bottomMargin = OsHelper.dp2px(bottomMargin);
-        editText.setLayoutParams(layoutParams);
+        binding.etMessage.setLayoutParams(layoutParams);
     }
 
     @Override
-    protected void setSingleButtonAndTitleStyle(TextView tvTitle, TextView tvNegative, TextView tvPositive, String title) {
-        super.setSingleButtonAndTitleStyle(tvTitle, tvNegative, tvPositive, title);
+    protected void setSingleButtonAndTitleStyle(String title) {
+        super.setSingleButtonAndTitleStyle(title);
         if (title == null) {
-            tvTitle.setText(getStrings(R.string.dialog_info));
-            tvTitle.setVisibility(View.VISIBLE);
+            binding.tvTitle.setText(getStrings(R.string.dialog_info));
+            binding.tvTitle.setVisibility(View.VISIBLE);
         }
     }
 
@@ -136,11 +137,11 @@ public class EditDialog extends InfoDialog implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (editText.getText().toString().trim().length() == 0) { // 监听输入框，没有内容时设置提示文字
-            editText.setHint(R.string.dialog_edit_hint);
-            tvPositive.setEnabled(false);
+        if (binding.etMessage.getText().toString().trim().length() == 0) { // 监听输入框，没有内容时设置提示文字
+            binding.etMessage.setHint(R.string.dialog_edit_hint);
+            binding.tvPositive.setEnabled(false);
         } else {
-            tvPositive.setEnabled(true);
+            binding.tvPositive.setEnabled(true);
         }
     }
 

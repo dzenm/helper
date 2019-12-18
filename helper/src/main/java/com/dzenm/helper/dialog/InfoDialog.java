@@ -1,17 +1,22 @@
 package com.dzenm.helper.dialog;
 
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import com.dzenm.helper.R;
+import com.dzenm.helper.databinding.DialogInfoBinding;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
@@ -42,8 +47,9 @@ import com.dzenm.helper.os.ScreenHelper;
  *      .show();
  * </pre>
  */
-@SuppressLint("ValidFragment")
 public class InfoDialog extends AbsDialogFragment implements View.OnClickListener {
+
+    protected DialogInfoBinding binding;
 
     /**
      * 提示框的标题 {@link #setTitle(int)}  or {@link #setTitle(String)})}
@@ -75,10 +81,6 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
      */
     private int mPositiveButtonTextColor = -1, mNegativeButtonTextColor = -1;
 
-    protected TextView tvMessage;
-
-    protected TextView tvPositive;
-
     /************************************* 以下为自定义方法 *********************************/
 
     public static InfoDialog newInstance(AppCompatActivity activity) {
@@ -92,6 +94,10 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
     public InfoDialog setTitle(String title) {
         mTitle = title;
         return this;
+    }
+
+    public String getTitle() {
+        return mTitle;
     }
 
     /**
@@ -119,6 +125,13 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
     public InfoDialog setMessage(String message) {
         mMessage = message;
         return this;
+    }
+
+    /**
+     * @return 获取输入的文本
+     */
+    public String getMessage() {
+        return binding.tvMessage.getText().toString();
     }
 
     /**
@@ -153,17 +166,6 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
     }
 
     /**
-     * @param positiveButtonTextColor 右边的确定按钮文本颜色
-     * @param negativeButtonTextColor 左边的取消按钮文本颜色
-     * @return this
-     */
-    public InfoDialog setButtonTextColor(int positiveButtonTextColor, int negativeButtonTextColor) {
-        mPositiveButtonTextColor = getColor(positiveButtonTextColor);
-        mNegativeButtonTextColor = getColor(negativeButtonTextColor);
-        return this;
-    }
-
-    /**
      * @param buttonTextColor 按钮文本颜色
      * @return this
      */
@@ -174,85 +176,14 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
     }
 
     /**
-     * @return 获取输入的文本
+     * @param positiveButtonTextColor 右边的确定按钮文本颜色
+     * @param negativeButtonTextColor 左边的取消按钮文本颜色
+     * @return this
      */
-    public String getMessage() {
-        return tvMessage.getText().toString();
-    }
-
-    @Override
-    public InfoDialog setMargin(int margin) {
-        return super.setMargin(margin);
-    }
-
-    @Override
-    public InfoDialog setGravity(int gravity) {
-        return super.setGravity(gravity);
-    }
-
-    @Override
-    public InfoDialog setAnimator(int animator) {
-        return super.setAnimator(animator);
-    }
-
-    @Override
-    public InfoDialog setBackground(Drawable background) {
-        return super.setBackground(background);
-    }
-
-    @Override
-    public InfoDialog setCenterWidth(int width) {
-        return super.setCenterWidth(width);
-    }
-
-    @Override
-    public InfoDialog setPrimaryColor(int primaryColor) {
-        return super.setPrimaryColor(primaryColor);
-    }
-
-    @Override
-    public InfoDialog setSecondaryColor(int secondaryColor) {
-        return super.setSecondaryColor(secondaryColor);
-    }
-
-    @Override
-    public InfoDialog setTranslucent(boolean translucent) {
-        return super.setTranslucent(translucent);
-    }
-
-    @Override
-    public InfoDialog setDimAccount(float dimAccount) {
-        return super.setDimAccount(dimAccount);
-    }
-
-    @Override
-    public InfoDialog setCancel(boolean cancel) {
-        return super.setCancel(cancel);
-    }
-
-    @Override
-    public InfoDialog setTouchInOutSideCancel(boolean cancel) {
-        return super.setTouchInOutSideCancel(cancel);
-    }
-
-    @Override
-    public InfoDialog setDivide(boolean divide) {
-        return super.setDivide(divide);
-    }
-
-    @Override
-    public InfoDialog setMaterialDesign(boolean materialDesign) {
-        return super.setMaterialDesign(materialDesign);
-    }
-
-    @Override
-    public InfoDialog setRadiusCard(float radiusCard) {
-        return super.setRadiusCard(radiusCard);
-    }
-
-    @Override
-    public InfoDialog setOnClickListener(OnClickListener onClickListener) {
-        return super.setOnClickListener(onClickListener);
+    public InfoDialog setButtonTextColor(int positiveButtonTextColor, int negativeButtonTextColor) {
+        mPositiveButtonTextColor = getColor(positiveButtonTextColor);
+        mNegativeButtonTextColor = getColor(negativeButtonTextColor);
+        return this;
     }
 
     /************************************* 以下为实现过程 *********************************/
@@ -266,109 +197,92 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
     }
 
     @Override
-    protected void initView() {
-        tvMessage = findViewById(R.id.tv_message);
-        tvPositive = findViewById(R.id.tv_positive);
-        TextView tvNegative = findViewById(R.id.tv_negative);
-        TextView tvTitle = findViewById(R.id.tv_title);
-        View line_1 = findViewById(R.id.line_1);
-        View line_2 = findViewById(R.id.line_2);
+    protected void initView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
+        binding = DataBindingUtil.inflate(inflater, layoutId(), container, false);
+        mView = binding.getRoot();
 
         // 默认设置
-        tvPositive.setOnClickListener(this);
-        tvNegative.setOnClickListener(this);
-        tvTitle.setTextColor(mPrimaryTextColor);
-        tvMessage.setTextColor(mPrimaryTextColor);
-        tvPositive.setTextColor(mSecondaryTextColor);
-        tvNegative.setTextColor(mSecondaryTextColor);
+        binding.tvPositive.setOnClickListener(this);
+        binding.tvNegative.setOnClickListener(this);
+        binding.tvTitle.setTextColor(mPrimaryTextColor);
+        binding.tvMessage.setTextColor(mSecondaryTextColor);
+        binding.tvPositive.setTextColor(mPrimaryTextColor);
+        binding.tvNegative.setTextColor(mPrimaryTextColor);
 
         if (isMaterialDesign) {
-            setMaterialDesignStyle(tvTitle, tvPositive, tvNegative);
-            tvMessage.setMaxLines(10);
+            binding.tvMessage.setMaxLines(10);
+            setMaterialDesignStyle();
         } else {
-            setUnMaterialDesignStyle(tvTitle, tvPositive, tvNegative);
+            setUnMaterialDesignStyle();
         }
 
-        setSingleButtonAndTitleStyle(tvTitle, tvPositive, tvNegative, mTitle);
-        setDivideStyle(line_1, line_2);
+        setSingleButtonAndTitleStyle(mTitle);
 
-        setDiyParamsStyle(tvNegative);
+        setDivideStyle(binding.line1, binding.line2);
+        setDiyParamsStyle();
     }
 
     /**
      * 设置Material Design样式
-     *
-     * @param tvTitle    标题
-     * @param tvPositive 右边的按钮
-     * @param tvNegative 左边的按钮
      */
-    protected void setMaterialDesignStyle(TextView tvTitle, TextView tvPositive, TextView tvNegative) {
-        LinearLayout linearLayout = findViewById(R.id.ll_button);
+    private void setMaterialDesignStyle() {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, OsHelper.dp2px(36));
         layoutParams.gravity = Gravity.END;
-        int marginVertical = OsHelper.dp2px(8);
-        int marginHorizontal = OsHelper.dp2px(8);
+        int marginVertical = OsHelper.dp2px(12);
+        int marginHorizontal = OsHelper.dp2px(16);
         layoutParams.setMargins(marginHorizontal, marginVertical, marginHorizontal, marginVertical);
-        linearLayout.setLayoutParams(layoutParams);
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        binding.llButton.setLayoutParams(layoutParams);
 
-        LinearLayout.LayoutParams positiveParams = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        tvPositive.setLayoutParams(positiveParams);
+        binding.tvPositive.setLayoutParams(params);
+        binding.tvNegative.setLayoutParams(params);
+
         int paddingHorizontal = OsHelper.dp2px(16);
+        binding.tvPositive.setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
+        binding.tvNegative.setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
 
-        tvPositive.setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
-        tvPositive.setGravity(Gravity.CENTER);
+        DrawableHelper.radius(2f).pressed(mPressedColor).into(binding.tvPositive);
+        DrawableHelper.radius(2f).pressed(mPressedColor).into(binding.tvNegative);
 
-        LinearLayout.LayoutParams negativeParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        tvNegative.setLayoutParams(negativeParams);
+        binding.tvTitle.setGravity(Gravity.START);
+        binding.tvMessage.setGravity(Gravity.START);
+        setTitleMargin(16);
+        setMessageMargin(8, 16);
 
-        tvNegative.setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
-        tvNegative.setGravity(Gravity.CENTER);
-
-        DrawableHelper.radius(2f).pressed(mPressedColor).into(tvPositive);
-        DrawableHelper.radius(2f).pressed(mPressedColor).into(tvNegative);
-
-        tvTitle.setGravity(Gravity.START);
-        tvMessage.setGravity(Gravity.START);
-        setTitleMargin(tvTitle, 20);
-        setMessageMargin(8, 24);
         mCenterWidth = (int) (ScreenHelper.getDisplayWidth() * 0.9);
     }
 
     /**
      * 设置非Material Design样式
-     *
-     * @param tvTitle    标题
-     * @param tvPositive 右边的按钮
-     * @param tvNegative 左边的按钮
      */
-    protected void setUnMaterialDesignStyle(TextView tvTitle, TextView tvPositive, TextView tvNegative) {
-        tvTitle.setGravity(Gravity.CENTER);
-        tvMessage.post(mRunnable);
-        DrawableHelper.radiusBR(mRadiusCard)
+    protected void setUnMaterialDesignStyle() {
+        binding.tvMessage.post(mRunnable);
+        DrawableHelper.radiusBR(mBackgroundRadius)
                 .pressed(mPressedColor)
-                .into(tvPositive);
-        DrawableHelper.radiusBL(mRadiusCard)
+                .into(binding.tvPositive);
+        DrawableHelper.radiusBL(mBackgroundRadius)
                 .pressed(mPressedColor)
-                .into(tvNegative);
-        setTitleMargin(tvTitle, 24);
-        setMessageMargin(16, 24);
+                .into(binding.tvNegative);
+        setTitleMargin(24);
+        setMessageMargin(20, 32);
     }
 
-    /**
-     * 根据文本内容的长度设置显示的Gravity
-     */
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
+            // 根据文本内容的长度设置显示的Gravity
             // 因为getLineCount()要返回正确的行数，必须是TextView已经成功绘画到屏幕上。
             // 否则我们可以试验不用post直接在onCreate调用，getLineCount就会出现空指针
-            if (tvMessage == null || tvMessage.getLayout() == null) return;
-            int lineCount = tvMessage.getLayout().getLineCount();
-            tvMessage.setGravity(lineCount > 1 ? Gravity.START : Gravity.CENTER_HORIZONTAL);
+            TextView textView = binding.tvMessage;
+            if (textView == null || textView.getLayout() == null) return;
+            int lineCount = textView.getLayout().getLineCount();
+//            textView.setGravity(lineCount > 1 ? Gravity.START : Gravity.CENTER_HORIZONTAL);
         }
     };
 
@@ -380,29 +294,24 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
      */
     protected void setDivideStyle(View line_1, View line_2) {
         // 设置是否带分割线的风格
-        int divideColor = isDefaultBackground ? R.color.colorDivideDark : android.R.color.white;
-        line_1.setVisibility(View.GONE);
-        line_2.setVisibility(View.GONE);
-        if (!isMaterialDesign && isDivide) {
-            line_1.setVisibility(View.VISIBLE);
-            line_2.setVisibility(View.VISIBLE);
-            line_1.setBackgroundColor(getColor(divideColor));
-            line_2.setBackgroundColor(getColor(divideColor));
-        }
+        int visible = (isMaterialDesign) ? View.GONE : View.VISIBLE;
+        line_1.setVisibility(visible);
+        line_2.setVisibility(visible);
+        line_1.setBackgroundColor(mDivideColor);
+        line_2.setBackgroundColor(mDivideColor);
     }
 
     /**
      * 根据风格的不一致, 重新设置标题的margin
      *
-     * @param tvTitle   标题TextView
      * @param topMargin 顶部的margin
      */
-    protected void setTitleMargin(TextView tvTitle, int topMargin) {
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) tvTitle.getLayoutParams();
-        layoutParams.leftMargin = OsHelper.dp2px(24);
+    protected void setTitleMargin(int topMargin) {
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) binding.tvTitle.getLayoutParams();
+        layoutParams.leftMargin = OsHelper.dp2px(20);
         layoutParams.topMargin = OsHelper.dp2px(topMargin);
-        layoutParams.rightMargin = OsHelper.dp2px(24);
-        tvTitle.setLayoutParams(layoutParams);
+        layoutParams.rightMargin = OsHelper.dp2px(20);
+        binding.tvTitle.setLayoutParams(layoutParams);
     }
 
     /**
@@ -412,33 +321,31 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
      * @param bottomMargin 底部的margin
      */
     protected void setMessageMargin(int topMargin, int bottomMargin) {
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) tvMessage.getLayoutParams();
-        layoutParams.leftMargin = OsHelper.dp2px(24);
+        LinearLayout.LayoutParams layoutParams =
+                (LinearLayout.LayoutParams) binding.tvMessage.getLayoutParams();
+        layoutParams.leftMargin = OsHelper.dp2px(20);
         layoutParams.topMargin = OsHelper.dp2px(topMargin);
-        layoutParams.rightMargin = OsHelper.dp2px(24);
+        layoutParams.rightMargin = OsHelper.dp2px(20);
         layoutParams.bottomMargin = OsHelper.dp2px(bottomMargin);
-        tvMessage.setLayoutParams(layoutParams);
+        binding.tvMessage.setLayoutParams(layoutParams);
     }
 
     /**
      * 设置只显示一个按钮和标题的风格
-     *
-     * @param tvTitle    标题
-     * @param tvNegative 右边的按钮
      */
-    protected void setSingleButtonAndTitleStyle(TextView tvTitle, TextView tvPositive,
-                                                TextView tvNegative, String title) {
+    protected void setSingleButtonAndTitleStyle(String title) {
         // 单选按钮时需要修改按钮的圆角背景
         if (isSingleButton) {
-            tvNegative.setVisibility(View.GONE);
+            binding.tvNegative.setVisibility(View.GONE);
+            binding.line2.setVisibility(View.GONE);
             if (!isMaterialDesign) {
-                tvNegative.setVisibility(View.GONE);
-                DrawableHelper.radiusBL(mRadiusCard)
-                        .radiusBR(mRadiusCard)
+                binding.tvNegative.setVisibility(View.GONE);
+                DrawableHelper.radiusBL(mBackgroundRadius)
+                        .radiusBR(mBackgroundRadius)
                         .pressed(mPrimaryColor, mSecondaryColor)
                         .textColor(android.R.color.white, android.R.color.white)
-                        .into(tvPositive);
-                setTitleMargin(tvTitle, 32);
+                        .into(binding.tvPositive);
+                setTitleMargin(32);
                 setMessageMargin(20, 32);
             }
         }
@@ -447,17 +354,17 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
         // 设置标题图片时, 没有标题文本时, 直接设置图片, 有文本时, 设置在文本的前面
         if (null == title) {
             if (isMaterialDesign) {
-                tvTitle.setText(getString(R.string.dialog_info));
+                binding.tvTitle.setText(getString(R.string.dialog_info));
             } else {
                 setMessageMargin(40, 36);
-                tvTitle.setVisibility(View.GONE);
+                binding.tvTitle.setVisibility(View.GONE);
                 isDivide = true;
             }
         } else {
-            tvTitle.setText(title);
+            binding.tvTitle.setText(title);
         }
         if (mTitleIcon != -1 && !isMaterialDesign) {
-            tvTitle.setVisibility(View.GONE);
+            binding.tvTitle.setVisibility(View.GONE);
             ImageView ivTitleIcon = findViewById(R.id.iv_title_icon);
             ivTitleIcon.setVisibility(View.VISIBLE);
             ivTitleIcon.setImageResource(mTitleIcon);
@@ -465,14 +372,24 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
         }
     }
 
-    protected void setDiyParamsStyle(TextView tvNegative) {
+    protected void setDiyParamsStyle() {
         // 内容、按钮文本
-        if (!TextUtils.isEmpty(mMessage)) tvMessage.setText(mMessage);
-        if (!TextUtils.isEmpty(mPositiveButtonText)) tvPositive.setText(mPositiveButtonText);
-        if (!TextUtils.isEmpty(mNegativeButtonText)) tvNegative.setText(mNegativeButtonText);
+        if (!TextUtils.isEmpty(mMessage)) {
+            binding.tvMessage.setText(mMessage);
+        }
+        if (!TextUtils.isEmpty(mPositiveButtonText)) {
+            binding.tvPositive.setText(mPositiveButtonText);
+        }
+        if (!TextUtils.isEmpty(mNegativeButtonText)) {
+            binding.tvNegative.setText(mNegativeButtonText);
+        }
 
-        if (mPositiveButtonTextColor != -1) tvPositive.setTextColor(mPositiveButtonTextColor);
-        if (mNegativeButtonTextColor != -1) tvNegative.setTextColor(mNegativeButtonTextColor);
+        if (mPositiveButtonTextColor != -1) {
+            binding.tvPositive.setTextColor(mPositiveButtonTextColor);
+        }
+        if (mNegativeButtonTextColor != -1) {
+            binding.tvNegative.setTextColor(mNegativeButtonTextColor);
+        }
     }
 
     @Override

@@ -66,7 +66,6 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
                         public void onLongClick() {
                             MenuDialog.newInstance(mActivity)
                                     .setItem("测试", "第二个", "取消", "确定")
-                                    .setRadiusCard(2f)
                                     .setOnItemClickListener(new MenuDialog.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(int position) {
@@ -76,7 +75,8 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
                                                 ToastHelper.show("取消");
                                             }
                                         }
-                                    }).show();
+                                    }).setRadiusCard(2f)
+                                    .show();
                         }
                     })
                     .show();

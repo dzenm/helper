@@ -1,7 +1,5 @@
 package com.dzenm.helper.dialog;
 
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,7 +33,6 @@ import java.util.List;
  *          .show();
  * </pre>
  */
-@SuppressLint("ValidFragment")
 public class DatePickerDialog extends PickerDialog {
 
     /**
@@ -102,91 +99,6 @@ public class DatePickerDialog extends PickerDialog {
         mEndCalendar.setTime(DateHelper.parseDate(DateHelper.pattern(mSeparator),
                 getStrings(endDateResId)));
         return this;
-    }
-
-    @Override
-    public DatePickerDialog setTitle(int resId) {
-        return super.setTitle(resId);
-    }
-
-    @Override
-    public DatePickerDialog setTitle(String title) {
-        return super.setTitle(title);
-    }
-
-    @Override
-    public DatePickerDialog setLoop(boolean loop) {
-        return super.setLoop(loop);
-    }
-
-    @Override
-    public DatePickerDialog setSelected(int resId) {
-        return super.setSelected(resId);
-    }
-
-    @Override
-    public DatePickerDialog setSelected(String date) {
-        return super.setSelected(date);
-    }
-
-    @Override
-    public DatePickerDialog setMargin(int margin) {
-        return super.setMargin(margin);
-    }
-
-    @Override
-    public DatePickerDialog setGravity(int gravity) {
-        return super.setGravity(gravity);
-    }
-
-    @Override
-    public DatePickerDialog setAnimator(int animator) {
-        return super.setAnimator(animator);
-    }
-
-    @Override
-    public DatePickerDialog setBackground(Drawable background) {
-        return super.setBackground(background);
-    }
-
-    @Override
-    public DatePickerDialog setCenterWidth(int width) {
-        return super.setCenterWidth(width);
-    }
-
-    @Override
-    public DatePickerDialog setPrimaryColor(int primaryColor) {
-        return super.setPrimaryColor(primaryColor);
-    }
-
-    @Override
-    public DatePickerDialog setSecondaryColor(int secondaryColor) {
-        return super.setSecondaryColor(secondaryColor);
-    }
-
-    @Override
-    public DatePickerDialog setTranslucent(boolean translucent) {
-        return super.setTranslucent(translucent);
-    }
-
-    @Override
-    public DatePickerDialog setCancel(boolean cancel) {
-        return super.setCancel(cancel);
-    }
-
-    @Override
-    public DatePickerDialog setTouchInOutSideCancel(boolean cancel) {
-        return super.setTouchInOutSideCancel(cancel);
-    }
-
-    @Override
-    public DatePickerDialog setDivide(boolean divide) {
-        return super.setDivide(divide);
-    }
-
-    @Override
-    public DatePickerDialog setRadiusCard(float radiusCard) {
-        return super.setRadiusCard(radiusCard);
     }
 
     /************************************* 以下为实现过程 *********************************/

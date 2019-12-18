@@ -1,7 +1,5 @@
 package com.dzenm.helper.dialog;
 
-import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -54,7 +52,6 @@ import androidx.databinding.ViewDataBinding;
  *         }).show();
  * </pre>
  */
-@SuppressLint("ValidFragment")
 public class DialogHelper extends AbsDialogFragment {
 
     private @LayoutRes
@@ -108,68 +105,19 @@ public class DialogHelper extends AbsDialogFragment {
         super(activity);
     }
 
-    @Override
-    public DialogHelper setMargin(int margin) {
-        return super.setMargin(margin);
-    }
-
-    @Override
-    public DialogHelper setGravity(int gravity) {
-        return super.setGravity(gravity);
-    }
-
-    @Override
-    public DialogHelper setAnimator(int animator) {
-        return super.setAnimator(animator);
-    }
-
-    @Override
-    public DialogHelper setBackground(Drawable background) {
-        return super.setBackground(background);
-    }
-
-    @Override
-    public DialogHelper setCenterWidth(int width) {
-        return super.setCenterWidth(width);
-    }
-
-    @Override
-    public DialogHelper setTranslucent(boolean translucent) {
-        return super.setTranslucent(translucent);
-    }
-
-    @Override
-    public DialogHelper setCancel(boolean cancel) {
-        return super.setCancel(cancel);
-    }
-
-    @Override
-    public DialogHelper setTouchInOutSideCancel(boolean cancel) {
-        return super.setTouchInOutSideCancel(cancel);
-    }
-
-    @Override
-    public DialogHelper setRadiusCard(float radiusCard) {
-        return super.setRadiusCard(radiusCard);
-    }
-
     /************************************* 以下为实现过程 *********************************/
-
-    @Override
-    protected boolean isUseViewHolder() {
-        return true;
-    }
 
     @Override
     protected int layoutId() {
         return mLayoutId;
     }
 
-    /**
-     * 设置回掉之后，可以使用自定义布局的控件做自定义的功能
-     */
     @Override
-    protected void convertView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected void initView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState2
+    ) {
         if (mOnViewDataBinding != null) {
             ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutId(), container, false);
             mView = binding.getRoot();
@@ -179,6 +127,10 @@ public class DialogHelper extends AbsDialogFragment {
             mOnBindViewHolder.onBinding(holder, this);
         }
     }
+
+    /**
+     * 设置回掉之后，可以使用自定义布局的控件做自定义的功能
+     */
 
     public interface OnViewDataBinding<T extends AbsDialogFragment> {
         void onBinding(ViewDataBinding binding, T dialog);

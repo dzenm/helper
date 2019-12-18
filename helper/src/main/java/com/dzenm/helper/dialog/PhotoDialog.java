@@ -1,7 +1,12 @@
 package com.dzenm.helper.dialog;
 
+import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.photo.PhotoSelector;
@@ -43,14 +48,14 @@ public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickLis
     }
 
     @Override
-    protected void initView() {
+    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
         setItem("拍照", "图片", "取消");
         setGravity(Gravity.BOTTOM);
         setDivide(true);
         setOnItemClickListener(this);
         PhotoSelector.getInstance().with(mActivity)
                 .setOnSelectPhotoListener(mOnSelectPhotoListener);
-        super.initView();
+        super.initView(inflater, container, savedInstanceState2);
     }
 
     @Override

@@ -96,7 +96,7 @@ public abstract class AbsDialog extends AppCompatDialog {
     /**
      * 圆角大小 {@link #DEFAULT_RADIUS}
      */
-    protected float mRadiusCard = DEFAULT_RADIUS;
+    protected float mBackgroundRadius = DEFAULT_RADIUS;
 
     /**
      * 是否在View和View之间添加分割线 {@link #setDivide(boolean)}

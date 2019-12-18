@@ -37,7 +37,8 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
     // nfc info
     protected Tag mTag;
 
-    private boolean isShowDialog = false, isAutoDetection;
+    // 是否显示dialog的日志提示, 是否自动检测NFC可用, 是否可以未开启NFC使用
+    private boolean isShowDialog = false, isAutoDetection = true, isCanCancel = false;
 
     private PendingIntent mPendingIntent;
 
@@ -117,7 +118,9 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
                                 Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
                                 startActivity(intent);
                             } else {
-                                finish();
+                                if (!isCanCancel) {
+                                    finish();
+                                }
                             }
                             return true;
                         }
@@ -284,7 +287,7 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
                     .setButtonText("确定")
                     .setOnClickListener(null)
                     .show();
-        } else if (mTextView == null) {
+        } else if (mTextView != null) {
             mTextView.setText(message);
         }
     }

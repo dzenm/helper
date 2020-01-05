@@ -2,9 +2,11 @@ package com.dzenm.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.databinding.ViewDataBinding;
+import androidx.annotation.Nullable;
 
 import com.dzenm.R;
 import com.dzenm.databinding.FragmentPersonalBinding;
@@ -23,18 +25,9 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
     private FragmentPersonalBinding binding;
 
     @Override
-    protected int layoutId() {
-        return R.layout.fragment_personal;
-    }
-
-    @Override
-    protected boolean isDataBinding() {
-        return true;
-    }
-
-    @Override
-    public void initializeView(Bundle savedInstanceState, ViewDataBinding viewDataBinding) {
-        binding = (FragmentPersonalBinding) viewDataBinding;
+    public void initializeView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentPersonalBinding.inflate(inflater);
+        mDecorView = binding.getRoot();
         setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
 
         DrawableHelper.radius(8).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)

@@ -1,24 +1,17 @@
 package com.dzenm.ui;
 
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
-
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.dzenm.LottieDialog;
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityLoadingBinding;
-import com.dzenm.helper.base.AbsBaseActivity;
+import com.dzenm.helper.base.AbsActivity;
 import com.dzenm.helper.draw.DrawableHelper;
 
-public class LoadingActivity extends AbsBaseActivity implements View.OnClickListener {
-
-    @Override
-    protected boolean isDataBinding() {
-        return true;
-    }
+public class LoadingActivity extends AbsActivity<ActivityLoadingBinding> implements View.OnClickListener {
 
     @Override
     protected int layoutId() {
@@ -26,29 +19,29 @@ public class LoadingActivity extends AbsBaseActivity implements View.OnClickList
     }
 
     @Override
-    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        ActivityLoadingBinding binding = (ActivityLoadingBinding) viewDataBinding;
-        setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
+    protected void initializeView(@Nullable Bundle savedInstanceState) {
+        super.initializeView(savedInstanceState);
+        setToolbarWithImmersiveStatusBar(getBinding().toolbar, android.R.color.transparent);
 
-        setPressedBackground(binding.tv131, android.R.color.holo_blue_dark);
-        setRippleBackground(binding.tv132, android.R.color.holo_red_dark);
-        setPressedBackground(binding.tv133, android.R.color.holo_green_dark);
-        setRippleBackground(binding.tv134, android.R.color.holo_orange_dark);
-        setPressedBackground(binding.tv135, android.R.color.holo_blue_light);
-        setRippleBackground(binding.tv136, android.R.color.holo_red_light);
-        setPressedBackground(binding.tv137, android.R.color.holo_green_light);
-        setRippleBackground(binding.tv138, android.R.color.holo_orange_light);
-        setPressedBackground(binding.tv139, android.R.color.darker_gray);
-        setRippleBackground(binding.tv140, android.R.color.holo_blue_bright);
-        setPressedBackground(binding.tv141, android.R.color.holo_purple);
-        setPressedBackground(binding.tv142, android.R.color.holo_blue_dark);
-        setRippleBackground(binding.tv143, android.R.color.holo_red_dark);
-        setPressedBackground(binding.tv144, android.R.color.holo_green_dark);
-        setRippleBackground(binding.tv145, android.R.color.holo_orange_dark);
-        setPressedBackground(binding.tv146, android.R.color.holo_blue_light);
-        setRippleBackground(binding.tv147, android.R.color.holo_red_light);
-        setPressedBackground(binding.tv148, android.R.color.holo_green_light);
-        setRippleBackground(binding.tv149, android.R.color.holo_orange_light);
+        setPressedBackground(getBinding().tv131, android.R.color.holo_blue_dark);
+        setRippleBackground(getBinding().tv132, android.R.color.holo_red_dark);
+        setPressedBackground(getBinding().tv133, android.R.color.holo_green_dark);
+        setRippleBackground(getBinding().tv134, android.R.color.holo_orange_dark);
+        setPressedBackground(getBinding().tv135, android.R.color.holo_blue_light);
+        setRippleBackground(getBinding().tv136, android.R.color.holo_red_light);
+        setPressedBackground(getBinding().tv137, android.R.color.holo_green_light);
+        setRippleBackground(getBinding().tv138, android.R.color.holo_orange_light);
+        setPressedBackground(getBinding().tv139, android.R.color.darker_gray);
+        setRippleBackground(getBinding().tv140, android.R.color.holo_blue_bright);
+        setPressedBackground(getBinding().tv141, android.R.color.holo_purple);
+        setPressedBackground(getBinding().tv142, android.R.color.holo_blue_dark);
+        setRippleBackground(getBinding().tv143, android.R.color.holo_red_dark);
+        setPressedBackground(getBinding().tv144, android.R.color.holo_green_dark);
+        setRippleBackground(getBinding().tv145, android.R.color.holo_orange_dark);
+        setPressedBackground(getBinding().tv146, android.R.color.holo_blue_light);
+        setRippleBackground(getBinding().tv147, android.R.color.holo_red_light);
+        setPressedBackground(getBinding().tv148, android.R.color.holo_green_light);
+        setRippleBackground(getBinding().tv149, android.R.color.holo_orange_light);
     }
 
     @Override

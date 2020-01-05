@@ -15,17 +15,24 @@ import com.dzenm.helper.photo.PhotoSelector;
  * @author dzenm
  * @date 2019-08-19 13:52
  * <pre>
- * PhotoDialog.newInstance(DrawableActivity.this).setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
+ * PhotoDialog.newInstance(this).setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
  *     @Override
- *     public boolean onGallery(PhotoSelector helper, String filePath) {
+ *     public boolean onGallery(PhotoSelector selector, String filePath) {
  *         layout.load(FileHelper.getInstance().getPhoto(filePath));
  *         return false;
  *     }
- *
  *     @Override
- *     public boolean onGraph(PhotoSelector helper, String filePath) {
+ *     public boolean onGraph(PhotoSelector selector, String filePath) {
  *         layout.load(FileHelper.getInstance().getPhoto(filePath));
  *         return false;
+ *     }
+ *     @Override
+ *     public boolean onCrop(PhotoSelector helper, String filePath) {
+ *         logD("the filePath: " + filePath);
+ *         String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
+ *         FileHelper.getInstance().copyFile(filePath, file);
+ *         FileHelper.getInstance().refreshGallery(filePath);
+ *         return true;
  *     }
  * }).show();
  * </pre>
@@ -48,7 +55,11 @@ public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickLis
     }
 
     @Override
-    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
+    protected void initView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState2
+    ) {
         setItem("拍照", "图片", "取消");
         setGravity(Gravity.BOTTOM);
         setDivide(true);

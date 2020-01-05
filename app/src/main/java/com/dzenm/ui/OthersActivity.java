@@ -5,11 +5,10 @@ import android.view.Gravity;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityOthersBinding;
-import com.dzenm.helper.base.AbsBaseActivity;
+import com.dzenm.helper.base.AbsActivity;
 import com.dzenm.helper.dialog.EditDialog;
 import com.dzenm.helper.dialog.InfoDialog;
 import com.dzenm.helper.draw.DrawableHelper;
@@ -19,14 +18,7 @@ import com.dzenm.helper.photo.PhotoSelector;
 import com.dzenm.helper.share.ShareHelper;
 import com.dzenm.helper.toast.ToastHelper;
 
-public class OthersActivity extends AbsBaseActivity implements View.OnClickListener {
-
-    private ActivityOthersBinding binding;
-
-    @Override
-    protected boolean isDataBinding() {
-        return true;
-    }
+public class OthersActivity extends AbsActivity<ActivityOthersBinding> implements View.OnClickListener {
 
     @Override
     protected int layoutId() {
@@ -34,18 +26,18 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
     }
 
     @Override
-    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        binding = (ActivityOthersBinding) viewDataBinding;
-        setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorAccent);
+    protected void initializeView(@Nullable Bundle savedInstanceState) {
+        super.initializeView(savedInstanceState);
+        setToolbarWithImmersiveStatusBar(getBinding().toolbar, R.color.colorAccent);
 
-        setPressedBackground(binding.tv100, android.R.color.holo_blue_dark);
-        setRippleBackground(binding.tv101, android.R.color.holo_red_dark);
-        setPressedBackground(binding.tv102, android.R.color.holo_green_dark);
-        setRippleBackground(binding.tv103, android.R.color.holo_orange_dark);
-        setPressedBackground(binding.tv104, android.R.color.holo_blue_light);
-        setRippleBackground(binding.tv105, android.R.color.holo_red_light);
-        setPressedBackground(binding.tv106, android.R.color.holo_green_light);
-        setRippleBackground(binding.tv107, android.R.color.holo_orange_light);
+        setPressedBackground(getBinding().tv100, android.R.color.holo_blue_dark);
+        setRippleBackground(getBinding().tv101, android.R.color.holo_red_dark);
+        setPressedBackground(getBinding().tv102, android.R.color.holo_green_dark);
+        setRippleBackground(getBinding().tv103, android.R.color.holo_orange_dark);
+        setPressedBackground(getBinding().tv104, android.R.color.holo_blue_light);
+        setRippleBackground(getBinding().tv105, android.R.color.holo_red_light);
+        setPressedBackground(getBinding().tv106, android.R.color.holo_green_light);
+        setRippleBackground(getBinding().tv107, android.R.color.holo_orange_light);
     }
 
     @Override
@@ -99,7 +91,7 @@ public class OthersActivity extends AbsBaseActivity implements View.OnClickListe
                             .setMessage(filePath)
                             .setOnClickListener(null)
                             .show();
-                    binding.ivImage.setImageBitmap(FileHelper.getInstance().getPhoto(filePath));
+                    getBinding().ivImage.setImageBitmap(FileHelper.getInstance().getPhoto(filePath));
                     return false;
                 }
             }).gallery();

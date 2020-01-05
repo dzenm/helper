@@ -8,6 +8,7 @@ import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityDrawableBinding;
+import com.dzenm.helper.base.AbsActivity;
 import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.dialog.PhotoDialog;
 import com.dzenm.helper.draw.DrawableHelper;
@@ -17,14 +18,9 @@ import com.dzenm.helper.view.PhotoLayout;
 
 import java.util.Arrays;
 
-public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnLoadPhotoListener {
+public class DrawableActivity extends AbsActivity<ActivityDrawableBinding> implements PhotoLayout.OnLoadPhotoListener {
 
     private PhotoLayout plAdd, plPreview;
-
-    @Override
-    protected boolean isDataBinding() {
-        return true;
-    }
 
     @Override
     protected int layoutId() {
@@ -32,27 +28,27 @@ public class DrawableActivity extends AbsBaseActivity implements PhotoLayout.OnL
     }
 
     @Override
-    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        ActivityDrawableBinding binding = (ActivityDrawableBinding) viewDataBinding;
-        setToolbarWithGradientStatusBar(binding.toolbar,
+    protected void initializeView(@Nullable Bundle savedInstanceState) {
+        super.initializeView(savedInstanceState);
+        setToolbarWithGradientStatusBar(getBinding().toolbar,
                 DrawableHelper.orientation(GradientDrawable.Orientation.LEFT_RIGHT)
                         .gradient(android.R.color.holo_orange_light,
                                 android.R.color.holo_blue_light).build());
 
         DrawableHelper.orientation(GradientDrawable.Orientation.BOTTOM_TOP)
                 .gradient(android.R.color.holo_red_light, android.R.color.holo_blue_light, android.R.color.holo_orange_light)
-                .into(binding.linearGradient);
+                .into(getBinding().linearGradient);
         DrawableHelper.radialRadius(80)
                 .gradient(android.R.color.holo_red_light, android.R.color.holo_blue_light, android.R.color.holo_orange_light)
-                .into(binding.orgialGradient);
+                .into(getBinding().orgialGradient);
         DrawableHelper.gradient(android.R.color.holo_red_light, android.R.color.holo_blue_light, android.R.color.holo_orange_light)
-                .into(binding.sweepGradient);
+                .into(getBinding().sweepGradient);
         FileHelper.getInstance().setPersonFolder("/dinzhenyan").getPersonFolder("/personalAccount");
 
-        binding.ripple.setOnClickListener(null);
+        getBinding().ripple.setOnClickListener(null);
         DrawableHelper.radius(20).ripple(android.R.color.white,
                 android.R.color.holo_red_dark
-        ).into(binding.ripple);
+        ).into(getBinding().ripple);
 
         initPhotoLayout();
     }

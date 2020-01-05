@@ -4,8 +4,9 @@
     <!-- ======================== 边距 ========================= -->
     <!--divide-->
     <dimen name="divide_size">0.1dp</dimen>
-    <dimen name="divide_line">1dp</dimen>
     <dimen name="divide_small_line">0.5dp</dimen>
+    <dimen name="divide_line">1dp</dimen>
+    <dimen name="divide_big_line">2dp</dimen>
 
     <dimen name="layout_empty_size">0dp</dimen>
     <dimen name="layout_small_size">20dp</dimen>
@@ -14,6 +15,8 @@
 
     <!--margin-->
     <dimen name="margin_divide">8dp</dimen>                     <!--分隔线上下留白-->
+    <dimen name="margin_most_small">2dp</dimen>                 <!--分隔线上下留白-->
+    <dimen name="margin_than_small">4dp</dimen>                 <!--分隔线上下留白-->
     <dimen name="margin_small">8dp</dimen>                      <!--大多元素的留白距离-->
     <dimen name="margin_smaller">12dp</dimen>                   <!--大多元素的留白距离-->
     <dimen name="margin_normal">16dp</dimen>                    <!--大多元素的留白距离-->
@@ -27,6 +30,8 @@
     <!--padding-->
     <dimen name="padding_dialog">24dp</dimen>                   <!--对话框的四周留白-->
     <dimen name="padding_card">8dp</dimen>                      <!--卡片间距-->
+    <dimen name="padding_most_small">2dp</dimen>                <!--卡片间距-->
+    <dimen name="padding_than_small">4dp</dimen>                <!--卡片间距-->
     <dimen name="padding_small">8dp</dimen>                     <!--大多元素的留白距离-->
     <dimen name="padding_smaller">12dp</dimen>                  <!--大多元素的留白距离-->
     <dimen name="padding_normal">16dp</dimen>                   <!--大多元素的留白距离-->
@@ -38,19 +43,29 @@
     <dimen name="padding_oversize_big">56dp</dimen>             <!--大多元素的留白距离-->
 
     <!--card radius-->
-    <dimen name="card_radius">8dp</dimen>                       <!--卡片的圆角值-->
+    <dimen name="radius_than_small">1dp</dimen>                  <!--卡片的圆角值-->
+    <dimen name="radius_smaller">2dp</dimen>                     <!--卡片的圆角值-->
+    <dimen name="radius_small">4dp</dimen>                       <!--卡片的圆角值-->
+    <dimen name="radius_normal">8dp</dimen>                      <!--卡片的圆角值-->
+    <dimen name="radius_big">12dp</dimen>                        <!--卡片的圆角值-->
+    <dimen name="radius_bigger">16dp</dimen>                     <!--卡片的圆角值-->
+    <dimen name="radius_than_big">20dp</dimen>                   <!--卡片的圆角值-->
 
     <!--button size-->
-    <dimen name="button_big_size">56dp</dimen>                  <!--悬浮按钮尺寸-->
-    <dimen name="button_size">50dp</dimen>                      <!--悬浮按钮尺寸-->
-    <dimen name="button_normal_size">45dp</dimen>               <!--悬浮按钮尺寸-->
+    <dimen name="button_than_small_size">24dp</dimen>              <!--悬浮按钮尺寸-->
+    <dimen name="button_smaller_size">32dp</dimen>              <!--悬浮按钮尺寸-->
     <dimen name="button_small_size">40dp</dimen>                <!--悬浮按钮尺寸-->
+    <dimen name="button_normal_size">45dp</dimen>               <!--悬浮按钮尺寸-->
+    <dimen name="button_big_size">50dp</dimen>               <!--悬浮按钮尺寸-->
+    <dimen name="button_bigger_size">56dp</dimen>                  <!--悬浮按钮尺寸-->
+    <dimen name="button_than_big_size">60dp</dimen>             <!--悬浮按钮尺寸-->
 
     <!--icon size-->
-    <dimen name="icon_size_big">60dp</dimen>                    <!--小图标点击区域-->
-    <dimen name="icon_size">48dp</dimen>                        <!--小图标点击区域-->
-    <dimen name="icon_size_normal">40dp</dimen>                 <!--小图标点击区域-->
+    <dimen name="icon_size_smaller">24dp</dimen>                <!--小图标点击区域-->
     <dimen name="icon_size_small">32dp</dimen>                  <!--小图标点击区域-->
+    <dimen name="icon_size_normal">40dp</dimen>                 <!--小图标点击区域-->
+    <dimen name="icon_size_big">48dp</dimen>                    <!--小图标点击区域-->
+    <dimen name="icon_size_bigger">60dp</dimen>                 <!--小图标点击区域-->
 
     <!--avatar size-->
     <dimen name="avatar_big_size">64dp</dimen>                  <!--用户头像尺寸-->

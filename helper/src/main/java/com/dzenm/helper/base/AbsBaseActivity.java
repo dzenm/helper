@@ -3,24 +3,15 @@ package com.dzenm.helper.base;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.helper.dialog.PromptDialog;
-import com.dzenm.helper.log.Logger;
-import com.dzenm.helper.os.ActivityHelper;
 import com.dzenm.helper.os.ScreenHelper;
-import com.dzenm.helper.os.StatusBarHelper;
-import com.dzenm.helper.permission.PermissionManager;
-import com.dzenm.helper.photo.PhotoSelector;
 
 /**
  * @author dinzhenyan
@@ -28,114 +19,46 @@ import com.dzenm.helper.photo.PhotoSelector;
  */
 public abstract class AbsBaseActivity extends AppCompatActivity {
 
+    private ActivityDelegate mActivityDelegate;
     private String mTag = this.getClass().getSimpleName() + "| ";
-
-    private PromptDialog mPromptDialog;
-    private OnRequestPermissionsResult mOnRequestPermissionsResult;
-    private OnActivityResult mOnActivityResult;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initializeCreate();
-        if (layoutId() != -1) {
-            if (isDataBinding()) {
-                ViewDataBinding v = DataBindingUtil.setContentView(this, layoutId());
-                initializeView(savedInstanceState, v);                  // 使用DataBinding, 初始化View
-            } else {
-                setContentView(layoutId());
-                initializeView(savedInstanceState, null);// 不使用DataBinding, 初始化View
-            }
-        } else {
-            initializeView(savedInstanceState, null);
-        }
+        mActivityDelegate = new ActivityDelegate(this, mTag);
+        initializeCreate(savedInstanceState);
+        initializeView(savedInstanceState);
     }
 
-    protected void initializeCreate() {
-        ActivityHelper.getInstance().add(this);                         // 添加Activity到Stack管理
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS); // 设置切换页面动画开关
-        mPromptDialog = PromptDialog.newInstance(this);
+    protected void initializeCreate(Bundle savedInstanceState) {
+        mActivityDelegate.initializeCreate();
     }
 
-    protected int layoutId() {
-        return -1;
+    protected void initializeView(@Nullable Bundle savedInstanceState) {
     }
 
-    /**
-     * @return 是否使用DataBinding
-     */
-    protected boolean isDataBinding() {
-        return true;
-    }
-
-    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-    }
-
-    /**
-     * 设置toolbar
-     *
-     * @param toolbar 设置的toolbar
-     */
     public void setToolbar(Toolbar toolbar) {
-        if (toolbar == null) return;
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() == null) return;
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);      // 设置返回按钮
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onHomeClick();
-            }
-        });
+        mActivityDelegate.setToolbar(toolbar);
     }
 
-    /**
-     * 设置toolbar, 并设置沉浸式状态栏
-     *
-     * @param toolbar 需要设置的Toolbar
-     * @param color   设置的颜色
-     */
     public void setToolbarWithImmersiveStatusBar(Toolbar toolbar, @ColorRes int color) {
-        setToolbar(toolbar);
-        StatusBarHelper.setStatusBarWithToolbarStyle(this, toolbar, color);
+        mActivityDelegate.setToolbarWithImmersiveStatusBar(toolbar, color);
     }
 
-    /**
-     * 设置toolbar, 并设置渐变式状态栏
-     *
-     * @param toolbar  需要设置的Toolbar
-     * @param drawable 需要设置的drawable
-     */
     public void setToolbarWithGradientStatusBar(Toolbar toolbar, Drawable drawable) {
-        setToolbar(toolbar);
-        toolbar.setBackground(drawable);
-        StatusBarHelper.setDrawable(this, drawable);
+        mActivityDelegate.setToolbarWithGradientStatusBar(toolbar, drawable);
     }
 
-    /**
-     * Toolbar的Home键点击事件
-     */
     protected void onHomeClick() {
-        finish();
+        mActivityDelegate.onHomeClick();
     }
 
-    /**
-     * 显示提示框
-     *
-     * @param isShow 是否显示提示框
-     */
     public void show(boolean isShow) {
-        if (isShow) {
-            if (mPromptDialog.isShowing()) return;
-            mPromptDialog.showLoading(PromptDialog.LOADING_POINT_SCALE);
-        } else {
-            if (!mPromptDialog.isShowing()) return;
-            mPromptDialog.dismiss();
-        }
+        mActivityDelegate.show(isShow);
     }
 
     public PromptDialog getPromptDialog() {
-        return mPromptDialog;
+        return mActivityDelegate.getPromptDialog();
     }
 
     public void moveTaskToBack() {
@@ -152,49 +75,49 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
     }
 
     public void finished() {
-        ActivityHelper.getInstance().finish(this);
+        mActivityDelegate.finished();
     }
 
     public void logV(String msg) {
-        Logger.v(mTag + msg);
+        mActivityDelegate.logV(msg);
     }
 
     public void logD(String msg) {
-        Logger.d(mTag + msg);
+        mActivityDelegate.logD(msg);
     }
 
     public void logI(String msg) {
-        Logger.i(mTag + msg);
+        mActivityDelegate.logI(msg);
     }
 
     public void logW(String msg) {
-        Logger.w(mTag + msg);
+        mActivityDelegate.logW(msg);
     }
 
     public void logE(String msg) {
-        Logger.e(mTag + msg);
+        mActivityDelegate.logE(msg);
     }
 
     public String getTag() {
-        return mTag;
+        return mActivityDelegate.getTag();
     }
 
     public void setTag(String tag) {
-        mTag = tag;
+        mActivityDelegate.setTag(tag);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityHelper.getInstance().remove(this);
+        mActivityDelegate.onDestroy();
     }
 
     public void setOnActivityResult(OnActivityResult onActivityResult) {
-        mOnActivityResult = onActivityResult;
+        mActivityDelegate.setOnActivityResult(onActivityResult);
     }
 
     public void setOnRequestPermissionsResult(OnRequestPermissionsResult onRequestPermissionsResult) {
-        mOnRequestPermissionsResult = onRequestPermissionsResult;
+        mActivityDelegate.setOnRequestPermissionsResult(onRequestPermissionsResult);
     }
 
     @Override
@@ -204,25 +127,24 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
     }
 
     protected void onRequestActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        PermissionManager.getInstance().onActivityResult(requestCode, resultCode, data);
-        PhotoSelector.getInstance().onPhotoResult(requestCode, resultCode, data);
-        if (mOnActivityResult != null) {
-            mOnActivityResult.onResult(requestCode, resultCode, data);
-        }
+        mActivityDelegate.onRequestActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         onRequestSelfPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    public void onRequestSelfPermissionsResult(int requestCode,
-                                               @NonNull String[] permissions,
-                                               @NonNull int[] grantResults) {
-        PermissionManager.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (mOnRequestPermissionsResult != null) {
-            mOnRequestPermissionsResult.onResult(requestCode, permissions, grantResults);
-        }
+    public void onRequestSelfPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults
+    ) {
+        mActivityDelegate.onRequestSelfPermissionsResult(requestCode, permissions, grantResults);
     }
 }

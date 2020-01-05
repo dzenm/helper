@@ -26,44 +26,42 @@ class PopupController {
         mPopupWindow = popupWindow;
     }
 
-    void setView(View view) {
+    private void setView(View view) {
         mPopupWindow.setContentView(view);
     }
 
-    void setAnimationStyle(int animationStyle) {
+    private void setAnimationStyle(int animationStyle) {
         mPopupWindow.setAnimationStyle(animationStyle);                 // 设置动画特效 即 展示和消失动画
     }
 
-    void setOutsideTouchable(boolean touchable) {
+    private void setBackground(Drawable background) {
+        mPopupWindow.getContentView().setBackground(background);
+    }
+
+    private void setOutsideTouchable(boolean touchable) {
         // 设置PopupWindow的背景。该属性不设置的会，会导致PopupWindow出现后不会消失，即便是点击back键也不起作用
         mPopupWindow.setBackgroundDrawable(new ColorDrawable());        // 设置背景透明
         mPopupWindow.setOutsideTouchable(touchable);
         mPopupWindow.setFocusable(touchable);                           // 设置popupWindow是否可以获取焦点
     }
 
-    void setBackground(Drawable background) {
-        mPopupWindow.getContentView().setBackground(background);
-    }
-
-    void setElevation(int elevation) {
+    private void setElevation(int elevation) {
         mPopupWindow.setElevation(elevation);                          // 设置PopupWindow的高度，类似于3D效果的阴影
     }
 
-    PopupDialog getPopupWindow() {
-        return mPopupWindow;
-    }
-
     /**
-     * 设置父控件的背景颜色
-     *
-     * @param alpha
+     * @param alpha 父控件的背景透明度
      */
-    void setParentBackgroundAlpha(float alpha) {
+    private void setParentBackgroundAlpha(float alpha) {
         Window window = mActivity.getWindow();
         // 弹出popupWindow时父控件显示为灰色
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         layoutParams.alpha = alpha;
         window.setAttributes(layoutParams);
+    }
+
+    private PopupDialog getPopupWindow() {
+        return mPopupWindow;
     }
 
     @SuppressLint("NewApi")
@@ -77,28 +75,23 @@ class PopupController {
             public void onDismiss() {
                 setParentBackgroundAlpha(1.0f);
             }
-        });                                                             // 退出popupwidon时显示父控件原来的颜色
+        });                                                             // 退出popupWindow时显示父控件原来的颜色
         mPopupWindow.getContentView().measure(0, 0);
     }
 
     static class Params {
 
-        public Activity mActivity;
+        Activity mActivity;
+        View mPopupView;
+        int mAnimationStyle;
+        int mElevation;
+        float parentBackgroundAlpha;
+        Drawable mBackground;
+        boolean mTouchable;
 
-        public View mPopupView;
+        PopupDialog.OnBindViewHolder mOnBindViewHolder;
 
-        public int mAnimationStyle;
-        public int mElevation;
-
-        public float parentBackgroundAlpha;
-
-        public Drawable mBackground;
-
-        public boolean mTouchable;
-
-        public PopupDialog.OnBindViewHolder mOnBindViewHolder;
-
-        public Params(Activity activity) {
+        Params(Activity activity) {
             mActivity = activity;
         }
 
@@ -108,14 +101,13 @@ class PopupController {
             } else {
                 controller.setView(mPopupView);
             }
-            controller.setParentBackgroundAlpha(parentBackgroundAlpha);
-            controller.setBackground(mBackground);
             controller.setAnimationStyle(mAnimationStyle);
+            controller.setBackground(mBackground);
+            controller.setParentBackgroundAlpha(parentBackgroundAlpha);
             controller.setElevation(mElevation);
             controller.setOutsideTouchable(mTouchable);
             mOnBindViewHolder.onBinding(ViewHolder.create(mPopupView), controller.getPopupWindow());
             controller.create();
         }
-
     }
 }

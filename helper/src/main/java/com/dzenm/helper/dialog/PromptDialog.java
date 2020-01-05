@@ -4,14 +4,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.animator.AnimatorHelper;
@@ -157,7 +158,11 @@ public class PromptDialog extends AbsDialog {
         } else if (type == LOADING_RECT_ALPHA) {
             icon = R.drawable.prompt_loading_rectangle_alpha;
         }
-        show(getContext().getResources().getString(R.string.dialog_loading), icon, false);
+        show(getContext().getResources().getString(R.string.dialog_loading), icon);
+    }
+
+    public void showLoading(String loadText, @LoadingType int icon) {
+        show(loadText, icon, false);
     }
 
     public void show(String loadText, int loadImg) {

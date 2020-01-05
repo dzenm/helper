@@ -3,12 +3,12 @@ package com.dzenm.ui;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.databinding.DataBindingUtil;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityMainBinding;
-import com.dzenm.helper.base.AbsBaseActivity;
+import com.dzenm.helper.base.AbsActivity;
 import com.dzenm.helper.base.FragmentHelper;
 
 import java.util.ArrayList;
@@ -18,19 +18,20 @@ import java.util.List;
  * @author dinzhenyan
  * @date 2019-06-27 10:32
  */
-public class MainActivity extends AbsBaseActivity {
+public class MainActivity extends AbsActivity<ActivityMainBinding> {
 
-    ActivityMainBinding binding;
     FragmentHelper fragmentHelper;
     HomeFragment f1;
     PersonalFragment f2;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+    protected int layoutId() {
+        return R.layout.activity_main;
+    }
 
-
+    @Override
+    protected void initializeView(@Nullable Bundle savedInstanceState) {
+        super.initializeView(savedInstanceState);
         f1 = new HomeFragment();
         f2 = new PersonalFragment();
         List<Fragment> fragments = new ArrayList<>();

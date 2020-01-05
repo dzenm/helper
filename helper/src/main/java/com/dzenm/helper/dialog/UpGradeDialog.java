@@ -209,7 +209,6 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
 
     public UpGradeDialog(AppCompatActivity activity) {
         super(activity);
-        mBackground = DrawableHelper.solid(android.R.color.transparent).build();
         mHeadImage = R.drawable.ic_upgrade_top;
         mStyleColor = android.R.color.holo_red_light;
         mAnimator = AnimatorHelper.overshoot();
@@ -219,7 +218,13 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
     }
 
     @Override
-    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
+    protected void initView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState2
+    ) {
+        mBackground = DrawableHelper.solid(android.R.color.transparent).build();
+
         ImageView ivHead = findViewById(R.id.iv_header);
         TextView tvVersion = findViewById(R.id.tv_version);
         TextView tvSize = findViewById(R.id.tv_size);
@@ -251,7 +256,10 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
             tvDesc.setTextColor(mSecondaryTextColor);
         }
 
-        DrawableHelper.solid(android.R.color.white).radiusBR(mBackgroundRadius).radiusBL(mBackgroundRadius).into(llContent);
+        DrawableHelper.solid(android.R.color.white)
+                .radiusBR(mBackgroundRadius)
+                .radiusBL(mBackgroundRadius)
+                .into(llContent);
 
         // 升级按钮
         tvUpgrade = findViewById(R.id.tv_upgrade);

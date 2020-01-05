@@ -14,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 
 import com.dzenm.helper.log.Logger;
@@ -36,15 +34,6 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
      */
     protected View mDecorView;
 
-    /**
-     * 设定布局
-     *
-     * @return layout id
-     */
-    protected int layoutId() {
-        return -1;
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -56,48 +45,7 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
         return mActivity;
     }
 
-    /**
-     * 引入View, 作为根布局, 可选用dataBinding, 或者一般方法, 默认使用dataBinding
-     *
-     * @param inflater           inflater view
-     * @param container          root viewGroup
-     * @param savedInstanceState 重建View时获取保存的数据
-     * @return root view
-     */
-    private View inflaterView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (inflater == null) return null;
-        if (layoutId() != -1) {
-            if (isDataBinding()) {
-                ViewDataBinding v = DataBindingUtil.inflate(inflater, layoutId(), container, false);
-                if (v != null) {
-                    mDecorView = v.getRoot();
-                }
-                initializeView(savedInstanceState, v);
-            } else {
-                mDecorView = inflater.inflate(layoutId(), container, false);
-                initializeView(savedInstanceState, null);
-            }
-        } else {
-            mDecorView = inflater.inflate(layoutId(), container, false);
-            initializeView(savedInstanceState, null);
-        }
-        return mDecorView;
-    }
-
-    /**
-     * @return 是否使用DataBinding
-     */
-    protected boolean isDataBinding() {
-        return true;
-    }
-
-    /**
-     * 初始化控件
-     *
-     * @param savedInstanceState 保存数据
-     * @param viewDataBinding    提供给子类使用
-     */
-    public void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
+    public void initializeView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
     }
 
     /**
@@ -135,9 +83,14 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
     }
 
     @Nullable
-    public View onCreateView(@Nullable LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
         logD("onCreateView");
-        return inflaterView(inflater, container, savedInstanceState);
+        initializeView(inflater, container, savedInstanceState);
+        return mDecorView;
     }
 
     @Override
@@ -192,7 +145,7 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        logD("onDestroyView");
         mDecorView = null;
+        logD("onDestroyView");
     }
 }

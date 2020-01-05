@@ -9,7 +9,7 @@ import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityDialogBinding;
-import com.dzenm.helper.base.AbsBaseActivity;
+import com.dzenm.helper.base.AbsActivity;
 import com.dzenm.helper.databinding.DialogInfoBinding;
 import com.dzenm.helper.dialog.AbsDialogFragment;
 import com.dzenm.helper.dialog.DatePickerDialog;
@@ -24,17 +24,13 @@ import com.dzenm.helper.dialog.UpGradeDialog;
 import com.dzenm.helper.dialog.ViewHolder;
 import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.draw.DrawableHelper;
+import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.net.NetworkHelper;
 import com.dzenm.helper.photo.PhotoSelector;
 import com.dzenm.helper.popup.PopupDialog;
 import com.dzenm.helper.toast.ToastHelper;
 
-public class DialogActivity extends AbsBaseActivity implements View.OnClickListener {
-
-    @Override
-    protected boolean isDataBinding() {
-        return true;
-    }
+public class DialogActivity extends AbsActivity<ActivityDialogBinding> implements View.OnClickListener {
 
     @Override
     protected int layoutId() {
@@ -42,38 +38,38 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
     }
 
     @Override
-    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        ActivityDialogBinding binding = (ActivityDialogBinding) viewDataBinding;
-        setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
+    protected void initializeView(@Nullable Bundle savedInstanceState) {
+        super.initializeView(savedInstanceState);
+        setToolbarWithImmersiveStatusBar(getBinding().toolbar, android.R.color.transparent);
 
-        setPressedBackground(binding.tv100, android.R.color.holo_blue_dark);
-        setRippleBackground(binding.tv101, android.R.color.holo_red_dark);
-        setPressedBackground(binding.tv102, android.R.color.holo_green_dark);
-        setRippleBackground(binding.tv103, android.R.color.holo_orange_dark);
-        setPressedBackground(binding.tv104, android.R.color.holo_blue_light);
-        setRippleBackground(binding.tv105, android.R.color.holo_red_light);
-        setPressedBackground(binding.tv106, android.R.color.holo_green_light);
-        setRippleBackground(binding.tv107, android.R.color.holo_orange_light);
-        setRippleBackground(binding.tv1071, android.R.color.holo_orange_dark);
-        setPressedBackground(binding.tv108, android.R.color.darker_gray);
-        setRippleBackground(binding.tv109, android.R.color.holo_blue_bright);
-        setPressedBackground(binding.tv110, android.R.color.holo_purple);
-        setPressedBackground(binding.tv1101, android.R.color.holo_blue_dark);
-        setPressedBackground(binding.tv111, android.R.color.holo_green_light);
-        setRippleBackground(binding.tv112, android.R.color.holo_orange_light);
-        setPressedBackground(binding.tv113, android.R.color.darker_gray);
-        setRippleBackground(binding.tv114, android.R.color.holo_blue_bright);
+        setPressedBackground(getBinding().tv100, android.R.color.holo_blue_dark);
+        setRippleBackground(getBinding().tv101, android.R.color.holo_red_dark);
+        setPressedBackground(getBinding().tv102, android.R.color.holo_green_dark);
+        setRippleBackground(getBinding().tv103, android.R.color.holo_orange_dark);
+        setPressedBackground(getBinding().tv104, android.R.color.holo_blue_light);
+        setRippleBackground(getBinding().tv105, android.R.color.holo_red_light);
+        setPressedBackground(getBinding().tv106, android.R.color.holo_green_light);
+        setRippleBackground(getBinding().tv107, android.R.color.holo_orange_light);
+        setRippleBackground(getBinding().tv1071, android.R.color.holo_orange_dark);
+        setPressedBackground(getBinding().tv108, android.R.color.darker_gray);
+        setRippleBackground(getBinding().tv109, android.R.color.holo_blue_bright);
+        setPressedBackground(getBinding().tv110, android.R.color.holo_purple);
+        setPressedBackground(getBinding().tv1101, android.R.color.holo_blue_dark);
+        setPressedBackground(getBinding().tv111, android.R.color.holo_green_light);
+        setRippleBackground(getBinding().tv112, android.R.color.holo_orange_light);
+        setPressedBackground(getBinding().tv113, android.R.color.darker_gray);
+        setRippleBackground(getBinding().tv114, android.R.color.holo_blue_bright);
 
-        setPressedBackground(binding.tv120, android.R.color.holo_blue_dark);
-        setRippleBackground(binding.tv121, android.R.color.holo_red_dark);
-        setPressedBackground(binding.tv122, android.R.color.holo_green_dark);
-        setRippleBackground(binding.tv123, android.R.color.holo_orange_dark);
-        setPressedBackground(binding.tv124, android.R.color.holo_blue_light);
-        setRippleBackground(binding.tv125, android.R.color.holo_red_light);
-        setPressedBackground(binding.tv126, android.R.color.holo_green_light);
-        setRippleBackground(binding.tv127, android.R.color.holo_orange_light);
-        setPressedBackground(binding.tv128, android.R.color.darker_gray);
-        setRippleBackground(binding.tv129, android.R.color.holo_blue_bright);
+        setPressedBackground(getBinding().tv120, android.R.color.holo_blue_dark);
+        setRippleBackground(getBinding().tv121, android.R.color.holo_red_dark);
+        setPressedBackground(getBinding().tv122, android.R.color.holo_green_dark);
+        setRippleBackground(getBinding().tv123, android.R.color.holo_orange_dark);
+        setPressedBackground(getBinding().tv124, android.R.color.holo_blue_light);
+        setRippleBackground(getBinding().tv125, android.R.color.holo_red_light);
+        setPressedBackground(getBinding().tv126, android.R.color.holo_green_light);
+        setRippleBackground(getBinding().tv127, android.R.color.holo_orange_light);
+        setPressedBackground(getBinding().tv128, android.R.color.darker_gray);
+        setRippleBackground(getBinding().tv129, android.R.color.holo_blue_bright);
     }
 
     @Override
@@ -161,6 +157,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         .setTitle("设置按钮文本")
                                         .setMessage("本机IP地址: " + NetworkHelper.getIPAddress(DialogActivity.this))
                                         .setButtonText("这是确定按钮", "这是取消按钮")
+                                        .setRadiusCard(8f)
                                         .setBackground(DrawableHelper.solid(android.R.color.holo_blue_bright).radius(8).build())
                                         .setTouchInOutSideCancel(true)
                                         .setGravity(Gravity.BOTTOM)
@@ -171,6 +168,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         .setMessage("本机IP地址: " + NetworkHelper.getIPAddress(DialogActivity.this))
                                         .setButtonTextColor(R.color.colorDarkBlue,
                                                 android.R.color.holo_red_dark)
+                                        .setRadiusCard(8f)
                                         .setBackground(DrawableHelper.solid(android.R.color.holo_orange_light)
                                                 .radius(8).build())
                                         .setTouchInOutSideCancel(true)
@@ -373,9 +371,9 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                 @Override
                 public boolean onCrop(PhotoSelector helper, String filePath) {
                     logD("the filePath: " + filePath);
-//                    String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
-//                    FileHelper.getInstance().copyFile(filePath, file);
-//                    FileHelper.getInstance().refreshGallery(filePath);
+                    String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
+                    FileHelper.getInstance().copyFile(filePath, file);
+                    FileHelper.getInstance().refreshGallery(filePath);
                     return true;
                 }
             }).show();

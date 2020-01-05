@@ -161,7 +161,11 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
     }
 
     @Override
-    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
+    protected void initView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState2
+    ) {
         tvLogin = findViewById(R.id.tv_login);
         tvRegister = findViewById(R.id.tv_register);
 
@@ -211,7 +215,11 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
      * @param line_1       分割线
      * @param line_2       分割线
      */
-    private void setEditTextStyle(TextView tvCountdown, EditText etUsername, EditText etPassword, EditText etVerifyCode, View line_1, View line_2) {
+    private void setEditTextStyle(
+            TextView tvCountdown, EditText etUsername,
+            EditText etPassword, EditText etVerifyCode,
+            View line_1, View line_2
+    ) {
         if (isDivide) {
 
         } else {
@@ -222,7 +230,7 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
             line_2.setBackgroundColor(getColor(R.color.colorDivideDark));
         }
         // 验证码按钮点击颜色效果
-        DrawableHelper.radiusTL(4f)
+        DrawableHelper.radiusBR(4f)
                 .radiusTR(4f)
                 .pressed(mPrimaryColor, mSecondaryColor)
                 .into(tvCountdown);
@@ -257,8 +265,8 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
             } else if (view.getId() == R.id.tv_countdown) {    // 倒计时按钮
                 // 倒计时按钮变灰并不可点击
                 DrawableHelper.solid(mSecondaryColor)
-                        .radiusTR(4)
                         .radiusBR(4)
+                        .radiusTR(4)
                         .into(tvCountdown);
                 tvCountdown.setEnabled(false);
                 // 倒计时开始
@@ -297,7 +305,10 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
      * @param leftRadius   左边的圆角
      * @param rightRadius  右边的圆角
      */
-    private void setClickChangeTabStyle(TextView selectView, TextView unSelectView, float leftRadius, float rightRadius) {
+    private void setClickChangeTabStyle(
+            TextView selectView, TextView unSelectView,
+            float leftRadius, float rightRadius
+    ) {
         // 选中的Tab, 白色背景、主色边框, 点击显示灰色背景、副色边框,
         DrawableHelper.pressed(DrawableHelper.solid(android.R.color.white)
                         .radiusTL(rightRadius)
@@ -359,7 +370,7 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
         // 倒计时结束时可重新点击获取并设置显式的可点击的颜色以及提示文字
         tvCountdown.setText(getString(R.string.dialog_reset_countdown));
         tvCountdown.setEnabled(true);
-        DrawableHelper.radiusTL(4f)
+        DrawableHelper.radiusBR(4f)
                 .radiusTR(4f)
                 .pressed(mPrimaryColor, mSecondaryColor)
                 .into(tvCountdown);

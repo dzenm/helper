@@ -11,7 +11,7 @@
         <TextView
             android:id="@+id/tv_cancel"
             android:layout_width="100dp"
-            android:layout_height="@dimen/button_size"
+            android:layout_height="@dimen/button_big_size"
             android:gravity="center"
             android:paddingLeft="@dimen/padding_big"
             android:paddingRight="@dimen/padding_big"
@@ -29,7 +29,7 @@
         <TextView
             android:id="@+id/tv_confirm"
             android:layout_width="100dp"
-            android:layout_height="@dimen/button_size"
+            android:layout_height="@dimen/button_big_size"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:gravity="center"

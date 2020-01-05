@@ -210,8 +210,8 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
         binding.tvNegative.setOnClickListener(this);
         binding.tvTitle.setTextColor(mPrimaryTextColor);
         binding.tvMessage.setTextColor(mSecondaryTextColor);
-        binding.tvPositive.setTextColor(mPrimaryTextColor);
-        binding.tvNegative.setTextColor(mPrimaryTextColor);
+        binding.tvPositive.setTextColor(mButtonTextColor);
+        binding.tvNegative.setTextColor(mButtonTextColor);
 
         if (isMaterialDesign) {
             binding.tvMessage.setMaxLines(10);
@@ -223,7 +223,7 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
         setSingleButtonAndTitleStyle(mTitle);
 
         setDivideStyle(binding.line1, binding.line2);
-        setDiyParamsStyle();
+        setParamsStyle();
     }
 
     /**
@@ -295,6 +295,9 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
     protected void setDivideStyle(View line_1, View line_2) {
         // 设置是否带分割线的风格
         int visible = (isMaterialDesign) ? View.GONE : View.VISIBLE;
+        if (isSingleButton) {
+            visible = View.GONE;
+        }
         line_1.setVisibility(visible);
         line_2.setVisibility(visible);
         line_1.setBackgroundColor(mDivideColor);
@@ -372,7 +375,7 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
         }
     }
 
-    protected void setDiyParamsStyle() {
+    protected void setParamsStyle() {
         // 内容、按钮文本
         if (!TextUtils.isEmpty(mMessage)) {
             binding.tvMessage.setText(mMessage);

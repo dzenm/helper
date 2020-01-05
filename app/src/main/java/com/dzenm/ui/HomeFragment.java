@@ -2,9 +2,11 @@ package com.dzenm.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import androidx.databinding.ViewDataBinding;
+import androidx.annotation.Nullable;
 
 import com.dzenm.R;
 import com.dzenm.databinding.FragmentHomeBinding;
@@ -17,21 +19,10 @@ import com.dzenm.helper.draw.DrawableHelper;
  */
 public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.OnClickListener {
 
-    private FragmentHomeBinding binding;
-
     @Override
-    protected int layoutId() {
-        return R.layout.fragment_home;
-    }
-
-    @Override
-    protected boolean isDataBinding() {
-        return true;
-    }
-
-    @Override
-    public void initializeView(Bundle savedInstanceState, ViewDataBinding viewDataBinding) {
-        binding = (FragmentHomeBinding) viewDataBinding;
+    public void initializeView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+        FragmentHomeBinding binding = FragmentHomeBinding.inflate(inflater);
+        mDecorView = binding.getRoot();
         setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
 
         DrawableHelper.radius(8).pressed(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv100);

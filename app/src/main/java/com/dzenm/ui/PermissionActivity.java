@@ -5,11 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityPermissionBinding;
+import com.dzenm.helper.base.AbsActivity;
 import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.dialog.InfoDialog;
 import com.dzenm.helper.draw.DrawableHelper;
@@ -17,7 +16,8 @@ import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.permission.PermissionManager;
 import com.dzenm.helper.toast.ToastHelper;
 
-public class PermissionActivity extends AbsBaseActivity implements View.OnClickListener, PermissionManager.OnPermissionListener {
+public class PermissionActivity extends AbsActivity<ActivityPermissionBinding> implements View.OnClickListener,
+        PermissionManager.OnPermissionListener {
 
     private String[] permissions = new String[]{Manifest.permission.CALL_PHONE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -26,26 +26,21 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
             Manifest.permission.WRITE_CALENDAR};
 
     @Override
-    protected boolean isDataBinding() {
-        return true;
-    }
-
-    @Override
     protected int layoutId() {
         return R.layout.activity_permission;
     }
 
     @Override
-    protected void initializeView(@Nullable Bundle savedInstanceState, @Nullable ViewDataBinding viewDataBinding) {
-        ActivityPermissionBinding binding = (ActivityPermissionBinding) viewDataBinding;
-        setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
+    protected void initializeView(@Nullable Bundle savedInstanceState) {
+        super.initializeView(savedInstanceState);
+        setToolbarWithImmersiveStatusBar(getBinding().toolbar, R.color.colorDarkBlue);
 
-        setPressedBackground(binding.tv100);
-        setRippleBackground(binding.tv101);
-        setPressedBackground(binding.tv102);
-        setRippleBackground(binding.tv103);
-        setPressedBackground(binding.tv104);
-        setRippleBackground(binding.tv105);
+        setPressedBackground(getBinding().tv100);
+        setRippleBackground(getBinding().tv101);
+        setPressedBackground(getBinding().tv102);
+        setRippleBackground(getBinding().tv103);
+        setPressedBackground(getBinding().tv104);
+        setRippleBackground(getBinding().tv105);
     }
 
     @Override

@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:maxLines="5"
-            android:minHeight="@dimen/button_size"
+            android:minHeight="@dimen/button_big_size"
             android:minLines="1"
             android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@dimen/padding_small"
@@ -56,7 +56,7 @@
         <LinearLayout
             android:id="@+id/ll_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/button_size"
+            android:layout_height="@dimen/button_big_size"
             android:orientation="horizontal">
 
             <TextView

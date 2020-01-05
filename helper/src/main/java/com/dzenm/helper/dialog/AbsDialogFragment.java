@@ -95,14 +95,14 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     private boolean isTouchInOutSideCancel = false;
 
     /**
-     * 显示的主要文字颜色 {@link #setDefaultTextColor()}
+     * 显示的主要文字颜色 {@link #setDefaultTextColor()}, 显示的次要文字颜色 {@link #setDefaultTextColor()}
      */
-    protected int mPrimaryTextColor;
+    protected int mPrimaryTextColor, mSecondaryTextColor;
 
     /**
-     * 显示的次要文字颜色 {@link #setDefaultTextColor()}
+     * 按钮文本颜色
      */
-    protected int mSecondaryTextColor;
+    protected int mButtonTextColor;
 
     /**
      * 提示文本颜色 {@link #setDefaultTextColor()}
@@ -391,6 +391,8 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
                 R.color.colorPrimaryTextLight);
         mSecondaryTextColor = getColor(isDefaultBackground ? R.color.colorSecondaryTextDark :
                 R.color.colorSecondaryTextLight);
+        mButtonTextColor = getColor(isDefaultBackground ? R.color.colorDarkBlue :
+                android.R.color.white);
         mHintColor = getColor(isDefaultBackground ? R.color.colorHintTextDark :
                 R.color.colorHintTextLight);
         mDivideColor = getColor(isDefaultBackground ? R.color.colorDivideDark :

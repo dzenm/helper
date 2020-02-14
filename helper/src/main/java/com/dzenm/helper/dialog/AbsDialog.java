@@ -391,7 +391,7 @@ public abstract class AbsDialog extends AppCompatDialog {
 
     private interface OnDialogClickListener<T extends AbsDialog> {
         /**
-         * @param dialog  Dialog
+         * @param dialog  DialogFragmentDelegate
          * @param confirm 是否是确定按钮，通过这个判断点击的是哪个按钮
          * @return 返回true表示，点击之后会dismiss dialog， 返回false不dismiss dialog
          */

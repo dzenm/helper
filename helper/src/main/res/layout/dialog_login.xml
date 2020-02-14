@@ -6,11 +6,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_big_size">
+        android:layout_height="@dimen/button_height_big">
 
         <TextView
             android:id="@+id/tv_login"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -19,7 +19,7 @@
 
         <TextView
             android:id="@+id/tv_register"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -47,7 +47,7 @@
     <LinearLayout
         android:id="@+id/ll_verife"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_normal_size"
+        android:layout_height="@dimen/button_height_big"
         android:layout_marginLeft="@dimen/margin_normal"
         android:layout_marginTop="@dimen/margin_normal"
         android:layout_marginRight="@dimen/margin_normal"
@@ -56,7 +56,7 @@
         <EditText
             android:id="@+id/et_verife_code"
             style="@style/EditTextTheme"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_weight="2"
             android:hint="@string/dialog_verify_code"
             android:inputType="number"
@@ -64,7 +64,7 @@
 
         <TextView
             android:id="@+id/tv_countdown"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -80,12 +80,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_big_size"
+        android:layout_height="@dimen/button_height_big"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_cancel"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -98,7 +98,7 @@
 
         <TextView
             android:id="@+id/tv_confirm"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"

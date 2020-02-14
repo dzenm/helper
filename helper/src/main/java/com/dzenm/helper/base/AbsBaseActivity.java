@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.dzenm.helper.dialog.PromptDialog;
 import com.dzenm.helper.os.ScreenHelper;
+import com.dzenm.helper.os.ThemeHelper;
 
 /**
  * @author dinzhenyan
@@ -25,9 +26,17 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeHelper.setTheme(this);
         mActivityDelegate = new ActivityDelegate(this, mTag);
         initializeCreate(savedInstanceState);
         initializeView(savedInstanceState);
+    }
+
+    protected void toggleTheme(int theme) {
+        if (ThemeHelper.setNewTheme(this, theme)) {
+            // 重启Activity
+            recreate();
+        }
     }
 
     protected void initializeCreate(Bundle savedInstanceState) {

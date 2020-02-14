@@ -5,13 +5,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Looper;
-import android.os.Process;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.dzenm.helper.date.DateHelper;
 import com.dzenm.helper.file.FileHelper;
+import com.dzenm.helper.task.WeakHandler;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -22,43 +22,40 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author dinzhenyan
- * @date 2019-04-30 20:03
- * <p>
- * 异常日志收集的处理
- * 在Application中初始化
- * <pre>
- *     CrashHelper.getInstance()
- *              .init()
- * </pre>
+ * @author dzenm
+ * @date 2020-02-13 15:22
  */
-public class CrashHelper implements Thread.UncaughtExceptionHandler {
+public class CrashHelper {
 
     private static final String TAG = CrashHelper.class.getSimpleName() + "|";
     private static final String PATH = "/crash";
     private static final String NAME = "crash_";
     private static final String SUFFIX = ".txt";
 
+    private static CrashHelper mCrashHelper;
+    private CaughtExceptionHandler mCaughtExceptionHandler;
+
     private Context mContext;
-    private Thread.UncaughtExceptionHandler mDefaultExceptionHandle;            // 系统默认的UncaughtException处理类
-    private static CrashHelper sCrashHelper;
-    private OnCrashExceptionMessageListener mOnCrashExceptionMessageListener;   // 自定义处理异常信息
+    private OnCaughtExceptionMessageListener mOnCaughtExceptionMessageListener;     // 自定义处理异常信息
     private boolean isCache = true;                                             // 是否保存为本地文件
 
     private CrashHelper() {
     }
 
     public static CrashHelper getInstance() {
-        if (sCrashHelper == null) synchronized (CrashHelper.class) {
-            if (sCrashHelper == null) sCrashHelper = new CrashHelper();
+        if (mCrashHelper == null) {
+            synchronized (CrashHelper.class) {
+                if (mCrashHelper == null) {
+                    mCrashHelper = new CrashHelper();
+                }
+            }
         }
-        return sCrashHelper;
+        return mCrashHelper;
     }
 
     public CrashHelper init(Context context) {
-        mContext = context.getApplicationContext();
-        mDefaultExceptionHandle = Thread.getDefaultUncaughtExceptionHandler();  // 获取系统默认的UncaughtException处理器
-        Thread.setDefaultUncaughtExceptionHandler(this);                        // 设置CrashHandler为程序的默认异常处理器
+        mContext = context;
+        interceptExceptionHandler();
         return this;
     }
 
@@ -67,45 +64,66 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
         return this;
     }
 
-    public CrashHelper setOnCrashExceptionMessageListener(OnCrashExceptionMessageListener listener) {
-        mOnCrashExceptionMessageListener = listener;
+    public CrashHelper setOnCaughtExceptionMessageListener(OnCaughtExceptionMessageListener listener) {
+        mOnCaughtExceptionMessageListener = listener;
+        return this;
+    }
+
+    public CrashHelper setCaughtExceptionHandler(CaughtExceptionHandler caughtExceptionHandler) {
+        mCaughtExceptionHandler = caughtExceptionHandler;
         return this;
     }
 
     /**
-     * 当程序中有未被捕获的异常，系统将会自动调用uncaughtException方法
-     *
-     * @param thread 出现未捕获异常的线程
-     * @param ex     未捕获的异常
+     * 拦截异常处理
      */
-    @Override
-    public void uncaughtException(@NonNull Thread thread, @NonNull Throwable ex) {
-        if (catchCaughtException(ex) && mDefaultExceptionHandle != null) {     // 如果系统提供了默认处理，则交给系统处理，否则就自己结束
-            mDefaultExceptionHandle.uncaughtException(thread, ex);
-        } else {
-            Process.killProcess(Process.myPid());                              // 退出应用
-        }
+    private void interceptExceptionHandler() {
+        // 主线程异常拦截
+        final Looper looper = Looper.getMainLooper();
+        new WeakHandler(looper).post(new Runnable() {
+            @Override
+            public void run() {
+                for (; ; ) {
+                    try {
+                        Looper.loop();
+                    } catch (Throwable e) {
+                        catchException(looper.getThread(), e);
+                    }
+                }
+            }
+        });
+
+        // 所有线程异常拦截，由于主线程的异常都被我们catch了，所以下面拦截的都是子线程的异常
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
+                catchException(t, e);
+            }
+        });
     }
 
     /**
      * 收集捕获的异常信息
      *
-     * @param ex 异常信息
-     * @return 是否捕捉异常
+     * @param e 异常信息
      */
-    private boolean catchCaughtException(Throwable ex) {
-        if (ex == null) return false;
+    private void catchException(Thread t, Throwable e) {
+        if (e == null) return;
 
-        String exception = printCrashExceptionMessage(ex);                         // 输出异常信息
+        String exception = printExceptionMessage(e);                               // 输出异常信息
         Map<String, String> phoneMessage = printPhoneMessage();                    // 收集设备参数信息
-        String crashMessage = printSystemMessage(exception, phoneMessage);       // 收集崩溃日志的信息
+        String crashMessage = printSystemMessage(exception, phoneMessage);         // 收集崩溃日志的信息
 
-        handlerCrashExceptionMessage(crashMessage);
-        Process.killProcess(Process.myPid());                                      // 退出应用
-        return true;
+        handlerExceptionMessage(crashMessage);
+//        Process.killProcess(Process.myPid());                                      // 退出应用
+        if (mCaughtExceptionHandler != null) {                                 // 处理异常
+            mCaughtExceptionHandler.caughtException(t, e);
+        } else {
+            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void handlerCrashExceptionMessage(String crashMessage) {
+    private void handlerExceptionMessage(String crashMessage) {
         if (isCache) {
             String fileName = NAME + DateHelper.getCurrentTimeMillis() + SUFFIX;
             // 保存当前文件
@@ -113,9 +131,9 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
             // 删除其它文件
             FileHelper.getInstance().delete(getCrashDirect(), fileName);
         }
-        if (mOnCrashExceptionMessageListener != null) {
+        if (mOnCaughtExceptionMessageListener != null) {
             // 上传到服务器
-            mOnCrashExceptionMessageListener.onHandlerMessage(mContext, crashMessage);
+            mOnCaughtExceptionMessageListener.onHandlerMessage(crashMessage);
         }
     }
 
@@ -125,7 +143,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
      * @param ex 异常信息
      * @return 格式化信息
      */
-    private String printCrashExceptionMessage(Throwable ex) {
+    private String printExceptionMessage(Throwable ex) {
         Logger.e(TAG + "开始输出异常信息");
         Writer writer = new StringWriter();
         PrintWriter printWriter = new PrintWriter(writer);
@@ -207,7 +225,13 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
         return FileHelper.getInstance().getFolder(PATH);
     }
 
-    public interface OnCrashExceptionMessageListener {
-        void onHandlerMessage(Context context, String message);
+
+    public interface CaughtExceptionHandler {
+        void caughtException(Thread t, Throwable e);
     }
+
+    public interface OnCaughtExceptionMessageListener {
+        void onHandlerMessage(String message);
+    }
+
 }

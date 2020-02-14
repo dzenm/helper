@@ -3,6 +3,7 @@ package com.dzenm.ui;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.PopupWindow;
 
 import androidx.annotation.Nullable;
 
@@ -11,10 +12,13 @@ import com.dzenm.databinding.ActivityOthersBinding;
 import com.dzenm.helper.base.AbsActivity;
 import com.dzenm.helper.dialog.EditDialog;
 import com.dzenm.helper.dialog.InfoDialog;
+import com.dzenm.helper.dialog.ViewHolder;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.file.FileHelper;
 import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.photo.PhotoSelector;
+import com.dzenm.helper.popup.DropDownMenu;
+import com.dzenm.helper.popup.PopupDialog;
 import com.dzenm.helper.share.ShareHelper;
 import com.dzenm.helper.toast.ToastHelper;
 
@@ -116,6 +120,28 @@ public class OthersActivity extends AbsActivity<ActivityOthersBinding> implement
 
         } else if (view.getId() == R.id.tv_109) {
 
+        } else if (view.getId() == R.id.tv_menu) {
+            new DropDownMenu.Builder(this)
+                    .setView(R.layout.dialog_login)
+                    .setOnBindViewHolder(new DropDownMenu.OnBindViewHolder() {
+                        @Override
+                        public void onBinding(ViewHolder holder, final DropDownMenu dialog) {
+                            holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    ToastHelper.show("登录成功");
+                                    dialog.dismiss();
+                                }
+                            });
+                            holder.getView(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
+                    }).create()
+                    .showAsDropDown(getBinding().tvMenu);
         }
     }
 

@@ -167,7 +167,7 @@ public class DrawableHelper {
      * @param color  边框颜色
      * @return ShapeHelper
      */
-    public static ShapeHelper stroke(int stroke, int color) {
+    public static ShapeHelper stroke(float stroke, int color) {
         return ShapeHelper.getInstance().stroke(stroke, color);
     }
 

@@ -33,4 +33,12 @@
         <attr name="margin_child" format="dimension|reference" />
         <attr name="columnCount" format="integer" />
     </declare-styleable>
+
+    <!-- 自定义属性 -->
+    <attr name="colorPrimaryText" format="color" />
+    <attr name="colorSecondaryText" format="color" />
+    <attr name="colorHintText" format="color" />
+    <attr name="colorDivide" format="color" />
+    <attr name="colorActive" format="color" />
+    <attr name="colorInactive" format="color" />
 </resources>

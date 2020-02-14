@@ -1,11 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="AppTheme.Default" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryText">@color/colorPrimaryText</item>
+        <item name="colorSecondaryText">@color/colorDarkSecondaryText</item>
+        <item name="colorHintText">@color/colorHint</item>
+        <item name="colorDivide">@color/colorDivide</item>
+        <item name="colorActive">@color/colorActiveLight</item>
+        <item name="colorInactive">@color/colorInactiveLight</item>
+    </style>
+
+    <style name="AppTheme.Light" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryText">@color/colorPrimaryTextLight</item>
+        <item name="colorSecondaryText">@color/colorSecondaryTextLight</item>
+        <item name="colorHintText">@color/colorHintTextLight</item>
+        <item name="colorDivide">@color/colorDivideLight</item>
+        <item name="colorActive">@color/colorActiveLight</item>
+        <item name="colorInactive">@color/colorInactiveLight</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryText">@color/colorPrimaryTextDark</item>
+        <item name="colorSecondaryText">@color/colorSecondaryTextDark</item>
+        <item name="colorHintText">@color/colorHintTextDark</item>
+        <item name="colorDivide">@color/colorDivideDark</item>
+        <item name="colorActive">@color/colorActiveDark</item>
+        <item name="colorInactive">@color/colorInactiveDark</item>
+    </style>
+
     <style name="BaseDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">true</item>                          <!--无标题-->
         <item name="android:windowIsTranslucent">true</item>                    <!--半透明-->
         <item name="android:windowBackground">@android:color/transparent</item> <!--背景透明-->
     </style>
+
+    <!-- DialogFragment主题 -->
+    <style name="AbsFragmentTheme" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 是否半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="FullScreenTheme" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:windowNoTitle">true</item>
+        <!-- 是否浮现在activity之上使之全屏 -->
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 是否半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="BasePopup" parent="Widget.AppCompat.PopupWindow" />
 
     <!-- 透明Activity主题-->
     <style name="TransparentActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -89,42 +154,6 @@
         <item name="android:windowReenterTransition">@android:transition/slide_right</item>
     </style>
 
-    <!-- DialogFragment主题 -->
-    <style name="AbsFragmentTheme" parent="@style/Theme.AppCompat.Light.Dialog">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:windowNoTitle">true</item>
-        <!-- 是否浮现在activity之上 -->
-        <item name="android:windowIsFloating">true</item>
-        <!-- 背景透明 -->
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <!-- 边框 -->
-        <item name="android:windowFrame">@null</item>
-        <!-- 是否半透明 -->
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <style name="FullScreenTheme" parent="@style/Theme.AppCompat.Light.Dialog">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:windowNoTitle">true</item>
-        <!-- 是否浮现在activity之上使之全屏 -->
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <!-- 背景透明 -->
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <!-- 边框 -->
-        <item name="android:windowFrame">@null</item>
-        <!-- 是否半透明 -->
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
     <!--下进下出-->
     <style name="BaseDialog.Bottom.Animator" parent="Animation.AppCompat.Dialog">
         <item name="android:windowEnterAnimation">@anim/dialog_trans_bottom_in</item>
@@ -206,7 +235,7 @@
     <!--EditText单行输入主题-->
     <style name="EditTextTheme" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/button_normal_size</item>
+        <item name="android:layout_height">@dimen/button_height_normal</item>
         <item name="android:paddingLeft">@dimen/padding_normal</item>
         <item name="android:paddingRight">@dimen/padding_normal</item>
         <item name="android:maxLines">1</item>
@@ -214,13 +243,19 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="BasePopup" parent="Widget.AppCompat.PopupWindow" />
-
     <!--竖直方向进出-->
     <style name="BasePopup.Fade.Vertical.Animator" parent="BasePopup">
         <item name="android:windowEnterAnimation">@anim/popup_fade_vertical_in</item>
         <item name="android:windowExitAnimation">@anim/popup_fade_vertical_out</item>
     </style>
+
+    <!--竖直方向进出-->
+    <style name="DropDownMenu.Alpha.Animation" parent="BasePopup">
+        <item name="android:windowEnterAnimation">@anim/popup_alpha_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_alpha_out</item>
+    </style>
+
+
 
     <!--水平方向进出-->
     <style name="BasePopup.Fade.Horizontal.Animator" parent="BasePopup">

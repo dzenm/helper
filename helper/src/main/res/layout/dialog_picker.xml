@@ -11,7 +11,7 @@
         <TextView
             android:id="@+id/tv_cancel"
             android:layout_width="100dp"
-            android:layout_height="@dimen/button_big_size"
+            android:layout_height="@dimen/button_height_normal"
             android:gravity="center"
             android:paddingLeft="@dimen/padding_big"
             android:paddingRight="@dimen/padding_big"
@@ -24,12 +24,12 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="@string/dialog_info"
-            android:textSize="@dimen/text_size_appbar" />
+            android:textSize="@dimen/text_size_appbar_title" />
 
         <TextView
             android:id="@+id/tv_confirm"
             android:layout_width="100dp"
-            android:layout_height="@dimen/button_big_size"
+            android:layout_height="@dimen/button_height_normal"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:gravity="center"
@@ -52,13 +52,13 @@
 
         <com.dzenm.helper.view.PickerView
             android:id="@+id/pv_primary"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="160dp"
             android:layout_weight="3" />
 
         <TextView
             android:id="@+id/tv_primary"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -67,13 +67,13 @@
 
         <com.dzenm.helper.view.PickerView
             android:id="@+id/pv_secondary"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="160dp"
             android:layout_weight="2" />
 
         <TextView
             android:id="@+id/tv_secondary"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -82,13 +82,13 @@
 
         <com.dzenm.helper.view.PickerView
             android:id="@+id/pv_unit"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="160dp"
             android:layout_weight="2" />
 
         <TextView
             android:id="@+id/tv_unit"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"

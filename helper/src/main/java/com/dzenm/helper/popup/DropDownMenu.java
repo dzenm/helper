@@ -2,53 +2,37 @@ package com.dzenm.helper.popup;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
+import com.dzenm.helper.R;
 import com.dzenm.helper.dialog.ViewHolder;
+import com.dzenm.helper.draw.DrawableHelper;
+import com.dzenm.helper.os.ScreenHelper;
 
 /**
- * @author dinzhenyan
- * @date 2019-07-01 21:51
- * <pre>
- * new PopupDialog.Builder(this)
- *         .setView(R.layout.dialog_login)
- *         .setOnBindViewHolder(new PopupDialog.OnBindViewHolder() {
- *             @Override
- *             public void onCallback(ViewHolder holder, final PopupDialog popupWindow) {
- *                 holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
- *                     @Override
- *                     public void onClick(View v) {
- *                         ToastHelper.show("登录成功");
- *                         popupWindow.dismiss();
- *                     }
- *                 });
- *                 holder.getView(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
- *                     @Override
- *                     public void onClick(View v) {
- *                         popupWindow.dismiss();
- *                     }
- *                 });
- *             }
- *         }).create()
- *         .showAsDropDown(binding.btn3);
- * </pre>
+ * @author dzenm
+ * @date 2020-01-16 22:53
  */
-public class PopupDialog extends PopupWindow {
+public class DropDownMenu extends PopupWindow {
 
     private final PopupController controller;
 
-    protected PopupDialog(Activity activity) {
+    private DropDownMenu(Activity activity) {
         this(activity, null);
     }
 
-    protected PopupDialog(Activity activity, AttributeSet attrs) {
+    private DropDownMenu(Activity activity, AttributeSet attrs) {
         this(activity, attrs, 0);
     }
 
-    protected PopupDialog(Activity activity, AttributeSet attrs, int defStyleAttr) {
+    private DropDownMenu(Activity activity, AttributeSet attrs, int defStyleAttr) {
         super(activity, attrs, defStyleAttr);
         controller = new PopupController(activity, this);
     }
@@ -60,10 +44,18 @@ public class PopupDialog extends PopupWindow {
         }
 
         private final PopupController.Params params;
-        private PopupDialog.OnBindViewHolder mOnBindViewHolder;
+        private OnBindViewHolder mOnBindViewHolder;
+        private Activity activity;
+        private View maskView, contentView;
+        private FrameLayout decorView;
 
         public Builder(Activity activity) {
             params = new PopupController.Params(activity);
+            this.activity = activity;
+            getDecorView();
+            setBackground(null);
+            seBackgroundAlpha(1.0f);
+            setAnimationStyle(R.style.DropDownMenu_Alpha_Animation);
         }
 
         /**
@@ -80,7 +72,18 @@ public class PopupDialog extends PopupWindow {
          * @return this
          */
         public Builder setView(View view) {
-            params.mPopupView = view;
+            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                    ScreenHelper.getDisplayWidth(), ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            view.setLayoutParams(layoutParams);
+            DrawableHelper.solid(android.R.color.white)
+                    .radiusBR(8)
+                    .radiusBL(8)
+                    .into(view);
+            contentView = view;
+            decorView.addView(maskView);
+            decorView.addView(view);
+            params.mPopupView = decorView;
             return this;
         }
 
@@ -153,15 +156,47 @@ public class PopupDialog extends PopupWindow {
          *
          * @return {@link PopupDialog}
          */
-        public PopupDialog create() {
-            PopupDialog mP = new PopupDialog(params.mActivity);
-            mOnBindViewHolder.onBinding(ViewHolder.create(params.mPopupView), mP);
+        public DropDownMenu create() {
+            DropDownMenu mP = new DropDownMenu(params.mActivity);
             params.apply(mP.controller);
+            mOnBindViewHolder.onBinding(ViewHolder.create(params.mPopupView), mP);
+            showMask();
             return mP;
+        }
+
+        private void getDecorView() {
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                    ScreenHelper.getDisplayWidth(), FrameLayout.LayoutParams.MATCH_PARENT
+            );
+            decorView = new FrameLayout(activity);
+            decorView.setLayoutParams(layoutParams);
+
+            maskView = new View(activity);
+            ViewGroup.LayoutParams maskParams = new ViewGroup.LayoutParams(
+                    ScreenHelper.getDisplayWidth(), ViewGroup.LayoutParams.MATCH_PARENT
+            );
+            maskView.setLayoutParams(maskParams);
+            maskView.setBackgroundColor(-2004318072);
+            maskView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+        }
+
+        private void closeMask() {
+            contentView.setAnimation(AnimationUtils.loadAnimation(activity, R.anim.popup_trans_out));
+            maskView.setAnimation(AnimationUtils.loadAnimation(activity, R.anim.popup_alpha_out));
+        }
+
+        private void showMask() {
+            contentView.setAnimation(AnimationUtils.loadAnimation(activity, R.anim.popup_trans_in));
+            maskView.setAnimation(AnimationUtils.loadAnimation(activity, R.anim.popup_alpha_in));
         }
     }
 
-    public interface OnBindViewHolder<T extends PopupDialog> {
-        void onBinding(ViewHolder holder, T dialog);
+    public interface OnBindViewHolder {
+        void onBinding(ViewHolder holder, DropDownMenu dialog);
     }
 }

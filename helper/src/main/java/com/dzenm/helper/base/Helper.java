@@ -19,7 +19,7 @@ import com.dzenm.helper.toast.ToastHelper;
  */
 public class Helper {
 
-    public static void init(Context context) {
+    public static void init(final Context context) {
         // 初始化Logger工具, 将打印的log保存文件
         CrashHelper.getInstance().init(context);
         // 初始化APP文件夹

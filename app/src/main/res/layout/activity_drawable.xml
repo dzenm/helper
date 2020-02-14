@@ -51,7 +51,7 @@
                 android:id="@+id/pl_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin" />
+                android:layout_margin="@dimen/margin_bigger" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                 android:id="@+id/pl_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin" />
+                android:layout_margin="@dimen/margin_bigger" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

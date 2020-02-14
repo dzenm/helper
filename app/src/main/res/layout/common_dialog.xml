@@ -37,12 +37,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/button_big_size"
+        android:layout_height="@dimen/button_height_normal"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/bt_negative"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@null"
@@ -58,7 +58,7 @@
 
         <Button
             android:id="@+id/bt_positive"
-            android:layout_width="@dimen/layout_empty_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@null"

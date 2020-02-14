@@ -20,17 +20,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxHeight="@dimen/avatar_big_size"
             android:gravity="center"
+            android:maxHeight="@dimen/avatar_size_big"
             android:maxLines="1"
-            android:textSize="@dimen/text_size_appbar" />
+            android:textSize="@dimen/text_size_subtitle" />
 
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="5"
             android:gravity="center"
+            android:maxLines="5"
             android:minLines="1"
             android:textSize="@dimen/text_size_subtitle" />
 
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
             android:maxLines="5"
-            android:minHeight="@dimen/button_big_size"
+            android:minHeight="@dimen/button_height_big"
             android:minLines="1"
             android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@dimen/padding_small"
@@ -56,12 +56,12 @@
         <LinearLayout
             android:id="@+id/ll_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/button_big_size"
+            android:layout_height="@dimen/button_height_normal"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_negative"
-                android:layout_width="@dimen/layout_empty_size"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
@@ -74,7 +74,7 @@
 
             <TextView
                 android:id="@+id/tv_positive"
-                android:layout_width="@dimen/layout_empty_size"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"

@@ -2,7 +2,9 @@ package com.dzenm.helper.task;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.webkit.WebView;
 
 import java.lang.ref.WeakReference;
 
@@ -16,6 +18,10 @@ public class WeakHandler extends Handler {
 
     public WeakHandler(Context context) {
         weakReference = new WeakReference<>(context);
+    }
+
+    public WeakHandler(Looper looper) {
+        super(looper);
     }
 
     @Override

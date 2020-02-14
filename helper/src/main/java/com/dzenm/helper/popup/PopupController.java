@@ -10,18 +10,19 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import com.dzenm.helper.dialog.ViewHolder;
+import com.dzenm.helper.R;
+import com.dzenm.helper.draw.DrawableHelper;
 
 /**
  * @author dinzhenyan
  * @date 2019-07-03 16:54
  */
-class PopupController {
+class PopupController<T extends PopupWindow> {
 
     private Activity mActivity;
-    private PopupDialog mPopupWindow;
+    private T mPopupWindow;
 
-    PopupController(Activity activity, PopupDialog popupWindow) {
+    PopupController(Activity activity, T popupWindow) {
         mActivity = activity;
         mPopupWindow = popupWindow;
     }
@@ -52,16 +53,21 @@ class PopupController {
     /**
      * @param alpha 父控件的背景透明度
      */
-    private void setParentBackgroundAlpha(float alpha) {
+    private void setBackgroundAlpha(float alpha) {
         Window window = mActivity.getWindow();
         // 弹出popupWindow时父控件显示为灰色
         WindowManager.LayoutParams layoutParams = window.getAttributes();
         layoutParams.alpha = alpha;
         window.setAttributes(layoutParams);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
-    private PopupDialog getPopupWindow() {
-        return mPopupWindow;
+    private void dismiss() {
+        mPopupWindow.dismiss();
+    }
+
+    private <P extends PopupWindow> P getPopupWindow() {
+        return (P) mPopupWindow;
     }
 
     @SuppressLint("NewApi")
@@ -70,32 +76,49 @@ class PopupController {
         mPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);    // 设置弹出窗口的高
         mPopupWindow.setIgnoreCheekPress();                             // Events都是有大小的,当触摸点大于手指头大小时，则为脸颊事件
         mPopupWindow.setAttachedInDecor(false);                         // 主要作用是为了设置PopupWindow显示的时候是否会与StatusBar重叠（如果存在的话也包括SystemBar）
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);   // 在PopupWindow里面就加上下面代码，让键盘弹出时，不会挡住pop窗口。
+        mPopupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));
+        mPopupWindow.getContentView().measure(0, 0);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                setParentBackgroundAlpha(1.0f);
+                // 退出popupWindow时显示父控件原来的颜色
+                setBackgroundAlpha(1.0f);
             }
-        });                                                             // 退出popupWindow时显示父控件原来的颜色
-        mPopupWindow.getContentView().measure(0, 0);
+        });
     }
 
     static class Params {
 
+        private PopupController mController;
+        PopupDialog.OnBindViewHolder mOnBindViewHolder;
         Activity mActivity;
         View mPopupView;
         int mAnimationStyle;
         int mElevation;
-        float parentBackgroundAlpha;
+        float mBackgroundAlpha;
         Drawable mBackground;
         boolean mTouchable;
 
-        PopupDialog.OnBindViewHolder mOnBindViewHolder;
-
         Params(Activity activity) {
             mActivity = activity;
+
+            // 默认设置
+            mBackground = DrawableHelper.solid(android.R.color.white).radius(8).build();
+            mBackgroundAlpha = 0.6f;
+            mTouchable = true;
+            mAnimationStyle = R.style.BasePopup_Fade_Vertical_Animator;
         }
 
-        void apply(PopupController controller) {
+        void dismiss() {
+            mController.dismiss();
+        }
+
+        void apply(final PopupController controller) {
+            mController = controller;
             if (mPopupView == null) {
                 throw new NullPointerException("PopupWindow's view is null");
             } else {
@@ -103,10 +126,9 @@ class PopupController {
             }
             controller.setAnimationStyle(mAnimationStyle);
             controller.setBackground(mBackground);
-            controller.setParentBackgroundAlpha(parentBackgroundAlpha);
+            controller.setBackgroundAlpha(mBackgroundAlpha);
             controller.setElevation(mElevation);
             controller.setOutsideTouchable(mTouchable);
-            mOnBindViewHolder.onBinding(ViewHolder.create(mPopupView), controller.getPopupWindow());
             controller.create();
         }
     }

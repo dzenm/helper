@@ -45,7 +45,8 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
         return mActivity;
     }
 
-    public void initializeView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View initializeView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return null;
     }
 
     /**
@@ -89,7 +90,7 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
             @Nullable Bundle savedInstanceState
     ) {
         logD("onCreateView");
-        initializeView(inflater, container, savedInstanceState);
+        mDecorView = initializeView(inflater, container, savedInstanceState);
         return mDecorView;
     }
 

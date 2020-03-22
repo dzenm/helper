@@ -89,7 +89,7 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
     }
 
     @Override
-    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
+    protected View inflater(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RelativeLayout relativeLayout = new RelativeLayout(mActivity);
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -100,9 +100,9 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
         relativeLayout.setOnTouchListener(this);
         relativeLayout.setLayoutParams(imageParams);
         relativeLayout.addView(mImageView);
-        mView = relativeLayout;
         mBackground = DrawableHelper.solid(android.R.color.transparent).build();
         mDimAccount = 1f;
+        return relativeLayout;
     }
 
     @Override
@@ -145,7 +145,7 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
                         // 移动事件, 重新设置背景透明, 根据移动距离设置ImageView的偏移
                         mMode = MODE_MOVE;
                         mLastTimeMillis = 0;
-                        mView.setBackgroundColor(getColor(android.R.color.transparent));
+                        getDecorView().setBackgroundColor(getColor(android.R.color.transparent));
                         float offset = (float) mOffsetY / (float) ScreenHelper.getDisplayHeight();
                         setImageDismissAnimator(offsetX, mOffsetY,
                                 mOffsetY > 0 ? mDimAccount - offset : mDimAccount);
@@ -156,7 +156,7 @@ public class PreviewDialog extends AbsDialogFragment implements View.OnTouchList
                         if (currentTimeMillis - mLastTimeMillis > 500) {
                             mMode = MODE_LONG_CLICK;
                             mLastTimeMillis = 0;
-                            mView.setBackgroundColor(getColor(android.R.color.black));
+                            getDecorView().setBackgroundColor(getColor(android.R.color.black));
                             if (mOnLongClickListener != null) {
                                 mOnLongClickListener.onLongClick();
                             }

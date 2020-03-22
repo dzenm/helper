@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import com.dzenm.R;
 import com.dzenm.databinding.ActivityPermissionBinding;
 import com.dzenm.helper.base.AbsActivity;
-import com.dzenm.helper.base.AbsBaseActivity;
 import com.dzenm.helper.dialog.InfoDialog;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
@@ -109,9 +108,9 @@ public class PermissionActivity extends AbsActivity<ActivityPermissionBinding> i
     @Override
     public void onPermit(boolean isGrant) {
         if (isGrant) {
-            ToastHelper.show("请求成功", com.dzenm.helper.R.drawable.prompt_success);
+            ToastHelper.show("请求成功", R.drawable.prompt_success);
         } else {
-            ToastHelper.show("未请求成功权限", com.dzenm.helper.R.drawable.prompt_error);
+            ToastHelper.show("未请求成功权限", R.drawable.prompt_error);
         }
     }
 }

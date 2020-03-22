@@ -396,8 +396,11 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
 
         // 字体相关设置
         webSettings.setStandardFontFamily("");             // 设置 WebView 的字体，默认字体为 "sans-serif"
-        webSettings.setDefaultFontSize(20);                // 设置 WebView 字体的大小，默认大小为 16
+        webSettings.setDefaultFontSize(20);                // 设置 WebView 默认字体的大小，默认为 16，可取值1到72
+        webSettings.setDefaultFixedFontSize(16);           // 设置 WebView 默认固定的字体大小，默认为 16，可取值1到72
         webSettings.setMinimumFontSize(12);                // 设置 WebView 支持的最小字体大小，默认为 8
+        webSettings.setTextZoom(100);                      // 设置WebView字体按照Normal形式展示
+        webSettings.setTextSize(WebSettings.TextSize.SMALLEST);// 设置字体大小，默认为 WebSettings.TextSize.NORMAL
 
         // 缩放相关设置
         webSettings.setSupportZoom(true);                  // 支持缩放，默认为true。是下面那个的前提

@@ -23,6 +23,7 @@ import android.webkit.MimeTypeMap;
 
 import androidx.core.content.FileProvider;
 
+import com.dzenm.helper.date.DateHelper;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.OsHelper;
 
@@ -59,7 +60,7 @@ public class FileHelper {
     private static final String TAG = FileHelper.class.getSimpleName() + "| ";
     private Context mContext;
     private String mAppFolder;              // app名称目录
-    private String mPersonFolder;           // 个人账号文件夹
+    private String mUserFolder;             // 个人账号文件夹
 
     private static volatile FileHelper sInstance;
 
@@ -113,8 +114,8 @@ public class FileHelper {
      * @param personFolder 个人用户文件夹
      * @return this
      */
-    public FileHelper setPersonFolder(String personFolder) {
-        mPersonFolder = personFolder;
+    public FileHelper setUserFolder(String personFolder) {
+        mUserFolder = personFolder;
         return this;
     }
 
@@ -133,37 +134,53 @@ public class FileHelper {
     }
 
     /**
-     * 位于/storage/emulated/0/公司名/App文件夹/folders
+     * 创建临时文件
      *
-     * @param folder 创建文件夹的路径, 例: /apk
-     * @return this
+     * @return File
      */
-    public String getPath(String folder) {
-        return getFolder(folder).getPath();
+    public File createTempFile(String folder) {
+        File direct = getFile(folder);
+        if (!direct.exists()) direct.mkdirs();
+        delete(direct);
+        return new File(direct, DateHelper.getCurrentTimeMillis() + ".jpeg");
     }
 
     /**
      * 位于/storage/emulated/0/公司名/App文件夹/folders
      *
-     * @param folder 创建文件夹的路径, 例: /apk
+     * @param folderName 创建文件夹的路径, 例: /apk
      * @return this
      */
-    public File getFolder(String folder) {
-        if (TextUtils.isEmpty(mAppFolder) || TextUtils.isEmpty(folder)) return null;
-        if (!folder.startsWith("/")) return null;
-        return mkdir(mAppFolder + folder);
+    public String getPath(String folderName) {
+        return getFile(folderName).getPath();
+    }
+
+    /**
+     * 位于/storage/emulated/0/公司名/App文件夹/folders
+     *
+     * @param folderName 创建文件夹的路径, 例: /apk
+     * @return this
+     */
+    public File getFile(String folderName) {
+        if (TextUtils.isEmpty(mAppFolder)) return null;
+        if (TextUtils.isEmpty(folderName)) return new File(mAppFolder);
+        String f = folderName;
+        if (!folderName.startsWith("/")) f = "/" + folderName;
+        return mkdir(mAppFolder + f);
     }
 
     /**
      * 位于/storage/emulated/0/公司名/App文件夹/个人文件夹/folders
      *
-     * @param folder 创建文件夹的路径, 例: /image
+     * @param userFolderName 创建文件夹的路径, 例: /image
      * @return this
      */
-    public File getPersonFolder(String folder) {
-        if (TextUtils.isEmpty(mPersonFolder) || TextUtils.isEmpty(folder)) return null;
-        if (!folder.startsWith("/")) return null;
-        return mkdir(mAppFolder + File.separator + mPersonFolder + folder);
+    public File getUserFile(String userFolderName) {
+        if (TextUtils.isEmpty(mUserFolder) ) return null;
+        if (TextUtils.isEmpty(userFolderName)) return new File(mUserFolder);
+        String f = userFolderName;
+        if (!userFolderName.startsWith("/")) f = "/" + userFolderName;
+        return mkdir(mAppFolder + File.separator + mUserFolder + f);
     }
 
     /**
@@ -336,7 +353,7 @@ public class FileHelper {
     }
 
     /**
-     * 删除path文件夹下除了filterName文件的所有文件(不包括文件夹)
+     * 删除path路径下除了filterName文件的所有文件(不包括文件夹)
      *
      * @param path       需要删除文件的路径
      * @param filterName 过滤的文件名称
@@ -369,21 +386,21 @@ public class FileHelper {
     }
 
     /**
-     * @param file 删除文件夹
+     * @param folder 删除文件夹
      */
-    public void deleteFolder(File file) {
-        if (!file.exists()) return;
-        if (file.isFile()) file.delete();       // 如果是文件直接删除
-        if (file.isDirectory()) {               // 如果是目录，递归判断，如果是空目录，直接删除，如果是文件，遍历删除
-            File[] children = file.listFiles();
+    public void deleteFolder(File folder) {
+        if (!folder.exists()) return;
+        if (folder.isFile()) folder.delete();   // 如果是文件直接删除
+        if (folder.isDirectory()) {             // 如果是目录，递归判断，如果是空目录，直接删除，如果是文件，遍历删除
+            File[] children = folder.listFiles();
             if (children == null || children.length == 0) {
-                file.delete();
+                folder.delete();
                 return;
             }
             for (File f : children) {
                 delete(f);
             }
-            file.delete();
+            folder.delete();
         }
     }
 
@@ -827,7 +844,7 @@ public class FileHelper {
      */
     public boolean copyDBToSDCard(String databaseName) {
         String oldPath = mContext.getDatabasePath(databaseName).getPath();
-        File file = getFolder("/Databases");
+        File file = getFile("/Databases");
         if (!file.exists()) file.mkdirs();
         String newPath = file.getPath() + File.separator + databaseName;
         Logger.d(TAG + newPath);
@@ -840,7 +857,7 @@ public class FileHelper {
      * @param databaseName 数据库名称
      */
     public boolean copySDCardToDB(String databaseName) {
-        File file = getFolder("/Databases");
+        File file = getFile("/Databases");
         if (!file.exists()) file.mkdirs();
         String oldPath = file.getPath() + File.separator + databaseName;
         String newPath = mContext.getDatabasePath(databaseName).getPath();

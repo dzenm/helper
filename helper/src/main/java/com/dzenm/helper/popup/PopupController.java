@@ -62,6 +62,10 @@ class PopupController<T extends PopupWindow> {
         window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
 
+    private void setOnDismissListener(PopupWindow.OnDismissListener onDismissListener) {
+        mPopupWindow.setOnDismissListener(onDismissListener);
+    }
+
     private void dismiss() {
         mPopupWindow.dismiss();
     }
@@ -94,7 +98,6 @@ class PopupController<T extends PopupWindow> {
     static class Params {
 
         private PopupController mController;
-        PopupDialog.OnBindViewHolder mOnBindViewHolder;
         Activity mActivity;
         View mPopupView;
         int mAnimationStyle;
@@ -102,6 +105,7 @@ class PopupController<T extends PopupWindow> {
         float mBackgroundAlpha;
         Drawable mBackground;
         boolean mTouchable;
+        PopupWindow.OnDismissListener mOnDismissListener;
 
         Params(Activity activity) {
             mActivity = activity;
@@ -129,6 +133,7 @@ class PopupController<T extends PopupWindow> {
             controller.setBackgroundAlpha(mBackgroundAlpha);
             controller.setElevation(mElevation);
             controller.setOutsideTouchable(mTouchable);
+            controller.setOnDismissListener(mOnDismissListener);
             controller.create();
         }
     }

@@ -72,7 +72,7 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
     /************************************* 以下为实现过程 *********************************/
 
     @Override
-    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
+    protected View inflater(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setTouchInOutSideCancel(true);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -90,7 +90,7 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
             if (i == mItems.length - 1) continue;
             layout.addView(addDivideView());
         }
-        mView = layout;
+        return layout;
     }
 
     /**
@@ -177,13 +177,19 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mOnItemClickListener.onItemClick(position);
-                        dismiss();
+                        if (onClick(position)) {
+                            dismiss();
+                        }
                     }
                 }, 150);
                 break;
             }
         }
+    }
+
+    protected boolean onClick(final int position) {
+        mOnItemClickListener.onItemClick(position);
+        return true;
     }
 
     public interface OnItemClickListener {

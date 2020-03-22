@@ -59,11 +59,11 @@ public class PopupDialog extends PopupWindow {
             return new Builder(activity);
         }
 
-        private final PopupController.Params params;
+        private final PopupController.Params mParams;
         private PopupDialog.OnBindViewHolder mOnBindViewHolder;
 
         public Builder(Activity activity) {
-            params = new PopupController.Params(activity);
+            mParams = new PopupController.Params(activity);
         }
 
         /**
@@ -71,7 +71,7 @@ public class PopupDialog extends PopupWindow {
          * @return this
          */
         public Builder setView(int resId) {
-            setView(LayoutInflater.from(params.mActivity).inflate(resId, null, false));
+            setView(LayoutInflater.from(mParams.mActivity).inflate(resId, null, false));
             return this;
         }
 
@@ -80,7 +80,7 @@ public class PopupDialog extends PopupWindow {
          * @return this
          */
         public Builder setView(View view) {
-            params.mPopupView = view;
+            mParams.mPopupView = view;
             return this;
         }
 
@@ -89,7 +89,7 @@ public class PopupDialog extends PopupWindow {
          * @return this
          */
         public Builder setAnimationStyle(int animationStyle) {
-            params.mAnimationStyle = animationStyle;
+            mParams.mAnimationStyle = animationStyle;
             return this;
         }
 
@@ -98,7 +98,7 @@ public class PopupDialog extends PopupWindow {
          * @return this
          */
         public Builder setOutsideTouchable(boolean touchable) {
-            params.mTouchable = touchable;
+            mParams.mTouchable = touchable;
             return this;
         }
 
@@ -107,7 +107,7 @@ public class PopupDialog extends PopupWindow {
          * @return this
          */
         public Builder setBackground(Drawable background) {
-            params.mBackground = background;
+            mParams.mBackground = background;
             return this;
         }
 
@@ -116,7 +116,7 @@ public class PopupDialog extends PopupWindow {
          * @return this
          */
         public Builder setElevation(int elevation) {
-            params.mElevation = elevation;
+            mParams.mElevation = elevation;
             return this;
         }
 
@@ -125,7 +125,7 @@ public class PopupDialog extends PopupWindow {
          * @return this
          */
         public Builder seBackgroundAlpha(float background) {
-            params.mBackgroundAlpha = background;
+            mParams.mBackgroundAlpha = background;
             return this;
         }
 
@@ -135,7 +135,7 @@ public class PopupDialog extends PopupWindow {
          * @return this
          */
         public Builder dismiss() {
-            params.dismiss();
+            mParams.dismiss();
             return this;
         }
 
@@ -154,9 +154,9 @@ public class PopupDialog extends PopupWindow {
          * @return {@link PopupDialog}
          */
         public PopupDialog create() {
-            PopupDialog mP = new PopupDialog(params.mActivity);
-            mOnBindViewHolder.onBinding(ViewHolder.create(params.mPopupView), mP);
-            params.apply(mP.controller);
+            PopupDialog mP = new PopupDialog(mParams.mActivity);
+            mOnBindViewHolder.onBinding(ViewHolder.create(mParams.mPopupView), mP);
+            mParams.apply(mP.controller);
             return mP;
         }
     }

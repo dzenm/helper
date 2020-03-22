@@ -1,5 +1,6 @@
 package com.dzenm.helper.os;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import com.dzenm.helper.file.FileType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -73,9 +75,7 @@ public final class OsHelper {
     }
 
     /**
-     * 获取系统名称
-     *
-     * @return
+     * @return 获取系统名称
      */
     public static String getName() {
         if (sName == null) check(Rom.NONE);
@@ -83,9 +83,7 @@ public final class OsHelper {
     }
 
     /**
-     * 获取系统版本
-     *
-     * @return
+     * @return 获取系统版本
      */
     public static String getVersion() {
         if (sVersion == null) check(Rom.NONE);
@@ -93,10 +91,8 @@ public final class OsHelper {
     }
 
     /**
-     * 查询Rom信息
-     *
-     * @param rom
-     * @return
+     * @param rom 查询的Rom
+     * @return Rom信息
      */
     public static boolean check(@Rom String rom) {
         if (sName != null) {
@@ -125,10 +121,8 @@ public final class OsHelper {
     }
 
     /**
-     * 获取系统Prop
-     *
-     * @param name
-     * @return
+     * @param name 系统Prop名称
+     * @return 系统Prop
      */
     public static String getProp(String name) {
         String line = null;
@@ -153,9 +147,7 @@ public final class OsHelper {
     }
 
     /**
-     * 获取应用程序名称
-     *
-     * @param context
+     * @param context 上下文
      * @return 当前应用程序的名称
      */
     public static String getAppName(Context context) {
@@ -171,9 +163,7 @@ public final class OsHelper {
     }
 
     /**
-     * 获取应用程序版本名称信息
-     *
-     * @param context
+     * @param context 上下文
      * @return 当前应用程序的版本名称信息
      */
     public static String getVersionName(Context context) {
@@ -188,9 +178,7 @@ public final class OsHelper {
     }
 
     /**
-     * 获取应用程序版本号
-     *
-     * @param context
+     * @param context 上下文
      * @return 当前应用程序的版本号
      */
     public static synchronized long getVersionCode(Context context) {
@@ -205,9 +193,7 @@ public final class OsHelper {
     }
 
     /**
-     * 获取应用程序图标
-     *
-     * @param context
+     * @param context 上下文
      * @return 当前应用的图标
      */
     public static Bitmap getIcon(Context context) {
@@ -226,9 +212,8 @@ public final class OsHelper {
     }
 
     /**
-     * 安装APK
-     *
-     * @param uri APK文件的路径
+     * @param activity 当前Activity
+     * @param uri      APK文件的路径
      */
     public static boolean install(Activity activity, Uri uri) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -245,20 +230,16 @@ public final class OsHelper {
     }
 
     /**
-     * 判断当前 target sdk 版本 是否大于 23
-     *
-     * @param context
-     * @return
+     * @param context 上下文
+     * @return 当前 target sdk 版本 是否大于 23
      */
     public static boolean getTargetSdkVersion(Context context) {
         return context.getApplicationInfo().targetSdkVersion > Build.VERSION_CODES.M;
     }
 
     /**
-     * 获取应用程序在 AndroidManifest 文件中注册的权限
-     *
-     * @param context
-     * @return 在 AndroidManifest 文件中注册的权限
+     * @param context 上下文
+     * @return 应用程序在 AndroidManifest 文件中注册的权限
      */
     public static List<String> getManifestPermissions(Context context) {
         try {
@@ -273,9 +254,9 @@ public final class OsHelper {
     /**
      * 判断权限是否在 AndroidManifest 文件中注册
      *
-     * @param context
-     * @param permission
-     * @return
+     * @param context    上下文
+     * @param permission 需要判断的权限
+     * @return 是否注册
      */
     public static boolean isExistInManifest(Context context, String permission) {
         List<String> manifestPermissions = getManifestPermissions(context);
@@ -295,10 +276,11 @@ public final class OsHelper {
      * ContextWrapper.checkSelfPermission和Context.checkSelfPermission失效
      * 返回值始终为PERMISSION_GRANTED,此时必须使用PermissionChecker.checkSelfPermission
      *
-     * @param context
-     * @param permission
-     * @return
+     * @param context    上下文
+     * @param permission 判断的权限
+     * @return 单个权限是否授予
      */
+    @SuppressLint("WrongConstant")
     public static boolean isGrant(Context context, String permission) {
         if (getTargetSdkVersion(context)) {
             return PermissionChecker.checkPermission(context, permission, Binder.getCallingPid(),
@@ -308,21 +290,47 @@ public final class OsHelper {
     }
 
     /**
-     * 判断是否显示解释权限
-     *
-     * @param activity
-     * @param permission
-     * @return
+     * @param activity   当前Activity
+     * @param permission 判断的权限
+     * @return 是否显示解释权限
      */
     public static boolean isRationale(Activity activity, String permission) {
         return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
     }
 
     /**
-     * 判断是否有安装权限
+     * @param activity    当前Activity
+     * @param permissions 判断的权限
+     * @return 是否存在未授予的权限
+     */
+    public static boolean isRationaleAll(Activity activity, String[] permissions) {
+        for (String permission : permissions) {
+            if (!isRationale(activity, permission)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * 过滤未授予的权限
      *
-     * @param context
-     * @return
+     * @param activity    当前Activity
+     * @param permissions 需要过滤的权限
+     * @return 过滤后的权限
+     */
+    public static String[] filterPermissions(Activity activity, String[] permissions) {
+        if (permissions == null || permissions.length == 0) return null;
+        List<String> filterPermits = new ArrayList<>();
+        for (String permission : permissions) {
+            // 检查是否授予权限, 将未授予的权限将筛选出来
+            if (!isGrant(activity, permission)) filterPermits.add(permission);
+        }
+        String[] res = new String[filterPermits.size()];
+        return filterPermits.toArray(res);
+    }
+
+    /**
+     * @param context 上下文
+     * @return 是否有安装权限
      */
     public static boolean isInstallPermission(Context context) {
         if (isOreo()) return context.getPackageManager().canRequestPackageInstalls();
@@ -330,10 +338,8 @@ public final class OsHelper {
     }
 
     /**
-     * 判断是否有悬浮窗权限
-     *
-     * @param context
-     * @return
+     * @param context 上下文
+     * @return 是否有悬浮窗权限
      */
     public static boolean isOverlaysPermission(Context context) {
         if (isMarshmallow()) return Settings.canDrawOverlays(context);
@@ -344,8 +350,8 @@ public final class OsHelper {
      * 判断当前应用是否允许通知（消息推送）
      * areNotificationsEnabled 只对 API 19 及以上版本有效，低于API 19 会一直返回true
      *
-     * @param context
-     * @return
+     * @param context 上下文
+     * @return 当前应用是否允许通知（消息推送）
      */
     public static boolean isNotificationEnabled(Context context) {
         boolean isEnabled;
@@ -361,7 +367,7 @@ public final class OsHelper {
     /**
      * 打开通知（消息推送）管理设置页面
      *
-     * @param context
+     * @param context 上下文
      */
     public static void openNotificationSetting(Context context) {
         Intent intent = new Intent();

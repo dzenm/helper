@@ -3,8 +3,6 @@ package com.dzenm.helper.draw;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 
-import androidx.annotation.ColorRes;
-
 /**
  * @author dzenm
  * @date 2019-07-19 17:01
@@ -74,7 +72,7 @@ public class DrawableHelper {
      * @param colorRedId 颜色值, res/color 文件下的资源id
      * @return ShapeHelper
      */
-    public static ShapeHelper solid(@ColorRes int colorRedId) {
+    public static ShapeHelper solid(int colorRedId) {
         return ShapeHelper.getInstance().solid(colorRedId);
     }
 
@@ -231,7 +229,7 @@ public class DrawableHelper {
      * @param colorsResId 渐变颜色组, 必须大于2个颜色
      * @return ShapeHelper
      */
-    public static ShapeHelper gradient(@ColorRes int... colorsResId) {
+    public static ShapeHelper gradient(int... colorsResId) {
         return ShapeHelper.getInstance().gradient(colorsResId);
     }
 
@@ -262,7 +260,7 @@ public class DrawableHelper {
      * @param pressedColor 按压后的背景颜色
      * @return ShapeHelper
      */
-    public static ShapeHelper pressed(@ColorRes int pressedColor) {
+    public static ShapeHelper pressed(int pressedColor) {
         return ShapeHelper.getInstance().pressed(pressedColor);
     }
 
@@ -284,7 +282,7 @@ public class DrawableHelper {
      * @param pressedColor 按压后的背景颜色
      * @return ShapeHelper
      */
-    public static ShapeHelper pressed(@ColorRes int normalColor, @ColorRes int pressedColor) {
+    public static ShapeHelper pressed(int normalColor, int pressedColor) {
         return ShapeHelper.getInstance().pressed(normalColor, pressedColor);
     }
 
@@ -318,7 +316,7 @@ public class DrawableHelper {
      * @param selectorColorResId 按压后的文本颜色
      * @return ShapeHelper
      */
-    public static ShapeHelper textColor(@ColorRes int normalColorResId, @ColorRes int selectorColorResId) {
+    public static ShapeHelper textColor(int normalColorResId, int selectorColorResId) {
         return ShapeHelper.getInstance().textColor(normalColorResId, selectorColorResId);
     }
 
@@ -348,7 +346,7 @@ public class DrawableHelper {
      * @param normalColor 正常显示View的颜色
      * @return ShapeHelper
      */
-    public static ShapeHelper ripple(@ColorRes int normalColor) {
+    public static ShapeHelper ripple(int normalColor) {
         return ShapeHelper.getInstance().ripple(normalColor);
     }
 
@@ -380,7 +378,7 @@ public class DrawableHelper {
      * @param pressedColor 点击View显示的波纹的颜色
      * @return ShapeHelper
      */
-    public static ShapeHelper ripple(@ColorRes int normalColor, @ColorRes int pressedColor) {
+    public static ShapeHelper ripple(int normalColor, int pressedColor) {
         return ShapeHelper.getInstance().ripple(normalColor, pressedColor);
     }
 }

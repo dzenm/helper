@@ -138,7 +138,7 @@ public class Logger {
      * 初始化日志存储目录（需要先申请文件读写权限）
      */
     public Logger init() {
-        mLogcatPath = FileHelper.getInstance().getFolder("/log").getAbsolutePath();
+        mLogcatPath = FileHelper.getInstance().getFile("/log").getAbsolutePath();
         if (TextUtils.isEmpty(mLogcatPath)) {
             mLogcatPath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "log";
         }

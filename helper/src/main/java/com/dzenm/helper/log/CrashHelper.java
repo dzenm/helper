@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class CrashHelper {
 
-    private static final String TAG = CrashHelper.class.getSimpleName() + "|";
+    private static final String TAG = CrashHelper.class.getSimpleName() + "| ";
     private static final String PATH = "/crash";
     private static final String NAME = "crash_";
     private static final String SUFFIX = ".txt";
@@ -222,9 +222,8 @@ public class CrashHelper {
      * @return 崩溃日志文件夹
      */
     private File getCrashDirect() {
-        return FileHelper.getInstance().getFolder(PATH);
+        return FileHelper.getInstance().getFile(PATH);
     }
-
 
     public interface CaughtExceptionHandler {
         void caughtException(Thread t, Throwable e);

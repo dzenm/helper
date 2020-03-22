@@ -161,11 +161,7 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
     }
 
     @Override
-    protected void initView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState2
-    ) {
+    protected void initView() {
         tvLogin = findViewById(R.id.tv_login);
         tvRegister = findViewById(R.id.tv_register);
 

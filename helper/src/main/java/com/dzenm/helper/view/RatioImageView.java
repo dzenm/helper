@@ -14,41 +14,24 @@ import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.view.ViewCompat;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.os.OsHelper;
 
 public class RatioImageView extends AppCompatImageView {
 
-    /**
-     * 四个角的圆角大小, 分别为左上, 右上, 右下, 左下
-     */
-    private int[] mCornerRadius = new int[4];
-
-    /**
-     * 是否为圆形
-     */
-    private boolean isCircle;
-
-    /**
-     * 绘制使用的画笔
-     */
-    private Paint mPaint;
-
-    /**
-     * 点击反馈时的前景颜色
-     */
-    private int mForegroundColor;
-
-    /**
-     * ImageView的宽高比例
-     */
-    private float mRatio;
-
-    /**
-     * 设置图片可以缩放和移动
-     */
-    private ImageZoomHelper mImageZoomHelper;
+    private int[] mCornerRadius = new int[4];   // 四个角的圆角大小, 分别为左上, 右上, 右下, 左下
+    private boolean isCircle;                   // 是否为圆形
+    private boolean isMask;                     // 是否按压有灰色阴影
+    private float mRatio;                       // ImageView的宽高比例
+    private int mForegroundColor;               // 点击反馈时的前景颜色
+    private int mNumber;                        // 数量文本显示剩余的数量
+    private int mNumberColor;                   // 显示文字的颜色
+    private int mNumberMaskColor;               // 默认的遮盖颜色
+    private float mNumberSize;                  // 显示文字的大小单位sp
+    private Paint mPaint;                       // 绘制使用的画笔
+    private ImageZoomHelper mImageZoomHelper;   // 设置图片可以缩放和移动
 
     /**
      * 设置ImageView为圆形图片
@@ -57,6 +40,10 @@ public class RatioImageView extends AppCompatImageView {
      */
     public void setCircle(boolean circle) {
         isCircle = circle;
+    }
+
+    public void setMask(boolean mask) {
+        isMask = mask;
     }
 
     /**
@@ -71,6 +58,18 @@ public class RatioImageView extends AppCompatImageView {
      */
     public void setForegroundColor(int foregroundColor) {
         mForegroundColor = foregroundColor;
+    }
+
+    public void setNumber(int number) {
+        mNumber = number;
+    }
+
+    public void setNumberSize(float numberSize) {
+        mNumberSize = numberSize;
+    }
+
+    public void setNumberColor(int numberColor) {
+        mNumberColor = numberColor;
     }
 
     /**
@@ -95,15 +94,23 @@ public class RatioImageView extends AppCompatImageView {
         TypedArray t = context.obtainStyledAttributes(attrs, R.styleable.RatioImageView);
 
         mRatio = t.getFloat(R.styleable.RatioImageView_ratio, 0f);
-        mForegroundColor = t.getColor(R.styleable.RatioImageView_foregroundColor, 0xFFBDBDBD);
+        mForegroundColor = t.getColor(
+                R.styleable.RatioImageView_foregroundColor, 0xFFBDBDBD);
         isCircle = t.getBoolean(R.styleable.RatioImageView_isCircle, false);
-        mCornerRadius[0] = mCornerRadius[1] = mCornerRadius[2] = mCornerRadius[3] =
-                (int) t.getDimension(R.styleable.RatioImageView_cornerRadius, dp2px(8));
-        mCornerRadius[0] = (int) t.getDimension(R.styleable.RatioImageView_top_left_cornerRadius, dp2px(8));
-        mCornerRadius[1] = (int) t.getDimension(R.styleable.RatioImageView_top_right_cornerRadius, dp2px(8));
-        mCornerRadius[2] = (int) t.getDimension(R.styleable.RatioImageView_bottom_left_cornerRadius, dp2px(8));
-        mCornerRadius[3] = (int) t.getDimension(R.styleable.RatioImageView_top_left_cornerRadius, dp2px(8));
+        isMask = t.getBoolean(R.styleable.RatioImageView_isMask, true);
+        int radius = OsHelper.dp2px(8);
+        mCornerRadius[0] = mCornerRadius[1] = mCornerRadius[2] = mCornerRadius[3] = (int) t.getDimension(
+                R.styleable.RatioImageView_cornerRadius, radius);
+        mCornerRadius[0] = (int) t.getDimension(R.styleable.RatioImageView_top_left_cornerRadius, radius);
+        mCornerRadius[1] = (int) t.getDimension(R.styleable.RatioImageView_top_right_cornerRadius, radius);
+        mCornerRadius[2] = (int) t.getDimension(R.styleable.RatioImageView_bottom_left_cornerRadius, radius);
+        mCornerRadius[3] = (int) t.getDimension(R.styleable.RatioImageView_top_left_cornerRadius, radius);
+        mNumberColor = t.getColor(R.styleable.RatioImageView_numberColor, 0xFFFFFFFF);
+        mNumberMaskColor = t.getColor(R.styleable.RatioImageView_numberMaskColor, 0x66000000);
+        mNumberSize = (int) t.getDimension(R.styleable.RatioImageView_numberSize, OsHelper.dp2px(30));
+
         t.recycle();
+
         mPaint = new Paint();
     }
 
@@ -111,34 +118,10 @@ public class RatioImageView extends AppCompatImageView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         if (mRatio != 0) {
-            float height = width / mRatio;
-            heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) height, MeasureSpec.EXACTLY);
+            int height = (int) (width / mRatio);
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (mImageZoomHelper != null) {
-            mImageZoomHelper.bindImageView(this, event);
-            return true;
-        } else {
-            Drawable drawable = getDrawable();
-            if (drawable != null && isClickable()) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        drawable.mutate().setColorFilter(mForegroundColor, PorterDuff.Mode.MULTIPLY);
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                    case MotionEvent.ACTION_UP:
-                        drawable.mutate().clearColorFilter();
-                        break;
-                }
-            }
-            return super.onTouchEvent(event);
-        }
     }
 
     @Override
@@ -153,10 +136,67 @@ public class RatioImageView extends AppCompatImageView {
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
 
         // 绘制目标图片的Path
-        canvas.drawPath(getTargetPath(w, h), mPaint);
-
+        canvas.drawPath(getTargetPath(w, h, Path.Direction.CW, Path.Op.DIFFERENCE), mPaint);
         // 重绘图片
         canvas.restore();
+
+        if (mNumber > 0) {
+            mPaint.reset();
+            mPaint.setAntiAlias(true);
+
+            // 绘制灰色遮罩
+            mPaint.setColor(mNumberMaskColor);
+            canvas.drawPath(getTargetPath(w, h, Path.Direction.CCW, Path.Op.INTERSECT), mPaint);
+
+            // 绘制文字
+            float baseY = (getHeight() >> 1) - (mPaint.ascent() + mPaint.descent()) / 2;
+            String text = "+" + mNumber;
+            mPaint.setTextSize(mNumberSize);
+            mPaint.setTextAlign(Paint.Align.CENTER);
+            mPaint.setColor(mNumberColor);
+            canvas.drawText(text, (getWidth() >> 1), baseY, mPaint);
+        }
+        mPaint.setXfermode(null);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mImageZoomHelper != null) {
+            mImageZoomHelper.bindImageView(this, event);
+            return true;
+        } else {
+            Drawable drawable = getDrawable();
+            if (drawable != null && isClickable()) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        /*
+                         * 默认情况下，所有的从同一资源（R.drawable.XXX）加载来的drawable实例都共享一个共用的状态，
+                         * 如果你更改一个实例的状态，其他所有的实例都会收到相同的通知。
+                         * 使用使 mutate 可以让这个drawable变得状态不定。这个操作不能还原（变为不定后就不能变为原来的状态）。
+                         * 一个状态不定的drawable可以保证它不与其他任何一个drawabe共享它的状态。
+                         * 此处应该是要使用的 mutate()，但是在部分手机上会出现点击后变白的现象，所以没有使用
+                         * 目前这种解决方案没有问题
+                         */
+                        if (isMask) {
+//                            drawable.mutate().setColorFilter(mForegroundColor, PorterDuff.Mode.MULTIPLY);
+                            drawable.setColorFilter(mForegroundColor, PorterDuff.Mode.MULTIPLY);
+                            ViewCompat.postInvalidateOnAnimation(this);
+                        }
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        if (isMask) {
+//                            drawable.mutate().clearColorFilter();
+                            drawable.clearColorFilter();
+                            ViewCompat.postInvalidateOnAnimation(this);
+                        }
+                        break;
+                }
+            }
+            return super.onTouchEvent(event);
+        }
     }
 
     /**
@@ -166,18 +206,18 @@ public class RatioImageView extends AppCompatImageView {
      * @param h 长度
      * @return 目标图像的Path
      */
-    private Path getTargetPath(int w, int h) {
+    private Path getTargetPath(int w, int h, Path.Direction direction, Path.Op op) {
         Path path = getOriginImagePath();
         Path targetPath = new Path();
         // 获取目标图片的Path
         if (isCircle) {
             float radius = (Math.min(w, h) / 2.0f);
-            targetPath.addCircle(w / 2.0f, h / 2.0f, radius, Path.Direction.CW);
+            targetPath.addCircle(w / 2.0f, h / 2.0f, radius, direction);
         } else {
-            targetPath.addRoundRect(getOriginRectF(), getRadii(0), Path.Direction.CW);
+            targetPath.addRoundRect(getOriginRectF(), getRadii(0), direction);
         }
         // 将目标图片的Path和原始图片的Path取目标图片没有的部分, 裁剪原始图片
-        path.op(targetPath, Path.Op.DIFFERENCE);
+        path.op(targetPath, op);
         return path;
     }
 
@@ -213,9 +253,5 @@ public class RatioImageView extends AppCompatImageView {
      */
     private RectF getOriginRectF() {
         return new RectF(0, 0, getWidth(), getHeight());
-    }
-
-    private int dp2px(float dp) {
-        return OsHelper.dp2px(dp);
     }
 }

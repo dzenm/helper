@@ -36,7 +36,7 @@ import java.io.File;
  * DownloadHelper.newInstance(this)
  *        .setUrl(url)
  *        .setFilePath(Environment.getExternalStorageDirectory().getPath())
- *        .startDownload();
+ *        .download();
  * 需要添加网络权限和存储权限
  * <uses-permission android:name="android.permission.INTERNET" />
  * <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -206,7 +206,7 @@ public class DownloadHelper {
     /**
      * 开始下载
      */
-    public void startDownload() {
+    public void download() {
         if (mOnCheckSelfPermissionListener == null) {
             // 检查权限
             PermissionManager.getInstance()
@@ -230,7 +230,7 @@ public class DownloadHelper {
     private void checkPermissionAndDownloadFile(boolean isGrant) {
         if (isGrant) {
             if (TextUtils.isEmpty(mFilePath)) {
-                mFilePath = FileHelper.getInstance().getFolder("/apk").getPath() + File.separator + mVersionName;
+                mFilePath = FileHelper.getInstance().getFile("/apk").getPath() + File.separator + mVersionName;
             }
 
             String filePath = (String) SPHelper.getInstance().get(DOWNLOAD_PREF, mVersionName, "");

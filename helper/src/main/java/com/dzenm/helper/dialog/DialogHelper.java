@@ -2,6 +2,7 @@ package com.dzenm.helper.dialog;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.LayoutRes;
@@ -113,17 +114,19 @@ public class DialogHelper extends AbsDialogFragment {
     }
 
     @Override
-    protected void initView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState2
-    ) {
+    protected View inflater(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (mOnViewDataBinding != null) {
             ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutId(), container, false);
-            mView = binding.getRoot();
             mOnViewDataBinding.onBinding(binding, this);
-        } else if (mOnBindViewHolder != null) {
-            ViewHolder holder = ViewHolder.create(mView);
+            return binding.getRoot();
+        }
+        return super.inflater(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected void initView() {
+        if (mOnBindViewHolder != null) {
+            ViewHolder holder = ViewHolder.create(getDecorView());
             mOnBindViewHolder.onBinding(holder, this);
         }
     }

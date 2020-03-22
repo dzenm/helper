@@ -15,8 +15,6 @@ import com.dzenm.helper.dialog.PromptDialog;
 import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.ActivityHelper;
 import com.dzenm.helper.os.StatusBarHelper;
-import com.dzenm.helper.permission.PermissionManager;
-import com.dzenm.helper.photo.PhotoSelector;
 
 /**
  * @author dzenm
@@ -26,8 +24,8 @@ public class ActivityDelegate {
 
     private AppCompatActivity mActivity;
     private PromptDialog mPromptDialog;
-    private OnActivityResult mOnActivityResult;
-    private OnRequestPermissionsResult mOnRequestPermissionsResult;
+    private AbsBaseActivity.OnActivityResult mOnActivityResult;
+    private AbsBaseActivity.OnRequestPermissionsResult mOnRequestPermissionsResult;
     private String mTag;
 
     ActivityDelegate(AppCompatActivity activity, String tag) {
@@ -142,17 +140,15 @@ public class ActivityDelegate {
         ActivityHelper.getInstance().remove(mActivity);
     }
 
-    void setOnActivityResult(OnActivityResult onActivityResult) {
+    void setOnActivityResult(AbsBaseActivity.OnActivityResult onActivityResult) {
         mOnActivityResult = onActivityResult;
     }
 
-    void setOnRequestPermissionsResult(OnRequestPermissionsResult onRequestPermissionsResult) {
+    void setOnRequestPermissionsResult(AbsBaseActivity.OnRequestPermissionsResult onRequestPermissionsResult) {
         mOnRequestPermissionsResult = onRequestPermissionsResult;
     }
 
     void onRequestActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        PermissionManager.getInstance().onActivityResult(requestCode, resultCode, data);
-        PhotoSelector.getInstance().onPhotoResult(requestCode, resultCode, data);
         if (mOnActivityResult != null) {
             mOnActivityResult.onResult(requestCode, resultCode, data);
         }
@@ -163,7 +159,6 @@ public class ActivityDelegate {
             @NonNull String[] permissions,
             @NonNull int[] grantResults
     ) {
-        PermissionManager.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (mOnRequestPermissionsResult != null) {
             mOnRequestPermissionsResult.onResult(requestCode, permissions, grantResults);
         }

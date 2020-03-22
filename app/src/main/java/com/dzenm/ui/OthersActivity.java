@@ -89,7 +89,7 @@ public class OthersActivity extends AbsActivity<ActivityOthersBinding> implement
         } else if (view.getId() == R.id.tv_102) {
             PhotoSelector.getInstance().with(this).setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
                 @Override
-                public boolean onGallery(PhotoSelector helper, String filePath) {
+                public boolean onGallery(PhotoSelector selector, String filePath) {
                     InfoDialog.newInstance(OthersActivity.this)
                             .setTitle("图片选择回调")
                             .setMessage(filePath)
@@ -125,7 +125,7 @@ public class OthersActivity extends AbsActivity<ActivityOthersBinding> implement
                     .setView(R.layout.dialog_login)
                     .setOnBindViewHolder(new DropDownMenu.OnBindViewHolder() {
                         @Override
-                        public void onBinding(ViewHolder holder, final DropDownMenu dialog) {
+                        public void onBinding(ViewHolder holder, final DropDownMenu.Builder dialog) {
                             holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

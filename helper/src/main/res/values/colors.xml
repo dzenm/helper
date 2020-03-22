@@ -30,6 +30,7 @@
     <color name="colorTranslucentLight">#4DFFFFFF</color>               <!--禁用状态 纯白的 30%-->
     <color name="colorTranslucentLightGray">#70EFEFEF</color>           <!--带透明度Light Gray-->
     <color name="colorTranslucentGray">#33EFEFEF</color>                <!--带透明度Light Gray-->
+    <color name="colorTranslucentDarkGrey">#BB757575</color>            <!--带透明度Dark Gray-->
     <color name="colorTranslucentDarkGray">#DD212121</color>            <!--带透明度Dark Gray-->
     <color name="colorDarkBlue">#FF0091ea</color>
     <color name="colorTranslucentDarkBlue">#500091ea</color>

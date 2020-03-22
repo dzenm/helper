@@ -11,8 +11,6 @@ import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.ColorRes;
-
 import com.dzenm.helper.R;
 import com.dzenm.helper.os.OsHelper;
 
@@ -173,7 +171,7 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
      * @param colorResId 颜色值, res/color 文件下的资源id
      * @return ShapeHelper
      */
-    public ShapeHelper solid(@ColorRes int colorResId) {
+    public ShapeHelper solid(int colorResId) {
         mColor = getColor(colorResId);
         isCustomizeColor = true;
         mDrawableStyle = DrawableStyle.GRADIENT;
@@ -294,7 +292,7 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
      * @param color  边框颜色
      * @return ShapeHelper
      */
-    public ShapeHelper stroke(float stroke, @ColorRes int color) {
+    public ShapeHelper stroke(float stroke, int color) {
         mStroke = stroke;
         mStrokeColor = getColor(color);
         isCustomizeStroke = true;
@@ -373,7 +371,7 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
      * @param colorsResId 渐变颜色组, 必须大于2个颜色
      * @return ShapeHelper
      */
-    public ShapeHelper gradient(@ColorRes int... colorsResId) {
+    public ShapeHelper gradient(int... colorsResId) {
         if (colorsResId.length > 1) {
             mGradientColors = new int[colorsResId.length];
             for (int i = 0; i < colorsResId.length; i++) {
@@ -421,7 +419,7 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
      * @param pressedColor 按压后的背景颜色
      * @return ShapeHelper
      */
-    public ShapeHelper pressed(@ColorRes int pressedColor) {
+    public ShapeHelper pressed(int pressedColor) {
         pressed(android.R.color.transparent, pressedColor);
         return this;
     }
@@ -456,7 +454,7 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
      * @param pressedColor 按压后的背景颜色
      * @return ShapeHelper
      */
-    public ShapeHelper pressed(@ColorRes int normalColor, @ColorRes int pressedColor) {
+    public ShapeHelper pressed(int normalColor, int pressedColor) {
         float topLeftRadius = mTopLeftRadius;
         float topRightRadius = mTopRightRadius;
         float bottomRightRadius = mBottomRightRadius;
@@ -546,7 +544,7 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
      * @param normalColor 正常显示View的颜色
      * @return ShapeHelper
      */
-    public ShapeHelper ripple(@ColorRes int normalColor) {
+    public ShapeHelper ripple(int normalColor) {
         ripple(normalColor, R.color.colorHint);
         return this;
     }
@@ -586,7 +584,7 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
      * @param pressedColor 点击View显示的波纹的颜色
      * @return ShapeHelper
      */
-    public ShapeHelper ripple(@ColorRes int normalColor, @ColorRes int pressedColor) {
+    public ShapeHelper ripple(int normalColor, int pressedColor) {
         mRippleColor = pressedColor;
         mRippleDrawable = ShapeHelper.getInstance()
                 .solid(normalColor)
@@ -720,6 +718,14 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
     }
 
     private int getColor(int id) {
-        return mContext.getResources().getColor(id);
+        try {
+            int resId = mContext.getResources().getColor(id);
+            if (id == resId) {
+                return resId;
+            }
+            return resId;
+        } catch (Exception e) {
+            return id;
+        }
     }
 }

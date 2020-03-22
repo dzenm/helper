@@ -78,7 +78,7 @@ public class PhotoLayout extends GridLayout {
 
     private static final String TAG = PhotoLayout.class.getSimpleName() + "|";
 
-    private static final int DEFAULT_TOTAL_NUMBER = 3, DEFAULT_COLUMN_NUMBER = 3, EMPTY_IMAGE = 1001;
+    private static final int DEFAULT_TOTAL_NUMBER = 9, DEFAULT_COLUMN_NUMBER = 3;
 
     /**
      * 容纳ImageView的总数, 默认为 {@link #DEFAULT_TOTAL_NUMBER}, {@link #setTotalNumber(int)}
@@ -223,6 +223,7 @@ public class PhotoLayout extends GridLayout {
 
         t.recycle();
 
+        // 设置子View的动画
         setLayoutTransition(LayoutTransitionHelper.scaleViewAnimator(this));
         invalidateGridView();
     }

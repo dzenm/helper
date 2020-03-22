@@ -218,11 +218,7 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
     }
 
     @Override
-    protected void initView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState2
-    ) {
+    protected void initView() {
         mBackground = DrawableHelper.solid(android.R.color.transparent).build();
 
         ImageView ivHead = findViewById(R.id.iv_header);
@@ -273,16 +269,8 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
         ImageView iv_cancel = findViewById(R.id.iv_cancel);
         iv_cancel.setOnClickListener(this);
         iv_cancel.setImageResource(R.drawable.ic_upgrade_cancel);
-    }
 
-    @Override
-    protected void setLayoutParams(
-            ViewGroup.MarginLayoutParams layoutParams,
-            int centerWidth,
-            int margin
-    ) {
-        // 设置dialog的宽度
-        layoutParams.width = (int) (ScreenHelper.getDisplayWidth() * 0.7);
+        setRadiusCard(SMALL_RADIUS);
     }
 
     /**
@@ -299,7 +287,7 @@ public class UpGradeDialog extends AbsDialogFragment implements View.OnClickList
             mProgressBar.setCurrentValue(0);
             setLoadProgressVisible(true);
             // 注册下载监听广播并开始下载
-            mDownloadHelper.startDownload();
+            mDownloadHelper.download();
         } else if (v.getId() == R.id.iv_cancel) {
             if (mDownloadHelper.isRunningDownload()) {
                 if (isCanCancel) {

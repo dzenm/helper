@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.webkit.WebView;
 
 import java.lang.ref.WeakReference;
 
@@ -14,7 +13,7 @@ import java.lang.ref.WeakReference;
  */
 public class WeakHandler extends Handler {
 
-    WeakReference<Context> weakReference;
+    private WeakReference<Context> weakReference;
 
     public WeakHandler(Context context) {
         weakReference = new WeakReference<>(context);

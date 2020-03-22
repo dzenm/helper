@@ -1,14 +1,22 @@
 package com.dzenm.helper.popup;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
+import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 
 import com.dzenm.helper.R;
@@ -17,6 +25,30 @@ import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.ScreenHelper;
 
 /**
+ * <pre>
+ * new DropDownMenu.Builder(this)
+ *       .setView(R.layout.dialog_login)
+ *       .setOnBindViewHolder(new DropDownMenu.OnBindViewHolder() {
+ *           @Override
+ *           public void onBinding(ViewHolder holder, final DropDownMenu.Builder dialog) {
+ *               holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
+ *                   @Override
+ *                   public void onClick(View v) {
+ *                       ToastHelper.show("登录成功");
+ *                       dialog.dismiss();
+ *                   }
+ *               });
+ *               holder.getView(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
+ *                   @Override
+ *                   public void onClick(View v) {
+ *                       dialog.dismiss();
+ *                   }
+ *               });
+ *           }
+ *       }).create()
+ *       .showAsDropDown(getBinding().tvMenu);
+ * </pre>
+ *
  * @author dzenm
  * @date 2020-01-16 22:53
  */
@@ -43,15 +75,15 @@ public class DropDownMenu extends PopupWindow {
             return new Builder(activity);
         }
 
-        private final PopupController.Params params;
+        private final PopupController.Params mParams;
         private OnBindViewHolder mOnBindViewHolder;
-        private Activity activity;
-        private View maskView, contentView;
-        private FrameLayout decorView;
+        private Activity mActivity;
+        private View mMaskView, mContentView;
+        private FrameLayout mDecorView;
 
         public Builder(Activity activity) {
-            params = new PopupController.Params(activity);
-            this.activity = activity;
+            mParams = new PopupController.Params(activity);
+            mActivity = activity;
             getDecorView();
             setBackground(null);
             seBackgroundAlpha(1.0f);
@@ -63,7 +95,7 @@ public class DropDownMenu extends PopupWindow {
          * @return this
          */
         public Builder setView(int resId) {
-            setView(LayoutInflater.from(params.mActivity).inflate(resId, null, false));
+            setView(LayoutInflater.from(mParams.mActivity).inflate(resId, null, false));
             return this;
         }
 
@@ -76,14 +108,12 @@ public class DropDownMenu extends PopupWindow {
                     ScreenHelper.getDisplayWidth(), ViewGroup.LayoutParams.WRAP_CONTENT
             );
             view.setLayoutParams(layoutParams);
-            DrawableHelper.solid(android.R.color.white)
-                    .radiusBR(8)
-                    .radiusBL(8)
-                    .into(view);
-            contentView = view;
-            decorView.addView(maskView);
-            decorView.addView(view);
-            params.mPopupView = decorView;
+            DrawableHelper.solid(android.R.color.white).into(view);
+            mContentView = view;
+            mDecorView.addView(mMaskView);
+            mDecorView.addView(view);
+
+            mParams.mPopupView = mDecorView;
             return this;
         }
 
@@ -92,7 +122,7 @@ public class DropDownMenu extends PopupWindow {
          * @return this
          */
         public Builder setAnimationStyle(int animationStyle) {
-            params.mAnimationStyle = animationStyle;
+            mParams.mAnimationStyle = animationStyle;
             return this;
         }
 
@@ -101,7 +131,7 @@ public class DropDownMenu extends PopupWindow {
          * @return this
          */
         public Builder setOutsideTouchable(boolean touchable) {
-            params.mTouchable = touchable;
+            mParams.mTouchable = touchable;
             return this;
         }
 
@@ -110,7 +140,7 @@ public class DropDownMenu extends PopupWindow {
          * @return this
          */
         public Builder setBackground(Drawable background) {
-            params.mBackground = background;
+            mParams.mBackground = background;
             return this;
         }
 
@@ -119,7 +149,7 @@ public class DropDownMenu extends PopupWindow {
          * @return this
          */
         public Builder setElevation(int elevation) {
-            params.mElevation = elevation;
+            mParams.mElevation = elevation;
             return this;
         }
 
@@ -128,7 +158,7 @@ public class DropDownMenu extends PopupWindow {
          * @return this
          */
         public Builder seBackgroundAlpha(float background) {
-            params.mBackgroundAlpha = background;
+            mParams.mBackgroundAlpha = background;
             return this;
         }
 
@@ -138,7 +168,7 @@ public class DropDownMenu extends PopupWindow {
          * @return this
          */
         public Builder dismiss() {
-            params.dismiss();
+            closeMenu();
             return this;
         }
 
@@ -157,10 +187,11 @@ public class DropDownMenu extends PopupWindow {
          * @return {@link PopupDialog}
          */
         public DropDownMenu create() {
-            DropDownMenu mP = new DropDownMenu(params.mActivity);
-            params.apply(mP.controller);
-            mOnBindViewHolder.onBinding(ViewHolder.create(params.mPopupView), mP);
-            showMask();
+            DropDownMenu mP = new DropDownMenu(mParams.mActivity);
+            mParams.mOnDismissListener = mPnDismissListener;
+            mParams.apply(mP.controller);
+            mOnBindViewHolder.onBinding(ViewHolder.create(mParams.mPopupView), this);
+            showMenu();
             return mP;
         }
 
@@ -168,16 +199,17 @@ public class DropDownMenu extends PopupWindow {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                     ScreenHelper.getDisplayWidth(), FrameLayout.LayoutParams.MATCH_PARENT
             );
-            decorView = new FrameLayout(activity);
-            decorView.setLayoutParams(layoutParams);
+            mDecorView = new FrameLayout(mActivity);
+            mDecorView.setLayoutParams(layoutParams);
 
-            maskView = new View(activity);
+            mMaskView = new View(mActivity);
             ViewGroup.LayoutParams maskParams = new ViewGroup.LayoutParams(
                     ScreenHelper.getDisplayWidth(), ViewGroup.LayoutParams.MATCH_PARENT
             );
-            maskView.setLayoutParams(maskParams);
-            maskView.setBackgroundColor(-2004318072);
-            maskView.setOnClickListener(new View.OnClickListener() {
+            mMaskView.setLayoutParams(maskParams);
+//            mMaskView.setBackgroundColor(-2004318072);
+            mMaskView.setBackgroundColor(mActivity.getColor(R.color.colorTranslucentDarkGrey));
+            mMaskView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dismiss();
@@ -185,18 +217,48 @@ public class DropDownMenu extends PopupWindow {
             });
         }
 
-        private void closeMask() {
-            contentView.setAnimation(AnimationUtils.loadAnimation(activity, R.anim.popup_trans_out));
-            maskView.setAnimation(AnimationUtils.loadAnimation(activity, R.anim.popup_alpha_out));
+        /**
+         * Menu 显示
+         */
+        private void showMenu() {
+            mContentView.setAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.popup_trans_in));
+            mMaskView.setAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.popup_alpha_in));
         }
 
-        private void showMask() {
-            contentView.setAnimation(AnimationUtils.loadAnimation(activity, R.anim.popup_trans_in));
-            maskView.setAnimation(AnimationUtils.loadAnimation(activity, R.anim.popup_alpha_in));
+        /**
+         * Menu 关闭
+         */
+        private void closeMenu() {
+            // Menu层动画
+            ObjectAnimator contentAnimator = ObjectAnimator.ofFloat(
+                    mContentView, "translationY", 0f, -mContentView.getHeight());
+            contentAnimator.setDuration(250);
+            contentAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            contentAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mParams.dismiss();
+                }
+            });
+            contentAnimator.start();
+            // 遮罩层动画
+            ObjectAnimator maskAnimator = ObjectAnimator.ofFloat(
+                    mMaskView, "alpha", 1f, 0f);
+            maskAnimator.setDuration(250);
+            maskAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            maskAnimator.start();
         }
+
+        private PopupWindow.OnDismissListener mPnDismissListener = new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                dismiss();
+            }
+        };
     }
 
     public interface OnBindViewHolder {
-        void onBinding(ViewHolder holder, DropDownMenu dialog);
+        void onBinding(ViewHolder holder, DropDownMenu.Builder dialog);
     }
 }

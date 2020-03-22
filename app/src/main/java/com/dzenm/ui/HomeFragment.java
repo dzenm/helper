@@ -20,9 +20,8 @@ import com.dzenm.helper.draw.DrawableHelper;
 public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.OnClickListener {
 
     @Override
-    public void initializeView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View initializeView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         FragmentHomeBinding binding = FragmentHomeBinding.inflate(inflater);
-        mDecorView = binding.getRoot();
         setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
 
         DrawableHelper.radius(8).pressed(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv100);
@@ -38,6 +37,7 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
         binding.tv103.setOnClickListener(this);
         binding.tv104.setOnClickListener(this);
         binding.tv105.setOnClickListener(this);
+        return binding.getRoot();
     }
 
     @Override

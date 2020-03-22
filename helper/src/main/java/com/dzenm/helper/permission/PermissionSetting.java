@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 
+import androidx.fragment.app.Fragment;
+
 import com.dzenm.helper.log.Logger;
 
 /**
@@ -19,6 +21,7 @@ import com.dzenm.helper.log.Logger;
 public final class PermissionSetting {
 
     public static final String TAG = PermissionSetting.class.getSimpleName() + "| ";
+
     /*
      * 华为手机的一些包名常量
      */
@@ -62,9 +65,7 @@ public final class PermissionSetting {
     private static final String DEFAULT_PACKAGE = "packageName";
 
     /**
-     * 获取手机厂商名称
-     *
-     * @return
+     * @return 获取手机厂商名称
      */
     static String mark() {
         return Build.MANUFACTURER.toLowerCase();
@@ -73,8 +74,8 @@ public final class PermissionSetting {
     /**
      * 一般手机通过该方法打开设置界面
      *
-     * @param activity
-     * @return
+     * @param activity 当前Activity
+     * @return intent
      */
     public static Intent normal(Activity activity) {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -85,8 +86,8 @@ public final class PermissionSetting {
     /**
      * 跳转华为设置页面的Intent
      *
-     * @param activity
-     * @return
+     * @param activity 当前Activity
+     * @return intent
      */
     public static Intent huawei(Activity activity) {
         Intent intent = new Intent();
@@ -103,8 +104,8 @@ public final class PermissionSetting {
     /**
      * 跳转小米设置页面的Intent
      *
-     * @param activity
-     * @return
+     * @param activity 当前Activity
+     * @return intent
      */
     public static Intent xiaomi(Activity activity) {
         Intent intent = new Intent(MIUI_INTENT);
@@ -124,7 +125,7 @@ public final class PermissionSetting {
     /**
      * 跳转OPPO设置页面的Intent
      *
-     * @param activity
+     * @param activity 当前Activity
      * @return
      */
     public static Intent oppo(Activity activity) {
@@ -145,8 +146,8 @@ public final class PermissionSetting {
     /**
      * 跳转VIVO设置页面的Intent
      *
-     * @param activity
-     * @return
+     * @param activity 当前Activity
+     * @return intent
      */
     public static Intent vivo(Activity activity) {
         Intent intent = new Intent();
@@ -161,8 +162,8 @@ public final class PermissionSetting {
     /**
      * 跳转魅族设置页面的Intent
      *
-     * @param activity
-     * @return
+     * @param activity 当前Activity
+     * @return intent
      */
     public static Intent meizu(Activity activity) {
         Intent intent = new Intent(MEIZU_INTENT);
@@ -171,16 +172,15 @@ public final class PermissionSetting {
         return intent;
     }
 
-
     /**
      * 跳转到应用权限设置页面
      *
-     * @param activity
+     * @param fragment  通过Fragment打开设置页面
      * @param isNewTask 是否使用新的任务栈启动
-     * @return
      */
-    public static void openSetting(Activity activity, boolean isNewTask) {
+    public static void openSetting(Fragment fragment, boolean isNewTask) {
         Intent intent = null;
+        Activity activity = fragment.getActivity();
         if (mark().equals("huawei")) {
             intent = huawei(activity);
         } else if (mark().equals("xiaomi")) {
@@ -198,15 +198,13 @@ public final class PermissionSetting {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         Logger.d(TAG + "当前手机厂商: " + mark());
-        activity.startActivityForResult(intent, PermissionManager.REQUEST_SETTING);
+        fragment.startActivityForResult(intent, PermissionFragment.REQUEST_SETTING);
     }
 
     /**
-     * 是否存在该Intent
-     *
-     * @param activity
+     * @param activity 当前Activity
      * @param intent   判断的Intent
-     * @return
+     * @return 是否存在该Intent
      */
     private static boolean isEmptyIntent(Activity activity, Intent intent) {
         return activity.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).isEmpty();

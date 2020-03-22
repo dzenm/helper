@@ -434,7 +434,7 @@ public class PickerView extends View {
         void onSelect(PickerView pickerView);
     }
 
-    class MyTimerTask extends TimerTask {
+    static class MyTimerTask extends TimerTask {
         Handler mHandler;
 
         MyTimerTask(Handler handler) {

@@ -1,6 +1,10 @@
 package com.dzenm.helper.os;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
+
+import androidx.annotation.ColorInt;
 
 import com.dzenm.helper.R;
 import com.dzenm.helper.file.SPHelper;
@@ -14,29 +18,19 @@ public class ThemeHelper {
     private static final String THEME_PREF = "theme_pref";
     private static final String THEME_TYPE = "theme_type";
 
-    public static class ThemeColors {
-        public static final int THEME_LIGHT = 1;
-        public static final int THEME_DARK = 2;
+    public static void setTheme(Context context, int theme) {
+        SPHelper.getInstance().put(THEME_PREF, THEME_TYPE, theme);
+        context.setTheme(theme);
     }
 
-    public static void setTheme(Context context) {
-        int themeType = (int) SPHelper.getInstance().get(THEME_PREF, THEME_TYPE, ThemeColors.THEME_LIGHT);
-        int themeId;
-        switch (themeType) {
-            case ThemeColors.THEME_LIGHT:
-                themeId = R.style.AppTheme_Light;
-                break;
-            case ThemeColors.THEME_DARK:
-                themeId = R.style.AppTheme_Dark;
-                break;
-            default:
-                themeId = R.style.AppTheme_Default;
-                break;
-        }
-        context.setTheme(themeId);
+    public static int getTheme() {
+        return (int) SPHelper.getInstance().get(THEME_PREF, THEME_TYPE, R.style.AppTheme_Dark);
     }
 
-    public static boolean setNewTheme(Context context, int theme) {
-        return SPHelper.getInstance().put(THEME_PREF, THEME_TYPE, theme);
+    public static @ColorInt
+    int getColor(Context context, int resId) {
+        @SuppressLint("Recycle") TypedArray a =
+                context.obtainStyledAttributes(new int[]{resId});
+        return a.getColor(0, 0);
     }
 }

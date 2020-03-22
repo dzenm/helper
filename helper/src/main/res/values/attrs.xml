@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="columnNumber" format="integer" />
+    <attr name="ratio" format="float" />
+
     <declare-styleable name="ProgressBar">
         <attr name="textSize" format="dimension|reference" />
         <attr name="maxValue" format="integer" />
@@ -9,8 +12,8 @@
     </declare-styleable>
 
     <declare-styleable name="PhotoLayout">
+        <attr name="columnNumber" />
         <attr name="totalNumber" format="integer" />
-        <attr name="columnNumber" format="integer" />
         <attr name="margin" format="dimension|reference" />
         <attr name="isPreview" format="boolean" />
         <attr name="deleteSize" format="dimension|reference" />
@@ -19,26 +22,57 @@
     </declare-styleable>
 
     <declare-styleable name="RatioImageView">
-        <attr name="ratio" format="float" />
-        <attr name="foregroundColor" format="color|reference" />
         <attr name="isCircle" format="boolean" />
+        <attr name="isMask" format="boolean" />
+        <attr name="ratio" />
+        <attr name="foregroundColor" format="color|reference" />
         <attr name="cornerRadius" format="dimension|reference" />
         <attr name="top_left_cornerRadius" format="dimension|reference" />
         <attr name="top_right_cornerRadius" format="dimension|reference" />
         <attr name="bottom_left_cornerRadius" format="dimension|reference" />
         <attr name="bottom_right_cornerRadius" format="dimension|reference" />
+        <attr name="numberColor" format="color|reference" />
+        <attr name="numberMaskColor" format="color|reference" />
+        <attr name="numberSize" format="dimension|reference" />
     </declare-styleable>
 
-    <declare-styleable name="GridPhotoLayout">
-        <attr name="margin_child" format="dimension|reference" />
-        <attr name="columnCount" format="integer" />
+    <declare-styleable name="RecyclerListView">
+        <attr name="paddingBottomNoButtons" format="dimension|reference" />
+        <attr name="paddingTopNoTitle" format="dimension|reference" />
     </declare-styleable>
 
-    <!-- 自定义属性 -->
+    <declare-styleable name="LineLayout">
+        <!--两个View之间的间距 ：值越小就越近，越大就越远-->
+        <attr name="lineViewMarginRate" format="float" />
+        <!--View的层次关系，true:前面的在上，false:后面的在上-->
+        <attr name="lineIsReverse" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="GridLayout">
+        <attr name="column" format="integer" />
+        <attr name="horizontalSpace" format="dimension|reference" />
+        <attr name="verticalSpace" format="dimension|reference" />
+        <attr name="maxCount" format="integer" />
+        <attr name="ratio" />
+        <attr name="mode" format="flags">
+            <flag name="fill" value="0" />
+            <flag name="grid" value="1" />
+        </attr>
+        <attr name="singleWrap" format="boolean" />
+    </declare-styleable>
+
+    <!-- Color palette -->
+    <eat-comment />
     <attr name="colorPrimaryText" format="color" />
     <attr name="colorSecondaryText" format="color" />
     <attr name="colorHintText" format="color" />
     <attr name="colorDivide" format="color" />
     <attr name="colorActive" format="color" />
     <attr name="colorInactive" format="color" />
+    <attr name="colorDialogPrimaryText" format="color" />
+    <attr name="colorDialogSecondaryText" format="color" />
+    <attr name="colorDialogHintText" format="color" />
+    <attr name="colorDialogDivide" format="color" />
+    <attr name="colorDialogBackground" format="color" />
+    <attr name="colorDialogButtonText" format="color" />
 </resources>

@@ -365,11 +365,11 @@ public class DialogActivity extends AbsActivity<ActivityDialogBinding> implement
             ToastHelper.show("开始下载...");
             DownloadHelper.newInstance(this)
                     .setUrl(url)
-                    .startDownload();
+                    .download();
         } else if (view.getId() == R.id.tv_111) {
             PhotoDialog.newInstance(this).setOnSelectPhotoListener(new PhotoSelector.OnSelectPhotoListener() {
                 @Override
-                public boolean onCrop(PhotoSelector helper, String filePath) {
+                public boolean onCrop(PhotoSelector selector, String filePath) {
                     logD("the filePath: " + filePath);
                     String file = FileHelper.getInstance().getPath("/photo") + "/d.jpeg";
                     FileHelper.getInstance().copyFile(filePath, file);
@@ -392,42 +392,28 @@ public class DialogActivity extends AbsActivity<ActivityDialogBinding> implement
                     }).setRadiusCard(2f)
                     .show();
         } else if (view.getId() == R.id.tv_113) {
-            InfoDialog.newInstance(this)
-                    .setTitle("提示")
-                    .setMessage("PopupWindow覆盖在dialog之上")
-                    .setGravity(Gravity.TOP)
-                    .setOnClickListener(new InfoDialog.OnInfoClickListener() {
+            new PopupDialog.Builder(DialogActivity.this)
+                    .setView(R.layout.dialog_login)
+                    .setOnBindViewHolder(new PopupDialog.OnBindViewHolder() {
                         @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                new PopupDialog.Builder(DialogActivity.this)
-                                        .setView(R.layout.dialog_login)
-                                        .setOnBindViewHolder(new PopupDialog.OnBindViewHolder() {
-                                            @Override
-                                            public void onBinding(ViewHolder holder,
-                                                                  final PopupDialog popupWindow) {
-                                                holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
-                                                        ToastHelper.show("登录成功");
-                                                        popupWindow.dismiss();
-                                                    }
-                                                });
-                                                holder.getView(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
-                                                        popupWindow.dismiss();
-                                                    }
-                                                });
-                                            }
-                                        }).create()
-                                        .showAsDropDown(dialog.getView(), 100, 0);
-                            } else {
-                                dialog.dismiss();
-                            }
-                            return false;
+                        public void onBinding(ViewHolder holder,
+                                              final PopupDialog popupWindow) {
+                            holder.getView(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    ToastHelper.show("登录成功");
+                                    popupWindow.dismiss();
+                                }
+                            });
+                            holder.getView(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    popupWindow.dismiss();
+                                }
+                            });
                         }
-                    }).show();
+                    }).create()
+                    .showAsDropDown(findViewById(R.id.toolbar), 100, 0);
         } else if (view.getId() == R.id.tv_114) {
             InfoDialog.newInstance(this)
                     .setTitle("提示")

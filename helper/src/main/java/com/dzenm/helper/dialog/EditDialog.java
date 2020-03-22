@@ -62,8 +62,8 @@ public class EditDialog extends InfoDialog implements TextWatcher {
     /************************************* 以下为实现过程 *********************************/
 
     @Override
-    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
-        super.initView(inflater, container, savedInstanceState2);
+    public void initView() {
+        super.initView();
         binding.tvMessage.setVisibility(View.GONE);
         EditText editText = binding.etMessage;
         editText.setVisibility(View.VISIBLE);

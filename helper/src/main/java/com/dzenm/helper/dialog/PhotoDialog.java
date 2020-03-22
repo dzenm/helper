@@ -3,6 +3,7 @@ package com.dzenm.helper.dialog;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -37,7 +38,7 @@ import com.dzenm.helper.photo.PhotoSelector;
  * }).show();
  * </pre>
  */
-public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickListener {
+public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickListener, PhotoSelector.OnFinishListener {
 
     private PhotoSelector.OnSelectPhotoListener mOnSelectPhotoListener;
 
@@ -55,18 +56,25 @@ public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickLis
     }
 
     @Override
-    protected void initView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState2
-    ) {
+    protected View inflater(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setItem("拍照", "图片", "取消");
         setGravity(Gravity.BOTTOM);
         setDivide(true);
         setOnItemClickListener(this);
-        PhotoSelector.getInstance().with(mActivity)
-                .setOnSelectPhotoListener(mOnSelectPhotoListener);
-        super.initView(inflater, container, savedInstanceState2);
+        return super.inflater(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected void initView() {
+        PhotoSelector.getInstance().with(this)
+                .setOnSelectPhotoListener(mOnSelectPhotoListener)
+                .setOnFinishListener(this);
+    }
+
+    @Override
+    protected boolean onClick(int position) {
+        super.onClick(position);
+        return false;
     }
 
     @Override
@@ -75,6 +83,13 @@ public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickLis
             PhotoSelector.getInstance().camera();
         } else if (position == 1) {
             PhotoSelector.getInstance().gallery();
+        } else if (position == 2) {
+            dismiss();
         }
+    }
+
+    @Override
+    public void onFinish(int type) {
+        dismiss();
     }
 }

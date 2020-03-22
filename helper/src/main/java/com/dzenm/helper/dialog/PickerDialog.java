@@ -133,7 +133,7 @@ public class PickerDialog extends AbsDialogFragment implements View.OnClickListe
     }
 
     @Override
-    protected void initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState2) {
+    protected void initView() {
         pvPrimary = findViewById(R.id.pv_primary);
         pvSecondary = findViewById(R.id.pv_secondary);
         pvUnit = findViewById(R.id.pv_unit);

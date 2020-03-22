@@ -24,6 +24,7 @@ import com.dzenm.helper.animator.AnimatorHelper;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
 import com.dzenm.helper.os.ScreenHelper;
+import com.dzenm.helper.os.ThemeHelper;
 
 /**
  * @author dinzhenyan
@@ -32,6 +33,8 @@ import com.dzenm.helper.os.ScreenHelper;
 public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     protected static final float DEFAULT_RADIUS = 16f;
+    protected static final float NORMAL_RADIUS = 8f;
+    protected static final float SMALL_RADIUS = 4f;
     protected static final float MATERIAL_RADIUS = 2f;
 
     protected AppCompatActivity mActivity;
@@ -39,30 +42,27 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     /**
      * 根布局, 用于设置dialog颜色和圆角大小, 长宽, 获取View的ID
      */
-    protected View mView, mContentView;
+    private View mView;
 
     /**
      * dialog背景, 默认白色背景和圆角, 通过 {@link #setBackground(Drawable)} 设置背景
      */
-    protected Drawable mBackground = DrawableHelper
-            .solid(android.R.color.white)
-            .radius(DEFAULT_RADIUS)
-            .build();
+    protected Drawable mBackground;
 
     /**
      * dialog四周的margin, 默认值为10, 通过 {@link #setMargin(int)} 设置margin
      */
-    protected int mMargin = OsHelper.dp2px(10);
+    private int mMargin;
 
     /**
      * dialog居中时的宽度, 默认宽度为(屏幕宽度 - 10 * {@link #mMargin})
      */
-    protected int mCenterWidth = ScreenHelper.getDisplayWidth() - 10 * mMargin;
+    private int mWidthInCenter;
 
     /**
      * dialog显示的位置，默认显示在中间, 通过  {@link #setGravity(int)} 设置显示的位置
      */
-    protected int mGravity = Gravity.CENTER;
+    protected int mGravity;
 
     /**
      * dialog动画, 默认根据 {@link #mGravity} 的位置显示动画
@@ -71,23 +71,23 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      * 当 {@link #mGravity} 的值为 {@link Gravity.CENTER} 从中间缩放显示
      * 通过 {@link #setAnimator(int)} 设置动画
      */
-    protected int mAnimator = AnimatorHelper.expand();
+    protected int mAnimator;
 
     /**
      * 主要颜色, 除了灰色和白色之外的颜色, 默认为蓝色为主色
      */
-    protected int mPrimaryColor = R.color.colorDarkBlue;
+    protected int mPrimaryColor;
 
     /**
      * 次要颜色, 除了灰色和白色之外的颜色, 默认为添加一定透明度的蓝色为次色
      */
-    protected int mSecondaryColor = R.color.colorTranslucentDarkBlue;
+    protected int mSecondaryColor;
 
     /**
      * dialog的遮罩透明度, 通过 {@link #setDimAccount(float)} 设置遮罩透明度
      * 通过 {@link #setTranslucent(boolean)} 设置遮罩是否透明
      */
-    protected float mDimAccount = -1f;
+    protected float mDimAccount;
 
     /**
      * 触摸dialog外部关闭dialog, 通过 {@link #setTouchInOutSideCancel(boolean)} 设置是否关闭
@@ -124,18 +124,15 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      */
     protected float mBackgroundRadius = DEFAULT_RADIUS;
 
-    protected Dialog mDialog;
-
     /**
      * 是否在View之间添加分割线 {@link #setDivide(boolean)}
      */
     protected boolean isDivide = false;
 
     protected boolean isMaterialDesign = false;
-
     protected boolean isDefaultBackground = true, isDefaultGravity = true,
             isDefaultMargin = true, isDefaultAnimator = true;
-
+    protected Dialog mDialog;
     protected OnClickListener mOnClickListener;
 
     static {
@@ -198,11 +195,11 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     }
 
     /**
-     * @param width dialog居中时的宽度 {@link #mCenterWidth}
+     * @param widthInCenter dialog居中时的宽度 {@link #mWidthInCenter}
      * @return this
      */
-    public <T extends AbsDialogFragment> T setCenterWidth(int width) {
-        mCenterWidth = width;
+    public <T extends AbsDialogFragment> T setWidthInCenter(int widthInCenter) {
+        mWidthInCenter = widthInCenter;
         return (T) this;
     }
 
@@ -324,6 +321,17 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     public AbsDialogFragment(AppCompatActivity activity) {
         mActivity = activity;
+        mBackground = DrawableHelper
+                .solid(android.R.color.white)
+                .radius(DEFAULT_RADIUS)
+                .build();
+        mMargin = OsHelper.dp2px(10);
+        mWidthInCenter = ScreenHelper.getDisplayWidth() - 10 * mMargin;
+        mGravity = Gravity.CENTER;
+        mAnimator = AnimatorHelper.expand();
+        mPrimaryColor = R.color.colorDarkBlue;
+        mSecondaryColor = R.color.colorTranslucentDarkBlue;
+        mDimAccount = -1f;
     }
 
     @Override
@@ -350,11 +358,17 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
             return null;
         }
 
-        mContentView = getWindow().getDecorView().findViewById(android.R.id.content);
-        if (layoutId() != -1) mView = inflater.inflate(layoutId(), null);
         setDefaultTextColor();
         setDefaultBackground();
-        initView(inflater, container, savedInstanceState);
+
+        if (mView == null) {
+            mView = inflater(inflater, container, savedInstanceState);
+        }
+        initView();
+        return mView;
+    }
+
+    public View getDecorView() {
         return mView;
     }
 
@@ -362,13 +376,19 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
         return -1;
     }
 
-    protected void initView(
+    protected View inflater(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState
     ) {
+        if (layoutId() != -1) {
+            return inflater.inflate(layoutId(), null);
+        }
+        return null;
     }
 
+    protected void initView() {
+    }
 
     protected void setDefaultBackground() {
         if (isMaterialDesign) {
@@ -387,21 +407,15 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      */
     private void setDefaultTextColor() {
         // 设置文本颜色
-        mPrimaryTextColor = getColor(isDefaultBackground ? R.color.colorPrimaryTextDark :
-                R.color.colorPrimaryTextLight);
-        mSecondaryTextColor = getColor(isDefaultBackground ? R.color.colorSecondaryTextDark :
-                R.color.colorSecondaryTextLight);
-        mButtonTextColor = getColor(isDefaultBackground ? R.color.colorDarkBlue :
-                android.R.color.white);
-        mHintColor = getColor(isDefaultBackground ? R.color.colorHintTextDark :
-                R.color.colorHintTextLight);
-        mDivideColor = getColor(isDefaultBackground ? R.color.colorDivideDark :
-                R.color.colorLightGray);
+        mPrimaryTextColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogPrimaryText);
+        mSecondaryTextColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogSecondaryText);
+        mButtonTextColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogButtonText);
+        mHintColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogHintText);
+        mDivideColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogDivide);
 
         // 按钮点击时的文本颜色
         mPressedColor = isDefaultBackground ? R.color.colorLightGray : R.color.colorTranslucentLightGray;
     }
-
 
     public <T extends View> T findViewById(@IdRes int id) {
         return mView.findViewById(id);
@@ -444,7 +458,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      */
     private void setDefaultMargin(View decorView) {
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) decorView.getLayoutParams();
-        setLayoutParams(layoutParams, mCenterWidth, mMargin);
+        setLayoutParams(layoutParams, mWidthInCenter, mMargin);
         decorView.setLayoutParams(layoutParams);
     }
 
@@ -554,19 +568,13 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
         return mActivity.getResources().getColor(id);
     }
 
-    private interface OnDialogClickListener<T extends AbsDialogFragment> {
+    public abstract static class OnClickListener<T extends AbsDialogFragment> {
 
         /**
          * @param dialog  当前显示的Dialog
          * @param confirm 是否是确定按钮，通过这个判断点击的是哪个按钮
          * @return 返回true表示，点击之后会dismiss dialog， 返回false不dismiss dialog
          */
-        boolean onClick(T dialog, boolean confirm);
-    }
-
-    public abstract static class OnClickListener<T extends AbsDialogFragment> implements OnDialogClickListener<T> {
-
-        @Override
         public boolean onClick(T dialog, boolean confirm) {
             return true;
         }

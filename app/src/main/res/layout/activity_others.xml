@@ -22,12 +22,15 @@
 
             <TextView
                 android:id="@+id/tv_menu"
-                android:layout_width="100dp"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"
+                android:background="@color/colorDarkBlue"
+                android:gravity="center_vertical"
                 android:onClick="onClick"
-                android:text="分享文本" />
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:text="分享文本"
+                android:textColor="@android:color/white" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -61,7 +61,7 @@ public class SPHelper {
      * @param key   存储对象的key
      * @param value 存储对象的值
      */
-    public boolean put(String sp, String key, Object value) {
+    public void put(String sp, String key, Object value) {
         SharedPreferences.Editor editor = getSharedPreferences(sp).edit();
         if (value instanceof String) {
             editor.putString(key, String.valueOf(value));
@@ -76,8 +76,8 @@ public class SPHelper {
         } else if (value instanceof Set) {
             editor.putStringSet(key, (Set<String>) value);
         }
-        Logger.d(TAG + "save from: " + sp + ", key: " + key + ", value: " + value);
-        return editor.commit();
+        Logger.d(TAG + "put sharedPreferences: " + sp + ", key: " + key + ", value: " + value);
+        editor.apply();
     }
 
     /**
@@ -90,7 +90,7 @@ public class SPHelper {
      */
     public Object get(String sp, String key, Object defValue) {
         SharedPreferences sharedPreferences = getSharedPreferences(sp);
-        Logger.d(TAG + "get sharePreferences from: " + sp + ", key: " + key);
+        Logger.d(TAG + "get sharedPreferences from: " + sp + ", key: " + key + ", default value: " + defValue);
         if (defValue instanceof String) {
             return sharedPreferences.getString(key, String.valueOf(defValue));
         } else if (defValue instanceof Integer) {
@@ -203,7 +203,7 @@ public class SPHelper {
      * @return 获取的数据内容
      */
     public Object get(String key, Object defValue) {
-        Logger.d(TAG + "get sharePreferences key: " + key);
+        Logger.d(TAG + "get sharePreferences key: " + key + ", value: " + defValue);
         if (defValue instanceof String) {
             return mSharedPreferences.getString(key, String.valueOf(defValue));
         } else if (defValue instanceof Integer) {

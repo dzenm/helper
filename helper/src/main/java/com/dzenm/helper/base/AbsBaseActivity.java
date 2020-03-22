@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.dzenm.helper.dialog.PromptDialog;
+import com.dzenm.helper.log.Logger;
 import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.os.ThemeHelper;
 
@@ -26,17 +27,20 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ThemeHelper.setTheme(this);
+        Logger.d(mTag + "set default theme");
+        ThemeHelper.setTheme(this, ThemeHelper.getTheme());
         mActivityDelegate = new ActivityDelegate(this, mTag);
         initializeCreate(savedInstanceState);
         initializeView(savedInstanceState);
     }
 
-    protected void toggleTheme(int theme) {
-        if (ThemeHelper.setNewTheme(this, theme)) {
-            // 重启Activity
-            recreate();
-        }
+    public void toggleTheme(int theme) {
+        ThemeHelper.setTheme(this, theme);
+        // 重启Activity
+        Intent intent = new Intent(this, this.getClass());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     protected void initializeCreate(Bundle savedInstanceState) {
@@ -155,5 +159,15 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
             @NonNull int[] grantResults
     ) {
         mActivityDelegate.onRequestSelfPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    public interface OnActivityResult {
+
+        void onResult(int requestCode, int resultCode, @Nullable Intent data);
+    }
+
+    public interface OnRequestPermissionsResult {
+
+        void onResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
     }
 }

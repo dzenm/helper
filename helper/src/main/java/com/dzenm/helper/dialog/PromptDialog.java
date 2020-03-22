@@ -166,7 +166,7 @@ public class PromptDialog extends AbsDialog {
     }
 
     public void show(String loadText, int loadImg) {
-        show(loadText, loadImg, true);
+        show(loadText, loadImg, false);
     }
 
     public void show(String loadText, int loadImg, boolean autoCancel) {

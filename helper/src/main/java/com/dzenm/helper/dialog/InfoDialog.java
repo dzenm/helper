@@ -192,19 +192,18 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
     }
 
     @Override
-    protected int layoutId() {
+    public int layoutId() {
         return R.layout.dialog_info;
     }
 
     @Override
-    protected void initView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState
-    ) {
+    protected View inflater(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, layoutId(), container, false);
-        mView = binding.getRoot();
+        return binding.getRoot();
+    }
 
+    @Override
+    public void initView() {
         // 默认设置
         binding.tvPositive.setOnClickListener(this);
         binding.tvNegative.setOnClickListener(this);
@@ -255,7 +254,7 @@ public class InfoDialog extends AbsDialogFragment implements View.OnClickListene
         setTitleMargin(16);
         setMessageMargin(8, 16);
 
-        mCenterWidth = (int) (ScreenHelper.getDisplayWidth() * 0.9);
+        setWidthInCenter((int) (ScreenHelper.getDisplayWidth() * 0.9));
     }
 
     /**

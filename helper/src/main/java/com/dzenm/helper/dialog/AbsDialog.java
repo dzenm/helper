@@ -74,12 +74,12 @@ public abstract class AbsDialog extends AppCompatDialog {
     /**
      * 主要颜色, 除了灰色和白色之外的颜色, 默认为蓝色为主色
      */
-    protected int mPrimaryColor = R.color.colorDarkBlue;
+    protected int mPrimaryColor = R.color.colorMaterialLightBlue;
 
     /**
      * 次要颜色, 除了灰色和白色之外的颜色, 默认为添加一定透明度的蓝色为次色
      */
-    protected int mSecondaryColor = R.color.colorTranslucentDarkBlue;
+    protected int mSecondaryColor = R.color.colorMaterialSecondLightBlue;
 
     /**
      * dialog之外的灰色遮罩 (去除dialog灰色区域)
@@ -379,7 +379,7 @@ public abstract class AbsDialog extends AppCompatDialog {
      * @return 颜色值
      */
     protected int getColor(int id) {
-        return getContext().getResources().getColor(id);
+        return OsHelper.getColor(getContext(), id);
     }
 
     /**

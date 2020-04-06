@@ -1,20 +1,17 @@
 package com.dzenm.helper.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-
-import androidx.annotation.Nullable;
-
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.dzenm.helper.R;
 import com.dzenm.helper.os.OsHelper;
-import com.dzenm.helper.os.ScreenHelper;
 
 /**
  * @author dzenm
@@ -95,7 +92,7 @@ public class ProgressBar extends View {
         mTextSize = (int) t.getDimension(R.styleable.ProgressBar_textSize, 36);
         mMaxValue = t.getInteger(R.styleable.ProgressBar_maxValue, 100);
         mProgressColor = t.getColor(R.styleable.ProgressBar_progressColor,
-                getResources().getColor(android.R.color.holo_blue_light));
+                OsHelper.getColor(context, android.R.color.holo_blue_light));
         isTextStatic = t.getBoolean(R.styleable.ProgressBar_textStatic, true);
         mProgressValue = 0;
         mText = mProgressValue + "%";

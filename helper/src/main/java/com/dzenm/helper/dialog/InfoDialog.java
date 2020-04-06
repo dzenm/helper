@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -47,6 +48,7 @@ import com.dzenm.helper.os.ScreenHelper;
  *      .show();
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class InfoDialog extends AbsDialogFragment implements View.OnClickListener {
 
     protected DialogInfoBinding binding;

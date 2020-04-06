@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
@@ -30,6 +31,7 @@ import com.dzenm.helper.os.ThemeHelper;
  * @author dinzhenyan
  * @date 2019-05-18 15:23
  */
+@SuppressLint("ValidFragment")
 public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     protected static final float DEFAULT_RADIUS = 16f;
@@ -74,16 +76,6 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     protected int mAnimator;
 
     /**
-     * 主要颜色, 除了灰色和白色之外的颜色, 默认为蓝色为主色
-     */
-    protected int mPrimaryColor;
-
-    /**
-     * 次要颜色, 除了灰色和白色之外的颜色, 默认为添加一定透明度的蓝色为次色
-     */
-    protected int mSecondaryColor;
-
-    /**
      * dialog的遮罩透明度, 通过 {@link #setDimAccount(float)} 设置遮罩透明度
      * 通过 {@link #setTranslucent(boolean)} 设置遮罩是否透明
      */
@@ -95,29 +87,17 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
     private boolean isTouchInOutSideCancel = false;
 
     /**
-     * 显示的主要文字颜色 {@link #setDefaultTextColor()}, 显示的次要文字颜色 {@link #setDefaultTextColor()}
+     * 主要颜色, 除了灰色和白色之外的颜色, 默认为蓝色为主色
+     * 次要颜色, 除了灰色和白色之外的颜色, 默认为添加一定透明度的蓝色为次色
      */
-    protected int mPrimaryTextColor, mSecondaryTextColor;
+    protected int mPrimaryColor, mSecondaryColor;
 
     /**
-     * 按钮文本颜色
+     * 默认颜色通过 {@link #setDefaultTextColor()} 设置
+     * 主要文字颜色, 次要文字颜色, 按钮文本颜色, 提示文本颜色, 分割线颜色, 按压文本颜色, 背景颜色
      */
-    protected int mButtonTextColor;
-
-    /**
-     * 提示文本颜色 {@link #setDefaultTextColor()}
-     */
-    protected int mHintColor;
-
-    /**
-     * 分割线颜色 {@link #setDefaultTextColor()}
-     */
-    protected int mDivideColor;
-
-    /**
-     * 按压文本颜色 {@link #setDefaultTextColor()}
-     */
-    protected int mPressedColor;
+    protected int mPrimaryTextColor, mSecondaryTextColor, mButtonTextColor, mHintColor,
+            mDivideColor, mActiveColor, mInactiveColor, mPressedColor, mBackgroundColor;
 
     /**
      * 圆角大小, 默认值 {@link #DEFAULT_RADIUS}
@@ -321,16 +301,17 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     public AbsDialogFragment(AppCompatActivity activity) {
         mActivity = activity;
+        mBackgroundColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogBackground);
         mBackground = DrawableHelper
-                .solid(android.R.color.white)
+                .solid(mBackgroundColor)
                 .radius(DEFAULT_RADIUS)
                 .build();
         mMargin = OsHelper.dp2px(10);
         mWidthInCenter = ScreenHelper.getDisplayWidth() - 10 * mMargin;
         mGravity = Gravity.CENTER;
         mAnimator = AnimatorHelper.expand();
-        mPrimaryColor = R.color.colorDarkBlue;
-        mSecondaryColor = R.color.colorTranslucentDarkBlue;
+        mPrimaryColor = R.color.colorMaterialLightBlue;
+        mSecondaryColor = R.color.colorMaterialSecondLightBlue;
         mDimAccount = -1f;
     }
 
@@ -396,7 +377,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
         }
         if (isDefaultBackground) {
             mBackground = DrawableHelper
-                    .solid(android.R.color.white)
+                    .solid(mBackgroundColor)
                     .radius(mBackgroundRadius)
                     .build();
         }
@@ -412,6 +393,9 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
         mButtonTextColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogButtonText);
         mHintColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogHintText);
         mDivideColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogDivide);
+
+        mActiveColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogActive);
+        mInactiveColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogInactive);
 
         // 按钮点击时的文本颜色
         mPressedColor = isDefaultBackground ? R.color.colorLightGray : R.color.colorTranslucentLightGray;

@@ -166,7 +166,7 @@ public class DialogActivity extends AbsActivity<ActivityDialogBinding> implement
                                 InfoDialog.newInstance(DialogActivity.this)
                                         .setTitle("设置按钮颜色")
                                         .setMessage("本机IP地址: " + NetworkHelper.getIPAddress(DialogActivity.this))
-                                        .setButtonTextColor(R.color.colorDarkBlue,
+                                        .setButtonTextColor(R.color.colorMaterialLightBlue,
                                                 android.R.color.holo_red_dark)
                                         .setRadiusCard(8f)
                                         .setBackground(DrawableHelper.solid(android.R.color.holo_orange_light)
@@ -194,7 +194,7 @@ public class DialogActivity extends AbsActivity<ActivityDialogBinding> implement
                                         .setTitle("温馨提示")
                                         .setMessage("这是普通效果的单按钮设置")
                                         .setButtonText("确定")
-                                        .setPrimaryColor(R.color.colorDarkBlue)
+                                        .setPrimaryColor(R.color.colorMaterialLightBlue)
                                         .show();
                             } else {
                                 InfoDialog.newInstance(DialogActivity.this)

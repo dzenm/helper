@@ -1,18 +1,15 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.R;
@@ -21,7 +18,6 @@ import com.dzenm.helper.download.DownloadHelper;
 import com.dzenm.helper.download.NotificationType;
 import com.dzenm.helper.draw.DrawableHelper;
 import com.dzenm.helper.os.OsHelper;
-import com.dzenm.helper.os.ScreenHelper;
 import com.dzenm.helper.view.ProgressBar;
 
 /**
@@ -38,6 +34,7 @@ import com.dzenm.helper.view.ProgressBar;
  *         .update();
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class UpGradeDialog extends AbsDialogFragment implements View.OnClickListener, DownloadHelper.OnDownloadListener {
 
     /**

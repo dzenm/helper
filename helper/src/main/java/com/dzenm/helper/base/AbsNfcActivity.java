@@ -135,11 +135,13 @@ public abstract class AbsNfcActivity extends AbsBaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         // 获取到Tag标签对象
+        super.onNewIntent(intent);
         mTag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         // 获取卡片的UID
         String uid = byteArrayToHex(mTag.getId());
         readNfcUid(uid);
     }
+
 
     /**
      * @param bytes NFC卡ID字节数据

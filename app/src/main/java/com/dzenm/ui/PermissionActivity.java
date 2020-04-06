@@ -32,7 +32,7 @@ public class PermissionActivity extends AbsActivity<ActivityPermissionBinding> i
     @Override
     protected void initializeView(@Nullable Bundle savedInstanceState) {
         super.initializeView(savedInstanceState);
-        setToolbarWithImmersiveStatusBar(getBinding().toolbar, R.color.colorDarkBlue);
+        setToolbarWithImmersiveStatusBar(getBinding().toolbar, R.color.colorMaterialLightBlue);
 
         setPressedBackground(getBinding().tv100);
         setRippleBackground(getBinding().tv101);
@@ -98,11 +98,11 @@ public class PermissionActivity extends AbsActivity<ActivityPermissionBinding> i
     }
 
     private void setPressedBackground(View viewBackground) {
-        DrawableHelper.radius(10).pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue).into(viewBackground);
+        DrawableHelper.radius(10).pressed(R.color.colorMaterialLightBlue, R.color.colorMaterialSecondLightBlue).into(viewBackground);
     }
 
     private void setRippleBackground(View viewBackground) {
-        DrawableHelper.radius(10).ripple(R.color.colorDarkBlue).into(viewBackground);
+        DrawableHelper.radius(10).ripple(R.color.colorMaterialLightBlue).into(viewBackground);
     }
 
     @Override

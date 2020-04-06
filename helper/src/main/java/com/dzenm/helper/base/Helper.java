@@ -17,7 +17,7 @@ import com.dzenm.helper.toast.ToastHelper;
  * @author dzenm
  * @date 2019-07-27 10:57
  */
-public class Application {
+public class Helper {
 
     public static void init(final Context context) {
         // 初始化Logger工具, 将打印的log保存文件

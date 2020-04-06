@@ -233,7 +233,7 @@ public class PermissionFragment extends Fragment implements DialogHelper.OnBindV
 
         DrawableHelper.radiusBL(10f)
                 .radiusBR(10f)
-                .pressed(R.color.colorDarkBlue, R.color.colorTranslucentDarkBlue)
+                .pressed(R.color.colorMaterialLightBlue, R.color.colorMaterialSecondLightBlue)
                 .into(confirm);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override

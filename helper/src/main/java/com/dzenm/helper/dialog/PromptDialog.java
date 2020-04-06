@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -47,6 +48,7 @@ import java.lang.annotation.RetentionPolicy;
  *     PromptDialog.newInstance(this).showError("禁止访问");
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class PromptDialog extends AbsDialog {
 
     /**

@@ -308,8 +308,8 @@ public class DialogFragmentDelegate {
         mCenterWidth = ScreenHelper.getDisplayWidth() - 10 * mMargin;
         mGravity = Gravity.CENTER;
         mAnimator = AnimatorHelper.expand();
-        mPrimaryColor = R.color.colorDarkBlue;
-        mSecondaryColor = R.color.colorTranslucentDarkBlue;
+        mPrimaryColor = R.color.colorMaterialLightBlue;
+        mSecondaryColor = R.color.colorMaterialSecondLightBlue;
         mDimAccount = -1f;
         mBackgroundRadius = DEFAULT_RADIUS;
         isTouchInOutSideCancel = false;
@@ -382,7 +382,7 @@ public class DialogFragmentDelegate {
                 R.color.colorPrimaryTextLight);
         mSecondaryTextColor = getColor(isDefaultBackground ? R.color.colorSecondaryTextDark :
                 R.color.colorSecondaryTextLight);
-        mButtonTextColor = getColor(isDefaultBackground ? R.color.colorDarkBlue :
+        mButtonTextColor = getColor(isDefaultBackground ? R.color.colorMaterialLightBlue :
                 android.R.color.white);
         mHintColor = getColor(isDefaultBackground ? R.color.colorHintTextDark :
                 R.color.colorHintTextLight);
@@ -535,22 +535,16 @@ public class DialogFragmentDelegate {
      * @return 颜色值
      */
     protected int getColor(int id) {
-        return mActivity.getResources().getColor(id);
+        return OsHelper.getColor(mActivity, id);
     }
 
-    private interface OnDialogClickListener<T extends BaseDialogFragment> {
+    public abstract static class OnClickListener<T extends BaseDialogFragment> {
 
         /**
          * @param dialog  当前显示的Dialog
          * @param confirm 是否是确定按钮，通过这个判断点击的是哪个按钮
          * @return 返回true表示，点击之后会dismiss dialog， 返回false不dismiss dialog
          */
-        boolean onClick(T dialog, boolean confirm);
-    }
-
-    public abstract static class OnClickListener<T extends BaseDialogFragment> implements OnDialogClickListener<T> {
-
-        @Override
         public boolean onClick(T dialog, boolean confirm) {
             return true;
         }

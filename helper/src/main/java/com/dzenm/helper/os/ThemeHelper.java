@@ -24,13 +24,12 @@ public class ThemeHelper {
     }
 
     public static int getTheme() {
-        return (int) SPHelper.getInstance().get(THEME_PREF, THEME_TYPE, R.style.AppTheme_Dark);
+        return (int) SPHelper.getInstance().get(THEME_PREF, THEME_TYPE, R.style.AppTheme_Light);
     }
 
     public static @ColorInt
     int getColor(Context context, int resId) {
-        @SuppressLint("Recycle") TypedArray a =
-                context.obtainStyledAttributes(new int[]{resId});
+        @SuppressLint("Recycle") TypedArray a = context.obtainStyledAttributes(new int[]{resId});
         return a.getColor(0, 0);
     }
 }

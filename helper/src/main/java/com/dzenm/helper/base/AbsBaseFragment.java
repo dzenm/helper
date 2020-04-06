@@ -45,7 +45,11 @@ public abstract class AbsBaseFragment<A extends Activity> extends Fragment {
         return mActivity;
     }
 
-    public View initializeView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View initializeView(
+            LayoutInflater inflater,
+            ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
         return null;
     }
 

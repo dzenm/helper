@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import com.dzenm.helper.view.RatioImageView;
  *       .show();
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class PreviewDialog extends AbsDialogFragment implements View.OnTouchListener {
 
     private static final int EVENT_NONE = -1;

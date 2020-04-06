@@ -24,7 +24,7 @@
                 android:id="@+id/tv_menu"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@color/colorDarkBlue"
+                android:background="@color/colorMaterialLightBlue"
                 android:gravity="center_vertical"
                 android:onClick="onClick"
                 android:paddingStart="@dimen/padding_normal"

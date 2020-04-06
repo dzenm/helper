@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -42,6 +43,7 @@ import com.dzenm.helper.view.EditText;
  *      }).show();
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class EditDialog extends InfoDialog implements TextWatcher {
 
     /************************************* 以下为自定义方法 *********************************/

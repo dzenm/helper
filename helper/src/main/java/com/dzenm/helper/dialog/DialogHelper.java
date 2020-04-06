@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +54,7 @@ import androidx.databinding.ViewDataBinding;
  *                     }).show();
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class DialogHelper extends AbsDialogFragment {
 
     private @LayoutRes

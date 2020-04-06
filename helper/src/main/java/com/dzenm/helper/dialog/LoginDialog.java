@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ import java.lang.annotation.RetentionPolicy;
  *        }).show();
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class LoginDialog extends AbsDialogFragment implements View.OnClickListener {
 
     private static final int TYPE_LOGIN = 101;

@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Gravity;
@@ -37,6 +38,7 @@ import com.dzenm.helper.os.OsHelper;
  *          .show();
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class MenuDialog extends AbsDialogFragment implements View.OnClickListener {
 
     /**
@@ -72,7 +74,11 @@ public class MenuDialog extends AbsDialogFragment implements View.OnClickListene
     /************************************* 以下为实现过程 *********************************/
 
     @Override
-    protected View inflater(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected View inflater(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
         setTouchInOutSideCancel(true);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);

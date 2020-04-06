@@ -2,33 +2,49 @@
 <resources>
 
     <style name="AppTheme.Light" parent="Theme.AppCompat.Light.NoActionBar">
+
         <item name="colorPrimaryText">@color/colorPrimaryTextLight</item>
         <item name="colorSecondaryText">@color/colorSecondaryTextLight</item>
         <item name="colorHintText">@color/colorHintTextLight</item>
         <item name="colorDivide">@color/colorDivideLight</item>
         <item name="colorActive">@color/colorActiveLight</item>
         <item name="colorInactive">@color/colorInactiveLight</item>
+
+        <item name="colorDialogPrimary">@color/colorMaterialLightBlue</item>
         <item name="colorDialogPrimaryText">@color/colorPrimaryTextDark</item>
+        <item name="colorDialogSecondary">@color/colorMaterialSecondLightBlue</item>
         <item name="colorDialogSecondaryText">@color/colorSecondaryTextDark</item>
+
         <item name="colorDialogHintText">@color/colorHintTextDark</item>
         <item name="colorDialogDivide">@color/colorDivideDark</item>
         <item name="colorDialogBackground">@android:color/white</item>
-        <item name="colorDialogButtonText">@color/colorDarkBlue</item>
+        <item name="colorDialogButtonText">@color/colorMaterialLightBlue</item>
+        <item name="colorDialogActive">@color/colorActiveLight</item>
+        <item name="colorDialogInactive">@color/colorInactiveLight</item>
+
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.AppCompat.DayNight.NoActionBar">
+
         <item name="colorPrimaryText">@color/colorPrimaryTextDark</item>
         <item name="colorSecondaryText">@color/colorSecondaryTextDark</item>
         <item name="colorHintText">@color/colorHintTextDark</item>
         <item name="colorDivide">@color/colorDivideDark</item>
         <item name="colorActive">@color/colorActiveDark</item>
         <item name="colorInactive">@color/colorInactiveDark</item>
+
+        <item name="colorDialogPrimary">@color/colorMaterialLightBlue</item>
         <item name="colorDialogPrimaryText">@color/colorPrimaryTextLight</item>
+        <item name="colorDialogSecondary">@color/colorMaterialSecondLightBlue</item>
         <item name="colorDialogSecondaryText">@color/colorSecondaryTextLight</item>
+
         <item name="colorDialogHintText">@color/colorHintTextLight</item>
         <item name="colorDialogDivide">@color/colorDivideLight</item>
-        <item name="colorDialogBackground">@color/colorPrimaryTextDark</item>
+        <item name="colorDialogBackground">@color/colorSecondaryText</item>
         <item name="colorDialogButtonText">@android:color/white</item>
+        <item name="colorDialogActive">@color/colorActiveDark</item>
+        <item name="colorDialogInactive">@color/colorInactiveDark</item>
+
     </style>
 
     <style name="BaseDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">

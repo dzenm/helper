@@ -718,14 +718,6 @@ public class ShapeHelper implements IDrawable<Drawable, View> {
     }
 
     private int getColor(int id) {
-        try {
-            int resId = mContext.getResources().getColor(id);
-            if (id == resId) {
-                return resId;
-            }
-            return resId;
-        } catch (Exception e) {
-            return id;
-        }
+        return OsHelper.getColor(mContext, id);
     }
 }

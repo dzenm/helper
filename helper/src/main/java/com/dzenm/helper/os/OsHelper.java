@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -18,6 +19,9 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.TypedValue;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.PermissionChecker;
@@ -443,5 +447,24 @@ public final class OsHelper {
      */
     public static int dp2px(float value) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, Resources.getSystem().getDisplayMetrics());
+    }
+
+    /**
+     * 获取 attr 下文件的颜色值
+     *
+     * @param context 当前context
+     * @param color   颜色值
+     * @return 是否通过Resource文件获取的颜色值
+     */
+    public static int getColor(@NonNull Context context, @ColorRes int color) {
+        try {
+            int resId = context.getResources().getColor(color);
+            if (color == resId) {
+                return resId;
+            }
+            return resId;
+        } catch (Exception e) {
+            return color;
+        }
     }
 }

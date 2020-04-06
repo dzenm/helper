@@ -267,7 +267,7 @@ public class ScreenHelper {
      */
     public static String getHexColor(Context context, int id) {
         StringBuilder sb = new StringBuilder();
-        int color = context.getResources().getColor(id);
+        int color = OsHelper.getColor(context, id);
         sb.append("#");
         sb.append(Integer.toHexString(Color.alpha(color)));
         sb.append(Integer.toHexString(Color.red(color)));

@@ -10,13 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 
 import com.dzenm.helper.R;
@@ -208,7 +203,7 @@ public class DropDownMenu extends PopupWindow {
             );
             mMaskView.setLayoutParams(maskParams);
 //            mMaskView.setBackgroundColor(-2004318072);
-            mMaskView.setBackgroundColor(mActivity.getColor(R.color.colorTranslucentDarkGrey));
+            mMaskView.setBackgroundColor(mActivity.getResources().getColor(R.color.colorTranslucentDarkGrey));
             mMaskView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

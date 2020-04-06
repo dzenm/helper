@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +34,7 @@ import java.util.List;
  *          .show();
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class DatePickerDialog extends PickerDialog {
 
     /**
@@ -103,7 +105,7 @@ public class DatePickerDialog extends PickerDialog {
 
     /************************************* 以下为实现过程 *********************************/
 
-    public DatePickerDialog(AppCompatActivity activity) {
+    protected DatePickerDialog(AppCompatActivity activity) {
         super(activity);
         // 默认的起始日期到终止日期
         mStartCalendar = Calendar.getInstance();

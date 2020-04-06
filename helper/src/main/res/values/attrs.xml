@@ -69,10 +69,16 @@
     <attr name="colorDivide" format="color" />
     <attr name="colorActive" format="color" />
     <attr name="colorInactive" format="color" />
+
+    <attr name="colorDialogPrimary" format="color" />
+    <attr name="colorDialogSecondary" format="color" />
+    <attr name="colorDialogAccent" format="color" />
     <attr name="colorDialogPrimaryText" format="color" />
     <attr name="colorDialogSecondaryText" format="color" />
     <attr name="colorDialogHintText" format="color" />
     <attr name="colorDialogDivide" format="color" />
-    <attr name="colorDialogBackground" format="color" />
     <attr name="colorDialogButtonText" format="color" />
+    <attr name="colorDialogBackground" format="color" />
+    <attr name="colorDialogActive" format="color" />
+    <attr name="colorDialogInactive" format="color" />
 </resources>

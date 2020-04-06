@@ -1,5 +1,6 @@
 package com.dzenm.helper.dialog;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ import com.dzenm.helper.photo.PhotoSelector;
  * }).show();
  * </pre>
  */
+@SuppressLint("ValidFragment")
 public class PhotoDialog extends MenuDialog implements MenuDialog.OnItemClickListener, PhotoSelector.OnFinishListener {
 
     private PhotoSelector.OnSelectPhotoListener mOnSelectPhotoListener;

@@ -38,8 +38,8 @@ public class StatusBarHelper {
      * @param color    状态栏和Toolbar颜色值
      */
     public static void setStatusBarWithToolbarStyle(Activity activity, @NonNull View view, @ColorRes int color) {
-        StatusBarHelper.setColor(activity, color);
-        StatusBarHelper.adjustViewHeightForHideStatusBar(activity, view);
+        setColor(activity, color);
+        adjustViewHeightForHideStatusBar(activity, view);
         view.setBackgroundColor(getColor(activity, color));
     }
 
@@ -317,6 +317,6 @@ public class StatusBarHelper {
     }
 
     private static int getColor(@NonNull Activity activity, @ColorRes int color) {
-        return activity.getResources().getColor(color);
+        return OsHelper.getColor(activity, color);
     }
 }

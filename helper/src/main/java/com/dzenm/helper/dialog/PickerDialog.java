@@ -2,15 +2,11 @@ package com.dzenm.helper.dialog;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.helper.R;
@@ -23,6 +19,7 @@ import java.util.ArrayList;
  * @author dzenm
  * @date 2019-08-25 22:54
  */
+@SuppressLint("ValidFragment")
 public class PickerDialog extends AbsDialogFragment implements View.OnClickListener, PickerView.onSelectListener {
 
     /**

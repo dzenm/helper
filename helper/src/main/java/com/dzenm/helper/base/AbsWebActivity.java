@@ -4,9 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
@@ -23,6 +26,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.dzenm.helper.dialog.EditDialog;
@@ -37,6 +41,21 @@ import com.dzenm.helper.toast.ToastHelper;
  * @date 2019-04-30 20:03
  * Android的WebView在低版本和高版本采用了不同的webkit版本内核，4.4后直接使用了Chrome。
  * 添加访问网络权限 <uses-permission android:name="android.permission.INTERNET"/>
+ *
+ * <pre>
+ * 在 {@link #initializeView(Bundle)} 进行title和url的获取
+ * String title = getIntent().getStringExtra(TITLE);
+ * getSupportActionBar().setTitle(title);
+ * String url = getIntent().getStringExtra(URL);
+ *
+ * 使用 {@link #setEnabledWebView(ViewGroup, ProgressBar, String)} 进行设置
+ *
+ * 如果需要使用Menu, 通过 {@link #onCreateOptionsMenu(Menu)} 引入一个Menu, 在
+ * {@link #onOptionsItemSelected(MenuItem)} 设置点击事件, 可使用的方法有:
+ * 刷新当前页面 {@link #reloadCurrentPage()} ()}, 分享当前页面 {@link #shareCurrentPage(String)},
+ * 复制当前页面url {@link #copyCurrentPageUrl()} ()},
+ * 在其它浏览器中打开 {@link #openInOtherBrowser()}, 清除缓存 {@link #clearCache()}
+ * </pre>
  */
 public abstract class AbsWebActivity extends AbsBaseActivity {
 
@@ -50,10 +69,15 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
      * @param progressBar 进度条显示, 可有可无
      * @param url         初次加载的url
      */
-    protected void setEnabledWebView(ViewGroup viewGroup, ProgressBar progressBar, String url) {
-        setWebView(viewGroup, url);
+    protected void enabledWebView(
+            @NonNull ViewGroup viewGroup,
+            ProgressBar progressBar,
+            String url
+    ) {
+        showWebView(viewGroup, url);
         setWebClient(mWebView, progressBar);
-        setWebSettings(mWebView);
+        WebSettings webSettings = mWebView.getSettings();
+        setWebSettings(webSettings);
     }
 
     /**
@@ -62,7 +86,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
      * @param viewGroup WebView的ViewGroup, 必须设置
      * @param url       初次加载的url
      */
-    protected void setWebView(ViewGroup viewGroup, String url) {
+    protected void showWebView(@NonNull ViewGroup viewGroup, String url) {
         // 避免WebView内存泄露。不在xml中定义 WebView ，而是在需要的时候在Activity中创建，并且Context使用 getApplicationContext()
         getSupportActionBar().setTitle("正在加载中...");
 
@@ -95,7 +119,10 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
      * @param webView     加载网页的webView
      * @param progressBar 进度条显示, 可有可无
      */
-    protected void setWebClient(final WebView webView, final ProgressBar progressBar) {
+    protected void setWebClient(
+            @NonNull final WebView webView,
+            final ProgressBar progressBar
+    ) {
         // 此方法可以在webview中打开链接而不会跳转到外部浏览器
         webView.setWebViewClient(new WebViewClient() {
             // 重定向URL请求，返回true表示拦截此url，返回false表示不拦截此url。
@@ -362,12 +389,10 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     /**
      * 设置webSettings属性
      *
-     * @param webView 加载网页的webView
+     * @param webSettings 加载网页的webView设置
      */
     @SuppressLint("SetJavaScriptEnabled")
-    protected void setWebSettings(WebView webView) {
-        WebSettings webSettings = webView.getSettings();
-
+    protected void setWebSettings(@NonNull WebSettings webSettings) {
         // JS相关设置
         webSettings.setJavaScriptEnabled(true);                                     // 如果访问的页面中要与Javascript交互，则webView必须设置支持Javascript
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);                 // 支持通过JS打开新窗口
@@ -436,7 +461,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     /**
      * 重新加载当前页面(当前页面所有资源会重新加载)
      */
-    protected void reload() {
+    protected void reloadCurrentPage() {
         mWebView.reload();
     }
 
@@ -445,7 +470,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
      *
      * @param prompt 分享的文本内容
      */
-    protected void share(String prompt) {
+    protected void shareCurrentPage(String prompt) {
         ShareHelper.newInstance(this)
                 .setText(mWebView.getTitle() + "  分享来自【" + prompt + "】 " + mWebView.getUrl())
                 .share();
@@ -454,7 +479,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     /**
      * 复制当前页面链接
      */
-    protected void copy() {
+    protected void copyCurrentPageUrl() {
         ScreenHelper.copy(this, mWebView.getUrl());
         ToastHelper.show("复制成功");
     }
@@ -462,7 +487,7 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     /**
      * 在其他浏览器打开当前页面
      */
-    protected void openInBrowser() {
+    protected void openInOtherBrowser() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(mWebView.getUrl()));
         startActivity(intent);
@@ -520,10 +545,12 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mWebView.onResume();
-        // 恢复pauseTimers状态
-        mWebView.resumeTimers();
-        mWebView.getSettings().setJavaScriptEnabled(true);
+        if (mWebView != null) {
+            mWebView.onResume();
+            // 恢复pauseTimers状态
+            mWebView.resumeTimers();
+            mWebView.getSettings().setJavaScriptEnabled(true);
+        }
     }
 
     /**
@@ -533,16 +560,20 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mWebView.onPause();
-        // 当应用程序(存在webView)被切换到后台时，这个方法不仅仅针对当前的webView而是全局的全应用程序的webView
-        // 它会暂停所有webView的layout，parsing，JavaScriptTimer。降低CPU功耗。
-        mWebView.pauseTimers();
+        if (mWebView != null) {
+            mWebView.onPause();
+            // 当应用程序(存在webView)被切换到后台时，这个方法不仅仅针对当前的webView而是全局的全应用程序的webView
+            // 它会暂停所有webView的layout，parsing，JavaScriptTimer。降低CPU功耗。
+            mWebView.pauseTimers();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mWebView.getSettings().setJavaScriptEnabled(false);
+        if (mWebView != null) {
+            mWebView.getSettings().setJavaScriptEnabled(false);
+        }
     }
 
     /**
@@ -550,11 +581,13 @@ public abstract class AbsWebActivity extends AbsBaseActivity {
      */
     @Override
     public void onBackPressed() {
-        if (mWebView.copyBackForwardList().getCurrentIndex() > 0) {        // 判断当前历史列表是否
-            goBack();
-            if (!mWebView.canGoBack()) super.onBackPressed();
-        } else {
-            finish();
+        if (mWebView != null) {
+            if (mWebView.copyBackForwardList().getCurrentIndex() > 0) {        // 判断当前历史列表是否
+                goBack();
+                if (!mWebView.canGoBack()) super.onBackPressed();
+            } else {
+                finish();
+            }
         }
     }
 

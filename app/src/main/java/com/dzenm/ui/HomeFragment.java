@@ -22,7 +22,7 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
     @Override
     public View initializeView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         FragmentHomeBinding binding = FragmentHomeBinding.inflate(inflater);
-        setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorDarkBlue);
+        setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorMaterialLightBlue);
 
         DrawableHelper.radius(8).pressed(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv100);
         DrawableHelper.radius(8).ripple(android.R.color.holo_blue_light, R.color.colorDivide).into(binding.tv101);

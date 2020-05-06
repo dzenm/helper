@@ -1,0 +1,3 @@
+rootProject.name='Helper'
+include ':app'
+include ':helper'

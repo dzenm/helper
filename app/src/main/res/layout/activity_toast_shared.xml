@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_100"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="分享文本"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_101"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="分享图片"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_102"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="复制后的内容"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_103"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="粘贴板内容"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_104"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="普通Toast"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_105"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="带图片的Toast"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_106"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="设置背景的Toast"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_107"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
+                    android:text="设置位置的Toast"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

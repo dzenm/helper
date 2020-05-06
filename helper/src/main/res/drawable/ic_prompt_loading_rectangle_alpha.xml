@@ -1,0 +1,28 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="32dp"
+    android:viewportWidth="300.0"
+    android:viewportHeight="100.0">
+
+    <group android:name="point_i">
+        <path
+            android:name="point_i"
+            android:fillColor="@android:color/white"
+            android:pathData="M50 20 L95 20 L60 80 L15 80" />
+    </group>
+    <group android:name="point_ii">
+        <path
+            android:name="point_ii"
+            android:fillColor="@android:color/white"
+            android:pathData="M145 20 L190 20 L155 80 L110 80" />
+    </group>
+
+    <group android:name="point_iii">
+        <path
+            android:name="point_iii"
+            android:fillColor="@android:color/white"
+            android:pathData="M240 20 L285 20 L250 80 L205 80"
+            android:strokeLineCap="round" />
+    </group>
+
+</vector>

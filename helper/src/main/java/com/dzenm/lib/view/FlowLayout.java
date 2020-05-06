@@ -1,0 +1,212 @@
+package com.dzenm.lib.view;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 流式布局
+ */
+public class FlowLayout extends AbsAdapterLayout {
+
+    public FlowLayout(Context context) {
+        this(context, null);
+    }
+
+    public FlowLayout(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public FlowLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    // 记录每行的View
+    private List<List<View>> mViews = new ArrayList<>();
+    // 记录每行的高度
+    private List<Integer> mHeights = new ArrayList<>();
+    /**
+     * 是否平分
+     */
+    private boolean isSquare;
+
+    private boolean isShowOneLine;
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        mViews.clear();
+        mHeights.clear();
+        // 1.测量控件的宽高
+        // 获取自已的测量模式
+        int modeWidth = View.MeasureSpec.getMode(widthMeasureSpec);
+        int modeHeight = View.MeasureSpec.getMode(heightMeasureSpec);
+        // 获取自已的宽高
+        int sizeWidth = View.MeasureSpec.getSize(widthMeasureSpec);
+        int sizeHeight = View.MeasureSpec.getSize(heightMeasureSpec);
+
+        // 最后要设置的宽高
+        int width = 0;
+        int height = 0;
+        // 行的宽高
+        int lineWidth = 0;
+        int lineHeight = 0;
+
+        int count = getChildCount();
+        List<View> lineViews = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            if (child.getVisibility() == View.GONE) {
+                continue;
+            }
+            // 测量子View
+            measureChild(child, widthMeasureSpec, heightMeasureSpec);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
+            // 子View占据的宽度
+            int childWidth = child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+            // 子View占据的高度
+            int childHeight = child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
+            // 如果行宽 + 子View的宽度 > 测量的宽度
+            if (lineWidth + childWidth > sizeWidth - getPaddingLeft() - getPaddingRight()) {
+                // 如果只显示一行
+                if (isShowOneLine && mViews.size() > 0) {
+                    continue;
+                }
+                // 换行
+                // 取最宽
+                width = Math.max(width, lineWidth);
+                height += lineHeight;
+
+                // 添加到第行的记录
+                mViews.add(lineViews);
+                mHeights.add(lineHeight);
+
+                // 记录重置（换行后可能就是下一行的宽高）
+                lineWidth = childWidth;
+                lineHeight = childHeight;
+                lineViews = new ArrayList<>();
+                lineViews.add(child);
+            } else {
+                // 叠加宽度
+                lineWidth += childWidth;
+                // 取高度的最大值
+                lineHeight = Math.max(childHeight, lineHeight);
+                // 添加到行的View里面
+                lineViews.add(child);
+            }
+            // 最后一个：取巧了
+            if (i == count - 1) {
+                if (isShowOneLine && mViews.size() > 0) {
+                    continue;
+                }
+                // 取最宽
+                width = Math.max(width, lineWidth);
+                height += lineHeight;
+                mViews.add(lineViews);
+                mHeights.add(lineHeight);
+            }
+        }
+        width += getPaddingLeft() + getPaddingRight();
+        height += getPaddingTop() + getPaddingBottom();
+
+        // 2.设置控件的宽高
+        setMeasuredDimension
+                (
+                        modeWidth == View.MeasureSpec.EXACTLY ? sizeWidth : width,
+                        modeHeight == View.MeasureSpec.EXACTLY ? sizeHeight : height
+                );
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        int lineNum = mHeights.size();
+        // 子View的起始位置
+        int left = getPaddingLeft();
+        int top = getPaddingTop();
+        // 控件的宽
+        int measuredWidth = getMeasuredWidth();
+        if (isShowOneLine) {
+            lineNum = 1;
+        }
+        for (int i = 0; i < lineNum && mViews.size() > 0; i++) {
+            List<View> views = mViews.get(i);
+            // 行宽
+            int lineMargin = 0;
+            // 如果平分
+            if (isSquare && views.size() > 1) {
+                int lineWidth = getLineWidth(views);
+                lineMargin = (measuredWidth - lineWidth) / (views.size() - 1);
+            }
+            Integer lineHeight = mHeights.get(i);
+            for (View view : views) {
+                if (view.getVisibility() == View.GONE) {
+                    continue;
+                }
+                ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+                int lc = left + lp.leftMargin;
+                int rc = lc + view.getMeasuredWidth() + lp.rightMargin;
+                int tc = top + lp.topMargin;
+                int bc = tc + view.getMeasuredHeight() + lp.bottomMargin;
+                view.layout(lc, tc, rc, bc);
+                // 叠加左边的位置
+                left += lp.leftMargin + view.getMeasuredWidth() + lp.rightMargin + lineMargin;
+            }
+            // 下一行的宽度和高度
+            left = getPaddingLeft();
+            top += lineHeight;
+        }
+    }
+
+    private int getLineWidth(List<View> views) {
+        int width = 0;
+        for (View view : views) {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+            width += lp.leftMargin + view.getMeasuredWidth() + lp.rightMargin;
+        }
+        return width;
+    }
+
+    @Override
+    public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new ViewGroup.MarginLayoutParams(getContext(), attrs);
+    }
+
+    /**
+     * 获取一行的个数
+     *
+     * @return
+     */
+    public int getFirstLineSize() {
+        try {
+            return mViews.get(0).size();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * 间距是否平分
+     * 默认不平分
+     */
+    public void setSquare(boolean square) {
+        isSquare = square;
+    }
+
+    public void setShowOneLine(boolean showOneLine) {
+        this.isShowOneLine = showOneLine;
+    }
+
+    public void change() {
+        this.isShowOneLine = !this.isShowOneLine;
+        resetLayout();
+    }
+
+    public AbsAdapter getAdapter() {
+        return mAdapter;
+    }
+
+}

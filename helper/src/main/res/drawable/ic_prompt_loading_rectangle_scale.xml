@@ -1,0 +1,31 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="32dp"
+    android:viewportWidth="300.0"
+    android:viewportHeight="100.0">
+
+    <group
+        android:name="point_i"
+        android:pivotX="60"
+        android:pivotY="55">
+        <path
+            android:fillColor="@android:color/holo_red_light"
+            android:pathData="M50 20 L95 20 L60 80 L15 80" />
+    </group>
+    <group
+        android:name="point_ii"
+        android:pivotX="150"
+        android:pivotY="50">
+        <path
+            android:fillColor="@android:color/holo_blue_light"
+            android:pathData="M145 20 L190 20 L155 80 L110 80" />
+    </group>
+    <group
+        android:name="point_iii"
+        android:pivotX="245"
+        android:pivotY="50">
+        <path
+            android:fillColor="@android:color/holo_orange_light"
+            android:pathData="M240 20 L285 20 L250 80 L205 80" />
+    </group>
+</vector>

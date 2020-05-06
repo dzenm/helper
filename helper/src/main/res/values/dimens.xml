@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ======================== 边距 ========================= -->
+    <!--divide-->
+    <dimen name="divide_size">0.1dp</dimen>
+    <dimen name="divide_small_line">0.5dp</dimen>
+    <dimen name="divide_line">1dp</dimen>
+    <dimen name="divide_big_line">2dp</dimen>
+
+    <!--margin-->
+    <dimen name="margin_grid">2dp</dimen>                       <!--网格的留白距离-->
+    <dimen name="margin_smallest">4dp</dimen>                   <!--留白距离-->
+    <dimen name="margin_smaller">8dp</dimen>                    <!--留白距离, 分隔线上下留白, 卡片留白, 网格留白-->
+    <dimen name="margin_small">12dp</dimen>                     <!--留白距离-->
+    <dimen name="margin_normal">16dp</dimen>                    <!--留白距离, 对话框留白, 屏幕左右对齐基线, 菜单左右留白-->
+    <dimen name="margin_big">20dp</dimen>                       <!--留白距离-->
+    <dimen name="margin_bigger">24dp</dimen>                    <!--留白距离, 对话框留白-->
+    <dimen name="margin_biggest">32dp</dimen>                   <!--留白距离-->
+
+    <!--padding-->
+    <dimen name="padding_grid">2dp</dimen>                      <!--网格的留白距离-->
+    <dimen name="padding_smallest">4dp</dimen>                  <!--留白距离-->
+    <dimen name="padding_smaller">8dp</dimen>                   <!--留白距离, 分隔线上下留白, 卡片间距, 网格的留白距离-->
+    <dimen name="padding_small">12dp</dimen>                    <!--留白距离-->
+    <dimen name="padding_normal">16dp</dimen>                   <!--留白距离, 屏幕左右对齐基线, 菜单左右留白-->
+    <dimen name="padding_big">20dp</dimen>                      <!--留白距离-->
+    <dimen name="padding_bigger">24dp</dimen>                   <!--留白距离, 对话框的四周留白-->
+    <dimen name="padding_biggest">32dp</dimen>                  <!--留白距离-->
+
+    <!--card radius-->
+    <dimen name="radius_smallest">2dp</dimen>                   <!--卡片的圆角值-->
+    <dimen name="radius_smaller">4dp</dimen>                    <!--卡片的圆角值-->
+    <dimen name="radius_small">8dp</dimen>                      <!--卡片的圆角值-->
+    <dimen name="radius_big">12dp</dimen>                       <!--卡片的圆角值-->
+    <dimen name="radius_bigger">16dp</dimen>                    <!--卡片的圆角值-->
+    <dimen name="radius_biggest">20dp</dimen>                   <!--卡片的圆角值-->
+
+    <!--icon size-->
+    <dimen name="icon_size_smaller">24dp</dimen>                <!--更小的图标-->
+    <dimen name="icon_size_small">36dp</dimen>                  <!--小图标-->
+    <dimen name="icon_size_normal">48dp</dimen>                 <!--最小图标点击区域-->
+    <dimen name="icon_size_big">60dp</dimen>                    <!--大图标-->
+    <dimen name="icon_size_bigger">72dp</dimen>                 <!--更大的图标-->
+
+    <!--avatar size-->
+    <dimen name="avatar_size_small">32dp</dimen>                <!--用户头像尺寸-->
+    <dimen name="avatar_size_normal">48dp</dimen>               <!--用户头像尺寸-->
+    <dimen name="avatar_size_big">64dp</dimen>                  <!--用户头像尺寸-->
+
+    <!--bar height-->
+    <dimen name="status_bar_height">24dp</dimen>                <!--顶部状态栏高度-->
+    <dimen name="app_bar_height">56dp</dimen>                   <!--Appbar最小高度-->
+    <dimen name="navigation_bar_height">48dp</dimen>            <!--底部导航栏高度-->
+
+    <!--floating button-->
+    <dimen name="floating_button_height_small">40dp</dimen>     <!--悬浮按钮尺寸-->
+    <dimen name="floating_button_height_normal">56dp</dimen>    <!--悬浮按钮尺寸-->
+    <dimen name="floating_button_height_big">72dp</dimen>       <!--悬浮按钮尺寸-->
+
+    <!--button size-->
+    <dimen name="button_height_smallest">24dp</dimen>           <!--按钮尺寸-->
+    <dimen name="button_height_smaller">32dp</dimen>            <!--按钮尺寸-->
+    <dimen name="button_height_small">40dp</dimen>              <!--按钮尺寸-->
+    <dimen name="button_height_normal">48dp</dimen>             <!--按钮尺寸, 对话框、菜单按钮高度-->
+    <dimen name="button_height_big">56dp</dimen>                <!--按钮尺寸-->
+    <dimen name="button_height_bigger">64dp</dimen>             <!--按钮尺寸-->
+    <dimen name="button_height_biggest">72dp</dimen>            <!--按钮尺寸-->
+    <dimen name="button_height_dialog_normal">36dp</dimen>      <!--对话框按钮高度-->
+
+    <!--width-->
+    <dimen name="width_size_smallest">56dp</dimen>              <!--菜单宽度-->
+    <dimen name="width_size_smaller">112dp</dimen>              <!--菜单宽度-->
+    <dimen name="width_size_small">168dp</dimen>                <!--菜单宽度-->
+    <dimen name="width_size_normal">224dp</dimen>               <!--菜单宽度-->
+    <dimen name="width_size_big">280dp</dimen>                  <!--菜单宽度-->
+    <dimen name="width_size_bigger">336dp</dimen>               <!--菜单宽度-->
+    <dimen name="width_size_biggest">392dp</dimen>              <!--菜单宽度-->
+
+    <!-- ======================== 常用字号大小 ========================= -->
+    <dimen name="text_size_prompt_smallest">8sp</dimen>         <!--小字提示-->
+    <dimen name="text_size_prompt_smaller">10sp</dimen>         <!--小字提示-->
+    <dimen name="text_size_prompt_small">12sp</dimen>           <!--小字提示-->
+
+    <dimen name="text_size_main_body_desktop">13sp</dimen>      <!--正文/按钮文字(桌面端)-->
+    <dimen name="text_size_main_body">14sp</dimen>              <!--正文/按钮文字-->
+    <dimen name="text_size_subtitle_desktop">15sp</dimen>       <!--小标题(桌面端)-->
+    <dimen name="text_size_subtitle">16sp</dimen>               <!--小标题-->
+
+    <dimen name="text_size_title">18sp</dimen>                  <!--标题-->
+    <dimen name="text_size_appbar_title">20sp</dimen>           <!--Appbar文字-->
+    <dimen name="text_size_headline">24sp</dimen>               <!--大标题-->
+
+    <dimen name="text_size_oversize_small">36sp</dimen>         <!--超大号文字-->
+    <dimen name="text_size_oversize_normal">45sp</dimen>
+    <dimen name="text_size_oversize_big">56sp</dimen>
+    <dimen name="text_size_oversize">112sp</dimen>
+
+</resources>

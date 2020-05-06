@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryText">#212121</color>                      <!--900-->
+    <color name="colorDarkGray">#424242</color>                         <!--800-->
+    <color name="colorDarkSecondaryText">#616161</color>                <!--700-->
+    <color name="colorSecondaryText">#757575</color>                    <!--600-->
+    <color name="colorGray">#9E9E9E</color>                             <!--500-->
+    <color name="colorDivide">#BDBDBD</color>                           <!--400-->
+    <color name="colorHint">#E0E0E0</color>                             <!--300-->
+    <color name="colorLightGray">#EEEEEE</color>                        <!--200-->
+    <color name="colorGrey">#F5F5F5</color>                             <!--100-->
+    <color name="colorLightGrey">#FAFAFA</color>                        <!--50-->
+
+    <!-- Light Theme -->
+    <color name="colorPrimaryTextLight">#FFFFFF</color>                 <!--主文本 纯白的 100% -->
+    <color name="colorSecondaryTextLight">#B2FFFFFF</color>             <!--次级文本 纯白的 70% -->
+    <color name="colorHintTextLight">#80FFFFFF</color>                  <!--禁用/提示文本 纯白的 50% -->
+    <color name="colorDivideLight">#1EFFFFFF</color>                    <!--分割线 纯白的 12% -->
+    <color name="colorActiveLight">#FFFFFF</color>                      <!--正常状态 纯白的 100%-->
+    <color name="colorInactiveLight">#4DFFFFFF</color>                  <!--禁用状态 纯白的 30%-->
+
+    <!-- Dark Theme -->
+    <color name="colorPrimaryTextDark">#DE000000</color>                <!--主文本 纯黑的 87% #212121 -->
+    <color name="colorSecondaryTextDark">#8A000000</color>              <!--次级文本 纯黑的 54% #757575 -->
+    <color name="colorHintTextDark">#43000000</color>                   <!--禁用/提示文本 纯黑的 26% #BDBDBD -->
+    <color name="colorDivideDark">#1E000000</color>                     <!--分割线 纯黑的 12% #e0e0e0 -->
+    <color name="colorActiveDark">#8A000000</color>                     <!--正常状态 纯黑的 54%-->
+    <color name="colorInactiveDark">#42000000</color>                   <!--禁用状态 纯黑的 26%-->
+
+
+    <color name="colorTranslucentLight">#4DFFFFFF</color>               <!--禁用状态 纯白的 30%-->
+    <color name="colorTranslucentLightGray">#70EFEFEF</color>           <!--带透明度Light Gray-->
+    <color name="colorTranslucentGray">#33EFEFEF</color>                <!--带透明度Light Gray-->
+    <color name="colorTranslucentDarkGrey">#BB757575</color>            <!--带透明度Dark Gray-->
+    <color name="colorTranslucentDarkGray">#DD212121</color>            <!--带透明度Dark Gray-->
+    <color name="colorMaterialLightBlue">#FF0091ea</color>
+    <color name="colorMaterialSecondLightBlue">#500091ea</color>
+</resources>

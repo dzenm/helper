@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!--  Environment.getExternalStorageDirectory() 指向的目录, /storage/emulate/0 -->
+    <external-path
+        name="external"
+        path="." />
+
+    <!--  DEVICE_ROOT, 也就是File DEVICE_ROOT = new File("/"), /  -->
+    <root-path
+        name="root"
+        path="" />
+
+    <!--  content.getFileDir() 获取到的目录, /data/data/<包名>/files  -->
+    <files-path
+        name="files"
+        path="." />
+
+    <!--  content.getCacheDir() 获取到的目录, /data/data/<包名>/cache -->
+    <cache-path
+        name="cache"
+        path="." />
+
+    <!--  ContextCompat.getExternalFilesDirs() 获取到的目录, /storage/emulate/0/Android/data/<包名>/files  -->
+    <external-files-path
+        name="external_file"
+        path="." />
+
+    <!--  ContextCompat.getExternalCacheDirs() 获取到的目录, /storage/emulate/0/Android/data/<包名>/cache  -->
+    <external-cache-path
+        name="external_cache"
+        path="/" />
+</paths>

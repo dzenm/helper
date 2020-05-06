@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <path
+        android:name="ic_warming"
+        android:pathData="M50 94 A 44 44 0 1 1 50 6 A 44 44 0 1 1 50 94 M50 28 L50 28 M50 42 L50 72"
+        android:strokeWidth="8"
+        android:strokeColor="@android:color/white"
+        android:strokeLineCap="round" />
+</vector>

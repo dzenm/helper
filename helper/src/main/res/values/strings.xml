@@ -1,0 +1,70 @@
+<resources>
+    <string name="app_name">Helper</string>
+
+    <!--drawerLayout navigation-->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--公共文字-->
+    <string name="dialog_info">温馨提示</string>
+    <string name="dialog_btn_cancel">取消</string>
+    <string name="dialog_btn_confirm">确定</string>
+    <string name="dialog_btn_setting">设置</string>
+
+    <!--编辑框的默认文字-->
+    <string name="dialog_edit_hint">请输入内容</string>
+
+    <!--提示框的默认文字-->
+    <string name="dialog_loading">正在加载</string>
+
+    <!--登录框的默认文字-->
+    <string name="dialog_login">登录</string>
+    <string name="dialog_register">注册</string>
+    <string name="dialog_username">手机号/邮箱</string>
+    <string name="dialog_password">密码</string>
+    <string name="dialog_verify_code">验证码</string>
+    <string name="dialog_countdown">获取验证码</string>
+    <string name="dialog_reset_countdown">获取验证码</string>
+    <string name="dialog_second">秒</string>
+
+    <!--日期选择框的默认文字-->
+    <string name="dialog_year">年</string>
+    <string name="dialog_month">月</string>
+    <string name="dialog_day">日</string>
+
+    <!--升级对话框的默认文字-->
+    <string name="dialog_version_title">发现新版本</string>
+    <string name="dialog_up_grade">升级</string>
+
+    <!--图片选择对话框的默认文字-->
+    <string name="dialog_graph">拍照</string>
+    <string name="dialog_gallery">图片</string>
+
+    <!--全屏对话框右上角的操作项-->
+    <string name="menu_save">保存</string>
+    <string name="menu_send">发送</string>
+    <string name="menu_insert">添加</string>
+    <string name="menu_share">分享</string>
+    <string name="menu_update">更新</string>
+    <string name="menu_create">创建</string>
+
+    <!-- NFC提示 -->
+    <string name="nfc_info_unavailable">当前设备不支持NFC功能</string>
+    <string name="nfc_info_available">当前设备支持NFC</string>
+    <string name="nfc_info_disabled">NFC未开启, 暂无法使用NFC功能, 是否进入NFC设置页面手动开启?</string>
+    <string name="nfc_info_close_to_back">请将NFC设备靠近手机背面</string>
+    <string name="nfc_info_ndef_unavailable">不支持NDEF格式</string>
+    <string name="nfc_info_under_capacity">内存空间不足</string>
+    <string name="nfc_info_write_success">写入成功</string>
+
+    <!-- 权限请求提示 -->
+    <string name="permission_info">权限申请提示</string>
+    <string name="permission_open_permission_in_setting">拒绝授予权限将导致程序运行出现不可预料的错误,
+        请前往系统设置开启权限</string>
+    <string name="permission_btn_rationale">进入授权</string>
+    <string name="permission_btn_go_rationale">前往授权</string>
+    <string name="permission_btn_setting">手动设置</string>
+    <string name="permission_runtime_permission">程序运行所需以下权限</string>
+    <string name="permission_refuse_to_rationale_permission">拒绝授予程序运行需要的权限, 将出现不可预知的错误,
+        请授予权限后继续操作</string>
+</resources>

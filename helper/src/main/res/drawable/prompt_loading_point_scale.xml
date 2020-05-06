@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:drawable="@drawable/ic_prompt_loading_point_scale">
+
+    <target
+            android:name="point_i"
+            android:animation="@animator/load_scale_i" />
+    <target
+            android:name="point_ii"
+            android:animation="@animator/load_scale_ii" />
+    <target
+            android:name="point_iii"
+            android:animation="@animator/load_scale_iii" />
+
+</animated-vector>

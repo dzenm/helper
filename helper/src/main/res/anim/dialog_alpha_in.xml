@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<alpha xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="200"
+    android:fromAlpha="0.3"
+    android:interpolator="@android:anim/linear_interpolator"
+    android:toAlpha="1.0" />
+    <!--
+        @android:anim/accelerate_decelerate_interpolator	    先加速再减速
+        @android:anim/accelerate_interpolator	                一直加速进行
+        @android:anim/anticipate_interpolator	                先加速再减速
+        @android:anim/anticipate_overshoot_interpolator         先退后再加速前进，超出终点后再回终点
+        @android:anim/bounce_interpolator	                    最后阶段弹球效果
+        @android:anim/cycle_interpolator	                    周期运动
+        @android:anim/decelerate_interpolator	                减速
+        @android:anim/linear_interpolator	                    匀速
+        @android:anim/overshoot_interpolator	                快速完成动画，超出再回到结束样式
+        -->

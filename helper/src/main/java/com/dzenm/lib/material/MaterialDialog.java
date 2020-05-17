@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dzenm.lib.R;
@@ -29,9 +33,24 @@ public final class MaterialDialog extends AbsDialogFragment {
     public static final float DEFAULT_RADIUS = 16f;
     public static final float MATERIAL_RADIUS = 4f;
 
-    public static final int TYPE_ITEM = -1;
-    public static final int TYPE_SINGLE = -2;
-    public static final int TYPE_MULTIPLE = -3;
+    static final int TYPE_ITEM = -1;
+    static final int TYPE_SINGLE = -2;
+    static final int TYPE_MULTIPLE = -3;
+
+    /**
+     * The identifier for the positive button.
+     */
+    public static final int BUTTON_POSITIVE = -1;
+
+    /**
+     * The identifier for the negative button.
+     */
+    public static final int BUTTON_NEGATIVE = -2;
+
+    /**
+     * The identifier for the neutral button.
+     */
+    public static final int BUTTON_NEUTRAL = -3;
 
     /**
      * content view, not include title and button, if {@link #mMessage} is null, content view is
@@ -45,9 +64,14 @@ public final class MaterialDialog extends AbsDialogFragment {
     private CharSequence mTitle, mMessage;
 
     /**
+     * title text color, {@link Builder#mTitleColor}
+     */
+    private int mTitleColor;
+
+    /**
      * title icon, @see {@link Builder}
      */
-    private int mIcon;
+    private Drawable mIcon;
 
     /**
      * item text, @see {@link Builder#mItems}
@@ -69,7 +93,7 @@ public final class MaterialDialog extends AbsDialogFragment {
     /**
      * item click listener, @see {@link Builder#mOnMultipClickListener} and {@link Builder#mItems}
      */
-    public OnItemClickListener mOnItemClickListener;
+    private OnItemClickListener mOnItemClickListener;
 
     /**
      * item single click listener, @see {@link Builder#mOnSingleClickListener} and {@link Builder#mItems}
@@ -88,11 +112,6 @@ public final class MaterialDialog extends AbsDialogFragment {
     private PhotoSelector.OnSelectedPhotoListener mOnSelectedPhotoListener;
 
     /**
-     * create view layout @see {@link MaterialView}
-     */
-    private MaterialView mMaterialView;
-
-    /**
      * create a content view, @see {@link Builder#mIContentView}
      */
     private IContentView mIContentView;
@@ -105,10 +124,13 @@ public final class MaterialDialog extends AbsDialogFragment {
 
     @Override
     protected void initView() {
-        mMaterialView = new MaterialView(this, mD, mActivity);
+        MaterialView mMaterialView = new MaterialView(this, mD, mActivity);
 
+        // 获取创建的DecorView
         LinearLayout decorView = getDecorView();
-        boolean isShowTitle = !TextUtils.isEmpty(mTitle) || mIcon != 0;
+
+        // 判断是否显示标题, 是否显示Message, Content, 是否显示按钮
+        boolean isShowTitle = !TextUtils.isEmpty(mTitle) || mIcon != null;
         boolean isShowContent = !TextUtils.isEmpty(mMessage);
         boolean isShowButton = !((TextUtils.isEmpty(mPositiveButtonText)
                 && TextUtils.isEmpty(mNegativeButtonText))
@@ -117,6 +139,7 @@ public final class MaterialDialog extends AbsDialogFragment {
         if (isShowContent) {
             mContentView = mMaterialView.createMessageView(mMessage, isShowTitle);
         }
+
         if (mItems != null) {
             isShowContent = true;
             if (mOnSelectedPhotoListener != null) {
@@ -127,6 +150,7 @@ public final class MaterialDialog extends AbsDialogFragment {
                         .setOnSelectedPhotoListener(mOnSelectedPhotoListener)
                         .setOnFinishListener(mMaterialView.getPhotoSelectorFinishListener());
             }
+
             if (mOnItemClickListener != null) {
                 // Menu Dialog
                 mMaterialView.setOnItemClickListener(mOnItemClickListener);
@@ -134,9 +158,10 @@ public final class MaterialDialog extends AbsDialogFragment {
                 // Single Menu Dialog
                 mMaterialView.setOnSingleClickListener(mOnSingleClickListener);
             } else if (mOnMultipleClickListener != null) {
-                // Multip Menu Dialog
+                // Multiple Menu Dialog
                 mMaterialView.setOnMultipleClickListener(mOnMultipleClickListener);
             }
+
             if (mD.isMaterialDesign) {
                 mContentView = mMaterialView.createMenuLayout(mWhichType, isShowTitle, isShowButton, mItems);
             } else {
@@ -146,11 +171,13 @@ public final class MaterialDialog extends AbsDialogFragment {
             // set a view for Dialog
             isShowContent = true;
             mContentView = mIContentView.onCreateView(mD);
+        } else if (mContentView != null) {
+            isShowContent = true;
         }
 
         // 添加 Title Layout
         if (isShowTitle) decorView.addView(mMaterialView.createTitleLayout(
-                mTitle, mIcon, isShowContent
+                mTitle, mIcon, mTitleColor
         ));
 
         // 添加 Content Layout
@@ -204,10 +231,15 @@ public final class MaterialDialog extends AbsDialogFragment {
         }
     }
 
+    /************************************* 使用Builder模式 *********************************/
+
     public static class Builder {
 
         private AppCompatActivity mActivity;
 
+        /**
+         * dialog主题样式
+         */
         private int mThemeId;
 
         /**
@@ -217,20 +249,24 @@ public final class MaterialDialog extends AbsDialogFragment {
         private CharSequence mTitle;
 
         /**
-         * dialog标题图标, 如果图标为空, 不显示图标
+         * dialog标题文本颜色, 默认使用灰黑色
          */
-        private int mIcon;
+        private int mTitleColor;
 
         /**
-         * dialog内容文本, 如果文本不为空, 显示文本, 否则不显示,
-         * 如果同时设置了 {@link #mView} , 则优先显示 {@link #mView}, 可以通过
+         * dialog标题图标, 如果图标不为空, 显示图标, 否则不显示
+         * 可以通过 {@link #setIcon(int)} 或 {@link #setIcon(Drawable)} 设置
+         */
+        private Drawable mIcon;
+
+        /**
+         * dialog内容文本, 如果文本不为空, 显示文本, 否则不显示, 可以通过
          * {@link #setMessage(int)} 或 {@link #setMessage(CharSequence)} 设置
          */
         private CharSequence mMessage;
 
         /**
-         * 自定义View, 如果同时设置了Message文本, 则优先显示 {@link #mView}
-         * 可以通过 {@link #setView(int)} 或 {@link #setView(View)} 设置
+         * 自定义View, 可以通过 {@link #setView(int)} 或 {@link #setView(View)} 设置
          */
         private View mView;
 
@@ -240,31 +276,35 @@ public final class MaterialDialog extends AbsDialogFragment {
         private CharSequence[] mItems;
 
         /**
-         * button文本, 可以通过 {@link #setPositiveClickListener(int, OnClickListener)} or
-         * {@link #setPositiveClickListener(CharSequence, OnClickListener)}, 设置右边的按钮
-         * 或 {@link #setNegativeClickListener(int, OnClickListener)} or
-         * {@link #setNegativeClickListener(CharSequence, OnClickListener) 设置左边的按钮}
+         * button文本, 可以通过 {@link #setPositiveClickListener(int, OnClickListener)} 或
+         * {@link #setPositiveClickListener(CharSequence, OnClickListener)} 设置右边的按钮,
+         * 通过 {@link #setNegativeClickListener(int, OnClickListener)} 或
+         * {@link #setNegativeClickListener(CharSequence, OnClickListener) 设置左边的按钮},
+         * 通过 {@link #setNeutralClickListener(int, OnClickListener)} 或
+         * {@link #setNeutralClickListener(CharSequence, OnClickListener) 设置最左边的按钮},
          */
         private CharSequence mPositiveButtonText, mNegativeButtonText, mNeutralButtonText;
 
         /**
-         * button点击事件, @see {@link #mPositiveButtonText} or {@link #mNegativeButtonText} or
-         * {@link #mNegativeButtonText}
+         * button点击事件, @see {@link #mPositiveButtonText} 或 {@link #mNegativeButtonText} 或
+         * {@link #mNeutralButtonText}
          */
         private OnClickListener mOnClickListener, mPositiveClickListener,
                 mNegativeClickListener, mNeutralClickListener;
 
+        /**
+         * Item的类型
+         */
         private int mWhichType;
 
         /**
-         * item click listener, 可以通过 {@link #setOnMultipleClickListener(OnMultipleClickListener
-         *)} 设置
+         * item点击事件, 可以通过 {@link #setOnMultipleClickListener(OnMultipleClickListener)} 设置
          */
         public OnItemClickListener mOnItemClickListener;
 
         /**
-         * photo selected click listener, 可以通过 {@link #setOnSelectedPhotoListener(
-         *PhotoSelector.OnSelectedPhotoListener)} 设置
+         * photo选择器的点击事件, 可以通过
+         * {@link #setOnSelectedPhotoListener(PhotoSelector.OnSelectedPhotoListener)} 设置
          * <p>
          * final String[] item = new String[]{"拍照", "图片", "取消"};
          * new MaterialDialog.Builder(this)
@@ -281,14 +321,12 @@ public final class MaterialDialog extends AbsDialogFragment {
         private PhotoSelector.OnSelectedPhotoListener mOnSelectedPhotoListener;
 
         /**
-         * item single item click listener，可以通过 {@link #setOnSingleClickListener(OnSingleClickListener)}
-         * 设置
+         * item单选点击事件，可以通过 {@link #setOnSingleClickListener(OnSingleClickListener)} 设置
          */
         private OnSingleClickListener mOnSingleClickListener;
 
         /**
-         * item single item click listener，可以通过 {@link #setOnMultipleClickListener(OnMultipleClickListener)}
-         * 设置
+         * item多选点击事件，可以通过 {@link #setOnMultipleClickListener(OnMultipleClickListener)} 设置
          */
         private OnMultipleClickListener mOnMultipClickListener;
 
@@ -344,6 +382,11 @@ public final class MaterialDialog extends AbsDialogFragment {
         private boolean isTouchInOutSideCancel = true;
 
         /**
+         * @see {@link DialogDelegate#isCancelable}
+         */
+        private boolean isCancelable = true;
+
+        /**
          * @see {@link DialogDelegate#mPrimaryColor}
          */
         private int mPrimaryColor;
@@ -365,7 +408,7 @@ public final class MaterialDialog extends AbsDialogFragment {
         public Builder(AppCompatActivity activity, int themeId) {
             mActivity = activity;
             mThemeId = themeId;
-            mBackgroundColor = getColor(R.attr.colorDialogBackground);
+            mBackgroundColor = getColor(R.attr.dialogBackgroundColor);
             mBackgroundRadius = MATERIAL_RADIUS;
         }
 
@@ -374,12 +417,22 @@ public final class MaterialDialog extends AbsDialogFragment {
             return this;
         }
 
-        public Builder setTitle(int titleId) {
+        public Builder setTitle(@StringRes int titleId) {
             mTitle = mActivity.getText(titleId);
             return this;
         }
 
-        public Builder setIcon(int icon) {
+        public Builder setTitleColor(@ColorInt int titleColor) {
+            mTitleColor = titleColor;
+            return this;
+        }
+
+        public Builder setIcon(@DrawableRes int icon) {
+            mIcon = mActivity.getDrawable(icon);
+            return this;
+        }
+
+        public Builder setIcon(Drawable icon) {
             mIcon = icon;
             return this;
         }
@@ -389,7 +442,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             return this;
         }
 
-        public Builder setMessage(int messageId) {
+        public Builder setMessage(@StringRes int messageId) {
             mMessage = mActivity.getText(messageId);
             return this;
         }
@@ -399,7 +452,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             return this;
         }
 
-        public Builder setView(int resId) {
+        public Builder setView(@LayoutRes int resId) {
             mView = LayoutInflater.from(mActivity).inflate(resId, null);
             return this;
         }
@@ -414,7 +467,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             return this;
         }
 
-        public Builder setItem(int... item) {
+        public Builder setItem(@StringRes int... item) {
             mItems = new CharSequence[item.length];
             for (int i = 0; i < item.length; i++) {
                 mItems[i] = mActivity.getText(item[i]);
@@ -422,7 +475,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             return this;
         }
 
-        public Builder setButtonText(int positiveButtonText) {
+        public Builder setButtonText(@StringRes int positiveButtonText) {
             mPositiveButtonText = mActivity.getText(positiveButtonText);
             return this;
         }
@@ -432,7 +485,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             return this;
         }
 
-        public Builder setButtonText(int positiveButtonText, int negativeButtonText) {
+        public Builder setButtonText(@StringRes int positiveButtonText, @StringRes int negativeButtonText) {
             mPositiveButtonText = mActivity.getText(positiveButtonText);
             mNegativeButtonText = mActivity.getText(negativeButtonText);
             return this;
@@ -445,7 +498,7 @@ public final class MaterialDialog extends AbsDialogFragment {
         }
 
         public Builder setButtonText(
-                int positiveButtonText, int negativeButtonText, int neutralButtonText
+                @StringRes int positiveButtonText, @StringRes int negativeButtonText, @StringRes int neutralButtonText
         ) {
             mPositiveButtonText = mActivity.getText(positiveButtonText);
             mNegativeButtonText = mActivity.getText(negativeButtonText);
@@ -474,7 +527,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             return this;
         }
 
-        public Builder setPositiveClickListener(int buttonText, OnClickListener listener) {
+        public Builder setPositiveClickListener(@StringRes int buttonText, OnClickListener listener) {
             mPositiveButtonText = mActivity.getText(buttonText);
             mPositiveClickListener = listener;
             return this;
@@ -486,7 +539,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             return this;
         }
 
-        public Builder setNegativeClickListener(int buttonText, OnClickListener listener) {
+        public Builder setNegativeClickListener(@StringRes int buttonText, OnClickListener listener) {
             mNegativeButtonText = mActivity.getText(buttonText);
             mNegativeClickListener = listener;
             return this;
@@ -498,7 +551,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             return this;
         }
 
-        public Builder setNeutralClickListener(int buttonText, OnClickListener listener) {
+        public Builder setNeutralClickListener(@StringRes int buttonText, OnClickListener listener) {
             mNeutralButtonText = mActivity.getText(buttonText);
             mNeutralClickListener = listener;
             return this;
@@ -547,7 +600,7 @@ public final class MaterialDialog extends AbsDialogFragment {
          * @param backgroundColor {@link DialogDelegate#mBackgroundColor}
          * @return this
          */
-        public Builder setBackgroundColor(int backgroundColor) {
+        public Builder setBackgroundColor(@ColorInt int backgroundColor) {
             mBackgroundColor = backgroundColor;
             return this;
         }
@@ -589,10 +642,19 @@ public final class MaterialDialog extends AbsDialogFragment {
         }
 
         /**
+         * @param cancelable {@link DialogDelegate#isCancelable}
+         * @return this
+         */
+        public Builder setCancelable(boolean cancelable) {
+            isCancelable = cancelable;
+            return this;
+        }
+
+        /**
          * @param primaryColor {@link DialogDelegate#mPrimaryColor}
          * @return this
          */
-        public Builder setPrimaryColor(int primaryColor) {
+        public Builder setPrimaryColor(@ColorInt int primaryColor) {
             mPrimaryColor = primaryColor;
             return this;
         }
@@ -601,7 +663,7 @@ public final class MaterialDialog extends AbsDialogFragment {
          * @param secondaryColor {@link DialogDelegate#mSecondaryColor}
          * @return this
          */
-        public Builder setSecondaryColor(int secondaryColor) {
+        public Builder setSecondaryColor(@ColorInt int secondaryColor) {
             mSecondaryColor = secondaryColor;
             return this;
         }
@@ -619,6 +681,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             // 创建Material Dialog和dialog的内容
             MaterialDialog dialog = new MaterialDialog(mActivity);
             dialog.mTitle = mTitle;
+            dialog.mTitleColor = mTitleColor;
             dialog.mIcon = mIcon;
             dialog.mMessage = mMessage;
             dialog.mContentView = mView;
@@ -628,7 +691,7 @@ public final class MaterialDialog extends AbsDialogFragment {
             dialog.mNeutralButtonText = mNeutralButtonText;
 
             if (mPositiveClickListener == null && mNegativeClickListener == null
-                    && mNeutralClickListener == null) {
+                    && mNeutralClickListener == null && mOnClickListener != null) {
                 dialog.mPositiveClickListener = mOnClickListener;
                 dialog.mNegativeClickListener = mOnClickListener;
                 dialog.mNeutralClickListener = mOnClickListener;
@@ -648,11 +711,13 @@ public final class MaterialDialog extends AbsDialogFragment {
             DialogDelegate delegate = dialog.mD;
             delegate.mThemeId = mThemeId;
 
-            int width = ScreenHelper.getDisplayWidth();
             delegate.mMargin = mMargin;
-            delegate.mWidthInCenter = isMaterialDesign ? (int) (width * 0.8) : (int) (width * 0.7);
             delegate.mGravity = mGravity;
             delegate.mAnimator = mAnimator;
+            int width = ScreenHelper.getDisplayWidth();
+            delegate.mWidthInCenter = isMaterialDesign
+                    ? (int) (width * DialogDelegate.MATERIAL_WIDTH)
+                    : (int) (width * DialogDelegate.IOS_WIDTH);
 
             delegate.mBackgroundColor = mBackgroundColor;
 
@@ -669,6 +734,7 @@ public final class MaterialDialog extends AbsDialogFragment {
 
             delegate.mDimAccount = mDimAccount;
             delegate.isTouchInOutSideCancel = isTouchInOutSideCancel;
+            delegate.isCancelable = isCancelable;
             delegate.isMaterialDesign = isMaterialDesign;
 
             return dialog;
@@ -688,21 +754,6 @@ public final class MaterialDialog extends AbsDialogFragment {
      */
     public abstract static class OnClickListener {
         /**
-         * The identifier for the positive button.
-         */
-        public static final int BUTTON_POSITIVE = -1;
-
-        /**
-         * The identifier for the negative button.
-         */
-        public static final int BUTTON_NEGATIVE = -2;
-
-        /**
-         * The identifier for the neutral button.
-         */
-        public static final int BUTTON_NEUTRAL = -3;
-
-        /**
          * @param dialog 当前显示的Dialog
          * @param which  通过这个判断点击的是哪个按钮
          */
@@ -714,20 +765,34 @@ public final class MaterialDialog extends AbsDialogFragment {
      * see {@link Builder#mOnItemClickListener}
      */
     public interface OnItemClickListener {
+        /**
+         * @param dialog 当前dialog
+         * @param which  通过这个判断点击的位置
+         */
         void onClick(MaterialDialog dialog, int which);
     }
 
     /**
-     * see {@link Builder#mOnSingleClickListener}
+     * @see {@link Builder#mOnSingleClickListener}
      */
     public interface OnSingleClickListener {
+        /**
+         * @param dialog    当前dialog
+         * @param which     通过这个判断点击的位置
+         * @param isChecked 当前点击的选项是否选中
+         */
         void onClick(MaterialDialog dialog, int which, boolean isChecked);
     }
 
     /**
-     * see {@link Builder#mOnMultipClickListener}
+     * @see {@link Builder#mOnMultipClickListener}
      */
     public interface OnMultipleClickListener {
+        /**
+         * @param dialog    当前dialog
+         * @param which     通过这个判断点击的位置
+         * @param isChecked 当前点击的选项是否选中
+         */
         void onClick(MaterialDialog dialog, int which, boolean isChecked);
     }
 }

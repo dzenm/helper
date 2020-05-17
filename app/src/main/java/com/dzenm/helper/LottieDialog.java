@@ -6,7 +6,7 @@ import android.widget.LinearLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
-import com.dzenm.lib.dialog.PromptDialog;
+import com.dzenm.lib.material.PromptDialog;
 
 import androidx.annotation.NonNull;
 

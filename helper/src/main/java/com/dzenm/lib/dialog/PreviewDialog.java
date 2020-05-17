@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * @date 2019-10-07 11:52
  * <pre>
  * PreviewDialog.newInstance(mActivity)
- *       .loader(new MyImageLoader())
+ *       .setImageLoader(new MyImageLoader())
  *       .load(binding.ivHeader.getDrawable())
  *       .show();
  * </pre>

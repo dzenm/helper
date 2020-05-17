@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.dzenm.helper.R;
 import com.dzenm.helper.databinding.FragmentPersonalBinding;
+import com.dzenm.helper.util.Urls;
 import com.dzenm.lib.base.AbsBaseFragment;
 import com.dzenm.lib.dialog.PreviewDialog;
 import com.dzenm.lib.drawable.DrawableHelper;
@@ -29,14 +31,13 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
         binding = FragmentPersonalBinding.inflate(inflater);
         setToolbarWithImmersiveStatusBar(binding.toolbar, android.R.color.transparent);
 
-        int colorActive = ThemeHelper.getColor(mActivity, R.attr.colorActive);
-        int colorInactive = ThemeHelper.getColor(mActivity, R.attr.colorInactive);
-        DrawableHelper.radius(8).pressed(colorActive, colorInactive)
+        int activeColor = ThemeHelper.getColor(mActivity, R.attr.activeColor);
+        int inactiveColor = ThemeHelper.getColor(mActivity, R.attr.inactiveColor);
+        DrawableHelper.radius(8).pressed(activeColor, inactiveColor)
                 .into(binding.tvDraw);
-        DrawableHelper.radius(8).pressed(colorActive, colorInactive)
+        DrawableHelper.radius(8).pressed(activeColor, inactiveColor)
                 .into(binding.tvPreview);
-        DrawableHelper
-                .radiusBL(20f)
+        DrawableHelper.radiusBL(20f)
                 .radiusTR(20f)
                 .pressed(android.R.color.holo_purple, android.R.color.holo_red_light)
                 .into(binding.tvDrawableStroke);
@@ -46,10 +47,11 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
         binding.ivHeader.setOnClickListener(this);
         binding.tvDrawableStroke.setOnClickListener(this);
 
-        binding.tvDraw.setTextColor(ThemeHelper.getColor(mActivity, R.attr.colorDialogButtonText));
-        binding.tvPreview.setTextColor(ThemeHelper.getColor(mActivity, R.attr.colorDialogButtonText));
-        binding.tvDrawableStroke.setTextColor(ThemeHelper.getColor(mActivity, R.attr.colorPrimaryText));
+        binding.tvDraw.setTextColor(ThemeHelper.getColor(mActivity, R.attr.dialogButtonTextColor));
+        binding.tvPreview.setTextColor(ThemeHelper.getColor(mActivity, R.attr.dialogButtonTextColor));
+        binding.tvDrawableStroke.setTextColor(ThemeHelper.getColor(mActivity, R.attr.primaryTextColor));
 
+        Glide.with(this).load(Urls.URL_1).into(binding.ivHeader);
         return binding.getRoot();
     }
 
@@ -61,7 +63,7 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
         } else if (v.getId() == R.id.tv_preview) {
             PreviewDialog.newInstance(mActivity)
                     .setImageLoader(new MyImageLoader())
-                    .load(R.drawable.one)
+                    .load(Urls.URL_2)
                     .setOnLongClickListener(new PreviewDialog.OnLongClickListener() {
                         @Override
                         public void onLongClick() {
@@ -75,9 +77,7 @@ public class PersonalFragment extends AbsBaseFragment<MainActivity> implements V
                     .load(binding.ivHeader.getDrawable())
                     .show();
         } else if (v.getId() == R.id.tv_drawable_stroke) {
-            int t = ThemeHelper.getTheme();
-            mActivity.toggleTheme(t == R.style.AppTheme_Dark ? R.style.AppTheme_Light :
-                    R.style.AppTheme_Dark);
+            mActivity.toggleLocalTheme();
         }
     }
 }

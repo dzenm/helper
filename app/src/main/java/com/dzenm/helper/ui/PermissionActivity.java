@@ -10,8 +10,8 @@ import androidx.databinding.DataBindingUtil;
 import com.dzenm.helper.R;
 import com.dzenm.helper.databinding.ActivityPermissionBinding;
 import com.dzenm.lib.base.AbsBaseActivity;
-import com.dzenm.lib.dialog.InfoDialog;
 import com.dzenm.lib.drawable.DrawableHelper;
+import com.dzenm.lib.material.MaterialDialog;
 import com.dzenm.lib.os.OsHelper;
 import com.dzenm.lib.permission.PermissionManager;
 import com.dzenm.lib.toast.ToastHelper;
@@ -54,7 +54,7 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
             PermissionManager.getInstance()
                     .with(this)
                     .load(permissions)
-                    .mode(PermissionManager.MODE_ONCE_INFO)
+                    .mode(PermissionManager.MODE_DEFAULT)
                     .into(this)
                     .request();
         } else if (view.getId() == R.id.tv_102) {
@@ -68,18 +68,19 @@ public class PermissionActivity extends AbsBaseActivity implements View.OnClickL
             if (OsHelper.isNotificationEnabled(this)) {
                 ToastHelper.show("已打开通知权限");
             } else {
-                InfoDialog.newInstance(this)
+                new MaterialDialog.Builder(this)
                         .setTitle("提示")
                         .setMessage("是否前往设置页面打开通知权限")
-                        .setOnClickListener(new InfoDialog.OnInfoClickListener() {
+                        .setOnClickListener(new MaterialDialog.OnClickListener() {
                             @Override
-                            public boolean onClick(InfoDialog dialog, boolean confirm) {
-                                if (confirm) {
+                            public void onClick(MaterialDialog dialog, int which) {
+                                if (which == MaterialDialog.BUTTON_POSITIVE) {
                                     OsHelper.openNotificationSetting(PermissionActivity.this);
                                 }
-                                return true;
+                                dialog.dismiss();
                             }
-                        }).show();
+                        }).create()
+                        .show();
             }
         } else if (view.getId() == R.id.tv_104) {
             if (OsHelper.isInstallPermission(this)) {

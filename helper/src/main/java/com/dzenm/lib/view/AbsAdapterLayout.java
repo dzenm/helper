@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.dzenm.lib.log.Logger;
 import com.dzenm.lib.os.LifecycleCallbacks;
 
 import java.io.Serializable;
@@ -63,14 +64,13 @@ public abstract class AbsAdapterLayout extends ViewGroup {
     protected void setAdapterInternal(AbsAdapter adapter) {
         if (mAdapter != null) {
             // 移除监听
+            mViews.clear();
             mAdapter.unregisterAdapterDataObserver(mObserver);
-            mAdapter.onDetached(this);
         }
 
         mAdapter = adapter;
         if (mAdapter != null) {
             mAdapter.registerAdapterDataObserver(mObserver);
-            mAdapter.onAttached(this);
         }
 
         resetLayout();
@@ -124,20 +124,26 @@ public abstract class AbsAdapterLayout extends ViewGroup {
     }
 
     protected void onLayoutItemChanged(int positionStart, int itemCount) {
-        for (int i = positionStart; i < positionStart + itemCount; i++) {
-        }
+        // 刷新View的位置
+        invalidateItemView(positionStart, positionStart + itemCount);
     }
 
     protected void onLayoutItemInserted(int positionStart, int itemCount) {
         for (int i = positionStart; i < positionStart + itemCount; i++) {
-            addView(bindView(i), i);
+            Logger.d("add layout view position: " + i);
+            bindView(i);
         }
+        // 刷新View的位置
+        invalidateItemView(positionStart + itemCount - 1, getTotalCount());
     }
 
     protected void onLayoutItemRemoved(int positionStart, int itemCount) {
         for (int i = positionStart; i < positionStart + itemCount; i++) {
-            removeViewAt(i);
+            Logger.d("remove layout view position: " + i);
+            unbindView(i);
         }
+        // 刷新View的位置
+        invalidateItemView(positionStart, getTotalCount());
     }
 
     protected void onLayoutItemMoved(int fromPosition, int toPosition, int itemCount) {
@@ -150,31 +156,89 @@ public abstract class AbsAdapterLayout extends ViewGroup {
         post(new Runnable() {
             @Override
             public void run() {
-                removeAllViews();
+                mAdapter.onAttached(AbsAdapterLayout.this);
+                if (getChildCount() > 0) {
+                    removeAllViews();
+                }
 
                 int count = getTotalCount();
                 for (int i = 0; i < count; i++) {
-                    addView(bindView(i));
+                    mAdapter.onBindView(bindView(i), i);
                 }
+                mAdapter.onDetached(AbsAdapterLayout.this);
             }
         });
     }
 
+    /**
+     * 添加View
+     *
+     * @param position 添加的位置
+     */
     protected View bindView(int position) {
         View view = getItemView();
-        view.setFocusable(true);
-        mAdapter.onBindView(view, position);
+        view.setTag(position);
+        mViews.add(position, view);
+        addView(view, position);
         return view;
     }
 
+    /**
+     * 移除View
+     *
+     * @param position 移除的位置
+     */
+    private void unbindView(int position) {
+        View itemView = mViews.get(position);
+        if (itemView != null && itemView.getParent() != null) {
+            if (itemView.getTag().equals(position)) {
+                mViews.remove(position);
+                removeViewAt(position);
+            } else {
+                throw new IllegalArgumentException("remove view's position is not equals view's tag");
+            }
+        }
+    }
+
+    /**
+     * 刷新子View
+     *
+     * @param start 刷新的起始位置
+     * @param end   刷新的末尾位置
+     */
+    private void invalidateItemView(int start, int end) {
+        for (int i = start; i < end; i++) {
+            View itemView = mViews.get(i);
+            if (!itemView.getTag().equals(i)) {
+                itemView.setTag(i);
+            }
+            mAdapter.onBindView(itemView, i);
+        }
+    }
+
+    /**
+     * 获取所有的Item数量, 包含未显示的
+     *
+     * @return 所有的Item
+     */
     protected int getTotalCount() {
         return getItemCount();
     }
 
+    /**
+     * 获取Item View的个数
+     *
+     * @return 返回的数量
+     */
     protected int getItemCount() {
         return mAdapter.getItemCount();
     }
 
+    /**
+     * 获取创建的Item View
+     *
+     * @return Item View
+     */
     protected View getItemView() {
         return mAdapter.onCreateView(this);
     }

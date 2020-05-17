@@ -155,7 +155,7 @@ public class ProgressBar extends View {
         canvas.drawText(mText, startText, offsetTop + (mTextBound.height() >> 1), mPaintText);
 
         // 绘制剩余进度条的底色
-        setPaint(mPaintRemainingValue, getResources().getColor(R.color.colorLightGray));
+        setPaint(mPaintRemainingValue, getResources().getColor(R.color.lightGrayColor));
         canvas.drawLine(startRemaining, offsetTop, endRemaining, offsetTop, mPaintRemainingValue);
     }
 

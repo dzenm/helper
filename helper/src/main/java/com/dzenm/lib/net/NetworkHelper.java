@@ -1,18 +1,16 @@
 package com.dzenm.lib.net;
 
-
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.provider.Settings;
 
-import com.dzenm.lib.dialog.InfoDialog;
+import androidx.annotation.RequiresApi;
+
 import com.dzenm.lib.log.Logger;
 
 import java.net.Inet4Address;
@@ -20,9 +18,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * <pre>
@@ -49,7 +44,6 @@ public class NetworkHelper {
     private static volatile NetworkBroadcast sNetworkBroadcast;
     private boolean isInitial = false;
 
-    @SuppressLint("StaticFieldLeak")
     private static volatile NetworkHelper sNetworkHelper;
 
     private NetworkHelper() {
@@ -229,45 +223,6 @@ public class NetworkHelper {
      */
     public static String intIP2StringIP(int ip) {
         return (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + (ip >> 24 & 0xFF);
-    }
-
-    /**
-     * 打开设置网络界面
-     */
-    public static void setNetworkSetting(final Context context) {
-        InfoDialog.newInstance((AppCompatActivity) context)
-                .setTitle("网络异常提示")
-                .setMessage("网络连接不可用,是否进行设置?")
-                .setButtonText("设置", "取消")
-                .setOnClickListener(new InfoDialog.OnInfoClickListener() {
-            @Override
-            public boolean onClick(InfoDialog dialog, boolean confirm) {
-                if (confirm) {
-                    Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                }
-                return true;
-            }
-        }).show();
-
-    }
-
-    /**
-     * 网络异常提示界面
-     */
-    public static void setNetworkError(Context context) {
-        //提示对话框
-        InfoDialog.newInstance((AppCompatActivity) context)
-                .setTitle("网络异常提示")
-                .setMessage("网络连接异常，请再试一次?")
-                .setButtonText("确定")
-                .setOnClickListener(new InfoDialog.OnInfoClickListener() {
-            @Override
-            public boolean onClick(InfoDialog dialog, boolean confirm) {
-                return true;
-            }
-        }).show();
     }
 
     public interface OnNetworkChangeListener {

@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".PhotoSelectorActivity">
+        tools:context=".ui.PhotoSelectorActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -43,30 +43,70 @@
                     android:layout_marginStart="@dimen/margin_normal"
                     android:layout_marginEnd="@dimen/margin_normal"
                     android:animateLayoutChanges="true"
-                    app:column="3"
-                    app:horizontalSpace="2dp"
-                    app:verticalSpace="2dp" />
+                    app:column="3" />
 
-                <TextView
+                <Button
+                    android:id="@+id/add_photo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_normal"
-                    android:background="?attr/colorPrimary"
-                    android:padding="@dimen/padding_normal"
-                    android:text="使用PhotoLayout加载图片"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:text="添加图片"
                     android:textColor="@android:color/white" />
 
-                <com.dzenm.lib.view.PhotoLayout
-                    android:id="@+id/pl_preview"
+                <Button
+                    android:id="@+id/delete_photo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_bigger" />
+                    android:layout_marginHorizontal="@dimen/margin_normal"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:text="删除图片"
+                    android:textColor="@android:color/white" />
 
-                <com.dzenm.lib.view.PhotoLayout
-                    android:id="@+id/pl_add"
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/grid_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_normal"
+                    android:text="网格模式" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/show_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_normal"
+                    android:text="显示更多图片" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/single_wrap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_normal"
+                    android:text="单张图片不限制大小" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/enabled_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/margin_normal"
+                    android:text="是否可以编辑" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/show_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_normal"
+                    android:text="是否显示删除按钮" />
+
+                <Button
+                    android:id="@+id/reset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_bigger" />
+                    android:layout_marginHorizontal="@dimen/margin_normal"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:text="重置"
+                    android:textColor="@android:color/white" />
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>

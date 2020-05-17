@@ -1,6 +1,7 @@
 package com.dzenm.helper;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -30,6 +31,7 @@ import java.util.List;
  * @date 2019-10-11 08:29
  */
 public class UpdateProgressView extends View {
+
     private static final int INIT = 0;//初始化状态
     private static final int PREPARE = 1;//准备开始下载状态
     private static final int UPDATEING = 2;//开始下载更新状态
@@ -210,7 +212,7 @@ public class UpdateProgressView extends View {
                 invalidate();
             }
         });
-        va.addListener(new MyAnimationListener() {
+        va.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 cancleValueAnimator(va_List);
@@ -254,7 +256,6 @@ public class UpdateProgressView extends View {
      * 具体做法是不断改变path的起点和终点坐标
      * 动画结束的时候开始下载更新
      */
-
     private void toPrepare() {
         final ValueAnimator va = ValueAnimator.ofFloat(0, width / 2 - pbPaint.getStrokeWidth() * 3 - pbProgerssDrawable.getWidth());
         va.setInterpolator(new LinearInterpolator());
@@ -269,7 +270,7 @@ public class UpdateProgressView extends View {
                 invalidate();
             }
         });
-        va.addListener(new MyAnimationListener() {
+        va.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (startDownLoadListener != null && !isSetListener) {
@@ -305,7 +306,7 @@ public class UpdateProgressView extends View {
             }
         });
         va.start();
-        va.addListener(new MyAnimationListener() {
+        va.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 toSuccPathAnim();
@@ -329,7 +330,7 @@ public class UpdateProgressView extends View {
             }
         });
         va.start();
-        va.addListener(new MyAnimationListener() {
+        va.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 toInstall();
@@ -435,38 +436,4 @@ public class UpdateProgressView extends View {
                 break;
         }
     }
-
-    public abstract class MyAnimationListener implements Animator.AnimatorListener {
-
-        @Override
-        public void onAnimationStart(Animator animation, boolean isReverse) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation, boolean isReverse) {
-
-        }
-
-        @Override
-        public void onAnimationStart(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationCancel(Animator animation) {
-
-        }
-
-        @Override
-        public void onAnimationRepeat(Animator animation) {
-
-        }
-    }
-
 }

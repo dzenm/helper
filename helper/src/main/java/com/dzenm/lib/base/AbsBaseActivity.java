@@ -1,17 +1,17 @@
 package com.dzenm.lib.base;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.ColorRes;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.dzenm.lib.dialog.PromptDialog;
+import com.dzenm.lib.R;
+import com.dzenm.lib.material.PromptDialog;
 import com.dzenm.lib.os.ScreenHelper;
+import com.dzenm.lib.os.ThemeHelper;
 
 /**
  * @author dinzhenyan
@@ -28,8 +28,21 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
         mActivityDelegate = new ActivityDelegate(this, mTag);
     }
 
-    public void toggleTheme(int theme) {
-        mActivityDelegate.toggleTheme(theme);
+    public void setLocalTheme(int theme) {
+        mActivityDelegate.setLocalTheme(theme);
+    }
+
+    public void toggleLocalTheme() {
+        mActivityDelegate.setLocalTheme(ThemeHelper.getLocalTheme() == R.style.AppTheme_Light ?
+                R.style.AppTheme_Dark : R.style.AppTheme_Light);
+    }
+
+    public void toggleTheme(int mode) {
+        mActivityDelegate.setLocalTheme(mode);
+    }
+
+    public void toggleTheme() {
+        mActivityDelegate.toggleTheme();
     }
 
     public void setToolbar(Toolbar toolbar) {
@@ -105,47 +118,7 @@ public abstract class AbsBaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mActivityDelegate.onDestroy();
+        mActivityDelegate = null;
     }
 
-    public void setOnActivityResult(OnActivityResult onActivityResult) {
-        mActivityDelegate.setOnActivityResult(onActivityResult);
-    }
-
-    public void setOnRequestPermissionsResult(OnRequestPermissionsResult onRequestPermissionsResult) {
-        mActivityDelegate.setOnRequestPermissionsResult(onRequestPermissionsResult);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        onRequestActivityResult(requestCode, resultCode, data);
-    }
-
-    protected void onRequestActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        mActivityDelegate.onRequestActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        onRequestSelfPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    public void onRequestSelfPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults
-    ) {
-        mActivityDelegate.onRequestSelfPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    public interface OnActivityResult {
-
-        void onResult(int requestCode, int resultCode, @Nullable Intent data);
-    }
-
-    public interface OnRequestPermissionsResult {
-
-        void onResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
-    }
 }

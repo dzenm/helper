@@ -43,7 +43,7 @@ public class DownloadFileHelper {
 
     private long mDownloadId;
     private String mFilePath, mUrl;
-    private boolean isShowRunningNotification = true;
+    private boolean isShowRunningNotification = false;
     private OnDownloadListener mOnDownloadListener;
 
     public DownloadFileHelper(Context context) {

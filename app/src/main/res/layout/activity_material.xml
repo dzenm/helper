@@ -87,8 +87,19 @@
                     android:layout_marginBottom="20dp"
                     android:gravity="center"
                     android:onClick="onClick"
+                    android:text="Title Message and 3 Button Material 2 Dialog"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/tv_16"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:onClick="onClick"
                     android:text="Title Message and 3 Button Material Dialog"
                     android:textColor="@android:color/white" />
+
 
                 <View
                     android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.dzenm.lib.dialog;
+package com.dzenm.lib.view;
 
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -19,10 +19,10 @@ import androidx.annotation.IdRes;
 public class ViewHolder {
 
     private SparseArray<View> mViews;
-    private View mItemView;
+    private View itemView;
 
     private ViewHolder(View view) {
-        mItemView = view;
+        itemView = view;
         mViews = new SparseArray<>();
     }
 
@@ -40,14 +40,14 @@ public class ViewHolder {
     public <T extends View> T getView(@IdRes int viewId) {
         View view = mViews.get(viewId);
         if (view == null) {
-            view = mItemView.findViewById(viewId);
+            view = itemView.findViewById(viewId);
             mViews.put(viewId, view);
         }
         return (T) view;
     }
 
     public View getItemView() {
-        return mItemView;
+        return itemView;
     }
 
     public TextView getTextView(@IdRes int viewId) {
@@ -286,14 +286,14 @@ public class ViewHolder {
      * 设置 Item 点击事件
      */
     public void setOnClickListener(View.OnClickListener listener) {
-        mItemView.setOnClickListener(listener);
+        itemView.setOnClickListener(listener);
     }
 
     /**
      * 设置 Item 长按事件
      */
     public void setOnLongClickListener(View.OnLongClickListener listener) {
-        mItemView.setOnLongClickListener(listener);
+        itemView.setOnLongClickListener(listener);
     }
 
     /**

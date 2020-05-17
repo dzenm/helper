@@ -68,9 +68,9 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     /**
      * dialog动画, 默认根据 {@link #mGravity} 的位置显示动画
-     * 当 {@link #mGravity} 的值为 {@link Gravity.TOP} 从顶部往下弹出
-     * 当 {@link #mGravity} 的值为 {@link Gravity.BOTTOM} 从底部往上弹出
-     * 当 {@link #mGravity} 的值为 {@link Gravity.CENTER} 从中间缩放显示
+     * 当 {@link #mGravity} 的值为 {@link Gravity#TOP} 从顶部往下弹出
+     * 当 {@link #mGravity} 的值为 {@link Gravity#BOTTOM} 从底部往上弹出
+     * 当 {@link #mGravity} 的值为 {@link Gravity#CENTER} 从中间缩放显示
      * 通过 {@link #setAnimator(int)} 设置动画
      */
     protected int mAnimator;
@@ -301,7 +301,7 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
 
     public AbsDialogFragment(AppCompatActivity activity) {
         mActivity = activity;
-        mBackgroundColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogBackground);
+        mBackgroundColor = ThemeHelper.getColor(mActivity, R.attr.dialogBackgroundColor);
         mBackground = DrawableHelper
                 .solid(mBackgroundColor)
                 .radius(DEFAULT_RADIUS)
@@ -388,17 +388,17 @@ public abstract class AbsDialogFragment extends AppCompatDialogFragment {
      */
     private void setDefaultTextColor() {
         // 设置文本颜色
-        mPrimaryTextColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogPrimaryText);
-        mSecondaryTextColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogSecondaryText);
-        mButtonTextColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogButtonText);
-        mHintColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogHintText);
-        mDivideColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogDivide);
+        mPrimaryTextColor = ThemeHelper.getColor(mActivity, R.attr.dialogPrimaryTextColor);
+        mSecondaryTextColor = ThemeHelper.getColor(mActivity, R.attr.dialogSecondaryColorText);
+        mButtonTextColor = ThemeHelper.getColor(mActivity, R.attr.dialogButtonTextColor);
+        mHintColor = ThemeHelper.getColor(mActivity, R.attr.dialogHintTextColor);
+        mDivideColor = ThemeHelper.getColor(mActivity, R.attr.dialogDivideColor);
 
-        mActiveColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogActive);
-        mInactiveColor = ThemeHelper.getColor(mActivity, R.attr.colorDialogInactive);
+        mActiveColor = ThemeHelper.getColor(mActivity, R.attr.dialogActiveColor);
+        mInactiveColor = ThemeHelper.getColor(mActivity, R.attr.dialogInactiveColor);
 
         // 按钮点击时的文本颜色
-        mPressedColor = isDefaultBackground ? R.color.colorLightGray : R.color.colorTranslucentLightGray;
+        mPressedColor = isDefaultBackground ? R.color.lightGrayColor : R.color.colorTranslucentLightGray;
     }
 
     public <T extends View> T findViewById(@IdRes int id) {

@@ -2,10 +2,14 @@ package com.dzenm.lib.permission;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.IntDef;
@@ -15,13 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.dzenm.lib.R;
-import com.dzenm.lib.dialog.AbsDialogFragment;
-import com.dzenm.lib.dialog.DialogHelper;
-import com.dzenm.lib.dialog.ViewHolder;
 import com.dzenm.lib.drawable.DrawableHelper;
 import com.dzenm.lib.log.Logger;
 import com.dzenm.lib.material.MaterialDialog;
 import com.dzenm.lib.os.OsHelper;
+import com.dzenm.lib.os.ThemeHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -30,7 +32,7 @@ import java.lang.annotation.RetentionPolicy;
  * @author dzenm
  * @date 2020/3/12 下午8:09
  */
-public class PermissionFragment extends Fragment implements DialogHelper.OnBindViewHolder {
+public class PermissionFragment extends Fragment {
 
     private static final String TAG = PermissionFragment.class.getSimpleName() + "| ";
 
@@ -45,7 +47,7 @@ public class PermissionFragment extends Fragment implements DialogHelper.OnBindV
     static final int REQUEST_SETTING = 0xF2;
 
     @IntDef({PermissionManager.MODE_ONCE,
-            PermissionManager.MODE_ONCE_INFO,
+            PermissionManager.MODE_DEFAULT,
             PermissionManager.MODE_REPEAT})
     @Retention(RetentionPolicy.SOURCE)
     @interface Mode {
@@ -54,13 +56,13 @@ public class PermissionFragment extends Fragment implements DialogHelper.OnBindV
     /**
      * 请求权限的模式 {@link PermissionManager#MODE_ONCE} 提示一次请求权限, 不管授予权限还是未授予权限,
      * {@link PermissionManager#into(PermissionManager.OnPermissionListener)} ) }
-     * 都会返回true. {@link PermissionManager#MODE_ONCE_INFO} 提示一次请求权限, 如果未授予则会提示手动打开.
+     * 都会返回true. {@link PermissionManager#MODE_DEFAULT} 提示一次请求权限, 如果未授予则会提示手动打开.
      * {@link PermissionManager#MODE_REPEAT}
      * 提示一次请求权限, 如果权限未授予, 则重复提示授权, 若用户点击不再询问, 则提示用户手动打开直至权限全部授予之后
      * 才回调
      */
     @Mode
-    int mRequestMode = PermissionManager.MODE_ONCE_INFO;
+    int mRequestMode = PermissionManager.MODE_DEFAULT;
 
     private String[] mPermissions;                                  // 过滤未被授权的权限
     String[] mAllPermissions;                                       // 需要请求的所有的权限
@@ -100,7 +102,7 @@ public class PermissionFragment extends Fragment implements DialogHelper.OnBindV
             requestResult(true);
         } else if (mRequestMode == PermissionManager.MODE_ONCE) {
             openFailedDialog();
-        } else if (mRequestMode == PermissionManager.MODE_ONCE_INFO) {
+        } else if (mRequestMode == PermissionManager.MODE_DEFAULT) {
             Logger.i(TAG + "请求权限被拒绝并且记住, 提示用户手动打开权限");
             openSettingDialog();
         } else if (mRequestMode == PermissionManager.MODE_REPEAT) {
@@ -169,11 +171,12 @@ public class PermissionFragment extends Fragment implements DialogHelper.OnBindV
                 .setTitle(getText(R.string.permission_info))
                 .setMessage(getText(R.string.permission_open_permission_in_setting))
                 .setButtonText(getText(R.string.permission_btn_setting), negativeText)
+                .setCancelable(false)
                 .setMaterialDesign(false)
                 .setOnClickListener(new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(MaterialDialog dialog, int which) {
-                        if (which == MaterialDialog.OnClickListener.BUTTON_POSITIVE) {
+                        if (which == MaterialDialog.BUTTON_POSITIVE) {
                             // 点击确定按钮,进入设置页面
                             PermissionSetting.openSetting(PermissionFragment.this, false);
                         } else {
@@ -201,6 +204,7 @@ public class PermissionFragment extends Fragment implements DialogHelper.OnBindV
                 .setTitle(getText(R.string.permission_info))
                 .setMessage(getText(R.string.permission_refuse_to_rationale_permission))
                 .setMaterialDesign(false)
+                .setCancelable(false)
                 .setButtonText(getText(R.string.dialog_btn_confirm))
                 .setOnClickListener(new MaterialDialog.OnClickListener() {
                     @Override
@@ -216,35 +220,101 @@ public class PermissionFragment extends Fragment implements DialogHelper.OnBindV
      * 打开权限请求提示框
      */
     private void openPromptPermissionDialog() {
-        DialogHelper.newInstance((AppCompatActivity) getActivity())
-                .setLayout(R.layout.dialog_permission_prompt)
-                .setOnBindViewHolder(this)
-                .setCancel(false)
-                .setBackground(DrawableHelper.solid(android.R.color.white)
-                        .radius(10)
-                        .build())
-                .show();
-    }
+        LinearLayout decorView = new LinearLayout(getContext());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        decorView.setGravity(Gravity.CENTER_HORIZONTAL);
+        decorView.setOrientation(LinearLayout.VERTICAL);
+        decorView.setLayoutParams(params);
 
-    @Override
-    public void onBinding(ViewHolder holder, final AbsDialogFragment dialog) {
-        ((TextView) holder.getView(R.id.tv_title)).setText(getText(R.string.dialog_info));
-        ((TextView) holder.getView(R.id.tv_message)).setText(getText(R.string.permission_runtime_permission));
-        String permission = getPermissionPrompt(mPermissions);
-        ((TextView) holder.getView(R.id.tv_permission)).setText(permission);
-
-        TextView confirm = holder.getView(R.id.tv_confirm);
-        confirm.setText(getText(R.string.permission_btn_go_rationale));
-        ImageView cancel = holder.getView(R.id.iv_cancel);
-
-        DrawableHelper.radius(10f)
-                .pressed(R.color.colorLightGray)
+        // 取消按钮
+        ImageView cancel = new ImageView(getContext());
+        params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = Gravity.END;
+        cancel.setLayoutParams(params);
+        int padding = OsHelper.dp2px(12);
+        cancel.setPadding(padding, padding, padding, padding);
+        cancel.setImageResource(R.drawable.ic_close);
+        DrawableHelper.radius(MaterialDialog.DEFAULT_RADIUS)
+                .pressed(R.color.lightGrayColor)
                 .into(cancel);
 
-        DrawableHelper.radiusBL(10f)
-                .radiusBR(10f)
-                .pressed(R.color.colorMaterialLightBlue, R.color.colorMaterialSecondLightBlue)
+        // 标题
+        TextView title = new TextView(getContext());
+        params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.leftMargin = OsHelper.dp2px(24);
+        params.rightMargin = OsHelper.dp2px(24);
+        title.setLayoutParams(params);
+        int primaryColor = ThemeHelper.getColor(getContext(), R.attr.dialogPrimaryTextColor);
+        title.setTextColor(primaryColor);
+        title.setTextSize(18);
+        title.setTypeface(Typeface.DEFAULT_BOLD);
+        title.setText(getText(R.string.dialog_info));
+
+        // 内容
+        TextView message = new TextView(getContext());
+        params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.topMargin = OsHelper.dp2px(16);
+        params.leftMargin = OsHelper.dp2px(16);
+        params.rightMargin = OsHelper.dp2px(16);
+        message.setLayoutParams(params);
+        message.setPadding(padding, 0, padding, 0);
+        int secondaryColor = ThemeHelper.getColor(getContext(), R.attr.dialogSecondaryColorText);
+        title.setTextColor(secondaryColor);
+        title.setTextSize(16);
+        message.setText(getText(R.string.permission_runtime_permission));
+
+        // 权限
+        TextView permission = new TextView(getContext());
+        params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.leftMargin = params.topMargin = params.rightMargin = params.bottomMargin =
+                OsHelper.dp2px(16);
+        permission.setLayoutParams(params);
+        permission.setEllipsize(TextUtils.TruncateAt.END);
+        permission.setLineSpacing(0, 1.8f);
+        permission.setMaxLines(6);
+        permission.setTextColor(secondaryColor);
+        permission.setPadding(padding, 0, padding, 0);
+        permission.setTextSize(16);
+        permission.setTypeface(Typeface.DEFAULT_BOLD);
+        permission.setText(getPermissionPrompt(mPermissions));
+
+        // 确定按钮
+        TextView confirm = new TextView(getContext());
+        params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, OsHelper.dp2px(48));
+        params.topMargin = padding;
+        confirm.setLayoutParams(params);
+        confirm.setGravity(Gravity.CENTER);
+        confirm.setTextColor(Color.WHITE);
+        permission.setTextSize(16);
+        confirm.setText(getText(R.string.permission_btn_go_rationale));
+        DrawableHelper.radiusBL(MaterialDialog.DEFAULT_RADIUS)
+                .radiusBR(MaterialDialog.DEFAULT_RADIUS)
+                .pressed(R.attr.dialogPrimaryColor, R.attr.dialogSecondaryColor)
                 .into(confirm);
+
+        decorView.addView(cancel);
+        decorView.addView(title);
+        decorView.addView(message);
+        decorView.addView(permission);
+        decorView.addView(confirm);
+
+        final MaterialDialog dialog = new MaterialDialog.Builder((AppCompatActivity) getActivity())
+                .setView(decorView)
+                .setMaterialDesign(false)
+                .setTouchInOutSideCancel(false)
+                .setCancelable(false)
+                .create();
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,6 +329,7 @@ public class PermissionFragment extends Fragment implements DialogHelper.OnBindV
                 dialog.dismiss();
             }
         });
+        dialog.show();
     }
 
     /**

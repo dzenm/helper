@@ -238,7 +238,7 @@ public class UpGradeView implements IContentView, DownloadHelper.OnDownloadListe
         mUpgradeButton.setGravity(Gravity.CENTER);
         mUpgradeButton.setText(mD.mActivity.getText(R.string.dialog_up_grade));
         DrawableHelper.radius(mD.mBackgroundRadius)
-                .pressed(mD.mPrimaryColor, mD.mPressedColor)
+                .pressed(mD.mPrimaryColor, mD.mInactiveColor)
                 .textColor(android.R.color.white, mD.mPrimaryColor)
                 .into(mUpgradeButton);
 

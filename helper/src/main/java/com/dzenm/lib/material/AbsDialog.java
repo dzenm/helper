@@ -1,4 +1,4 @@
-package com.dzenm.lib.dialog;
+package com.dzenm.lib.material;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -89,7 +89,7 @@ public abstract class AbsDialog extends AppCompatDialog {
 
     /**
      * 触摸dialog外部关闭dialog
-     * 自定义调用 {@link #setTouchInOutSideCancel(boolean)}
+     * 自定义调用 {@link #setTouchOutsideCancel(boolean)}
      */
     private boolean isTouchInOutSideCancel = false;
 

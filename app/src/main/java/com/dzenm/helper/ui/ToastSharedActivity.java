@@ -10,7 +10,6 @@ import androidx.databinding.DataBindingUtil;
 import com.dzenm.helper.R;
 import com.dzenm.helper.databinding.ActivityToastSharedBinding;
 import com.dzenm.lib.base.AbsBaseActivity;
-import com.dzenm.lib.dialog.EditDialog;
 import com.dzenm.lib.drawable.DrawableHelper;
 import com.dzenm.lib.os.ScreenHelper;
 import com.dzenm.lib.share.ShareHelper;
@@ -39,31 +38,7 @@ public class ToastSharedActivity extends AbsBaseActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.tv_100) {
-            EditDialog.newInstance(this)
-                    .setTitle("请输入要分享的内容")
-                    .setMessage("新月已生飞鸟外，落霞更在夕阳西")
-                    .setButtonText("分享", "取消")
-                    .setOnClickListener(new EditDialog.OnEditClickListener() {
-                        @Override
-                        public boolean onClick(EditDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                ShareHelper.getInstance()
-                                        .with(ToastSharedActivity.this)
-                                        .setText("分享文本")
-                                        .setOnShareListener(new ShareHelper.OnShareListener() {
-                                            @Override
-                                            public void onResult(boolean isShare) {
-                                                if (isShare) {
-                                                    ToastHelper.show("分享成功");
-                                                } else {
-                                                    ToastHelper.show("分享失败");
-                                                }
-                                            }
-                                        }).share();
-                            }
-                            return true;
-                        }
-                    }).show();
+
         } else if (view.getId() == R.id.tv_101) {
             ShareHelper.getInstance()
                     .with(this)
@@ -100,7 +75,7 @@ public class ToastSharedActivity extends AbsBaseActivity implements View.OnClick
     }
 
     private void setPressedBackground(View viewBackground, int color) {
-        DrawableHelper.radius(10).pressed(color, R.color.colorGray).into(viewBackground);
+        DrawableHelper.radius(10).pressed(color, R.color.grayColor).into(viewBackground);
     }
 
     private void setRippleBackground(View viewBackground, int color) {

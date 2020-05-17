@@ -31,6 +31,9 @@ import com.dzenm.lib.os.ThemeHelper;
  */
 public class DialogDelegate {
 
+    public static final float IOS_WIDTH = 0.7f;
+    public static final float MATERIAL_WIDTH = 0.8f;
+
     AbsDialogFragment mDialogFragment;
     AppCompatActivity mActivity;
     int mThemeId;
@@ -46,7 +49,9 @@ public class DialogDelegate {
     Dialog mDialog;
 
     /**
-     * dialog上下左右margin, 默认值为10, 如果显示在{@link Gravity#CENTER}, 不需要设置margin,
+     * dialog上下左右margin, 在{@link Gravity#TOP}, {@link Gravity#BOTTOM}显示默认值为10,
+     * 如果显示在{@link Gravity#CENTER}, {@link #isMaterialDesign} 为true时, 宽度为屏幕宽的的
+     * {@link #MATERIAL_WIDTH}, 否则宽度为屏幕宽的的{@link #IOS_WIDTH}
      * 通过 {@link MaterialDialog.Builder#setMargin(int)} 重新设置
      */
     int mMargin;
@@ -102,6 +107,11 @@ public class DialogDelegate {
     boolean isTouchInOutSideCancel;
 
     /**
+     * 是否可以取消Dialog
+     */
+    boolean isCancelable;
+
+    /**
      * 主要颜色, 除了灰色和白色之外的颜色, 默认为蓝色为主色
      * 次要颜色, 除了灰色和白色之外的颜色, 默认为添加一定透明度的蓝色为次色
      */
@@ -118,12 +128,12 @@ public class DialogDelegate {
     int mButtonTextColor;
 
     /**
-     * 提示文本颜色, 分割线颜色, 按压文本颜色, 点击按钮颜色, 未点击按钮颜色
+     * 提示文本颜色, 分割线颜色, 点击按钮颜色, 未点击按钮颜色
      */
-    int mHintColor, mDivideColor, mPressedColor, mActiveColor, mInactiveColor;
+    int mHintColor, mDivideColor, mActiveColor, mInactiveColor;
 
     /**
-     * 是否设置为Material样式
+     * 是否设置为Material样式, 默认为true
      */
     boolean isMaterialDesign;
 
@@ -138,8 +148,8 @@ public class DialogDelegate {
         mDialogFragment = dialogFragment;
         mActivity = activity;
 
-        mPrimaryColor = getColor(R.attr.colorDialogPrimary);
-        mSecondaryColor = getColor(R.attr.colorDialogSecondary);
+        mPrimaryColor = getColor(R.attr.dialogPrimaryColor);
+        mSecondaryColor = getColor(R.attr.dialogSecondaryColor);
     }
 
     /**
@@ -154,9 +164,7 @@ public class DialogDelegate {
     }
 
     @Nullable
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState
-    ) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mDialog = getDialog();
         if (mDialog == null) {
             return null;
@@ -164,7 +172,15 @@ public class DialogDelegate {
 
         mDecorView = createDecorView(mActivity);
 
-        setTextColor();
+        // 初始化默认的颜色
+        mPrimaryTextColor = getColor(R.attr.dialogPrimaryTextColor);
+        mSecondaryTextColor = getColor(R.attr.dialogSecondaryColorText);
+        mButtonTextColor = getColor(R.attr.dialogButtonTextColor);
+        mHintColor = getColor(R.attr.dialogHintTextColor);
+        mDivideColor = getColor(R.attr.dialogDivideColor);
+
+        mActiveColor = getColor(R.attr.dialogActiveColor);
+        mInactiveColor = getColor(R.attr.dialogInactiveColor);
 
         mDialogFragment.initView();
         return mDecorView;
@@ -184,24 +200,6 @@ public class DialogDelegate {
         ));
         decorView.setOrientation(LinearLayout.VERTICAL);
         return decorView;
-    }
-
-    /**
-     * 初始化默认的文本颜色
-     */
-    private void setTextColor() {
-        // 设置文本颜色
-        mPrimaryTextColor = getColor(R.attr.colorDialogPrimaryText);
-        mSecondaryTextColor = getColor(R.attr.colorDialogSecondaryText);
-        mButtonTextColor = getColor(R.attr.colorDialogButtonText);
-        mHintColor = getColor(R.attr.colorDialogHintText);
-        mDivideColor = getColor(R.attr.colorDialogDivide);
-
-        mActiveColor = getColor(R.attr.colorDialogActive);
-        mInactiveColor = getColor(R.attr.colorDialogInactive);
-
-        // 按钮点击时的文本颜色
-        mPressedColor = getColor(R.attr.colorDialogPressedBackground);
     }
 
     Dialog getDialog() {
@@ -288,6 +286,7 @@ public class DialogDelegate {
 
         // 设置是否可以通过点击dialog之外的区域取消显示dialog
         mDialog.setCanceledOnTouchOutside(isTouchInOutSideCancel);
+        mDialog.setCancelable(isCancelable);
 
         // 设置dialog显示的位置
         WindowManager.LayoutParams attributes = window.getAttributes();

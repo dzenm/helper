@@ -28,9 +28,9 @@ public final class PermissionManager {
 
     private static final String TAG = PermissionManager.class.getSimpleName() + "| ";
 
-    public static final int MODE_ONCE = 1;
-    public static final int MODE_ONCE_INFO = 2;
-    public static final int MODE_REPEAT = 3;
+    public static final int MODE_ONCE = 0x01;
+    public static final int MODE_DEFAULT = 0x02;
+    public static final int MODE_REPEAT = 0x03;
 
     @SuppressLint("StaticFieldLeak")
     private static volatile PermissionManager sPermissionManager;

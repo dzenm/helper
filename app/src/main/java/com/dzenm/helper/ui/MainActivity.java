@@ -33,12 +33,8 @@ public class MainActivity extends AbsBaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         f1 = new HomeFragment();
         f2 = new PersonalFragment();
-        List<Fragment> fragments = new ArrayList<>();
-        fragments.add(f1);
-        fragments.add(f2);
 
-        fragmentHelper = new FragmentHelper(this);
-        fragmentHelper.inflate(R.id.frame_layout, fragments);
+        fragmentHelper = new FragmentHelper(this, R.id.frame_layout);
         fragmentHelper.show(f1);
     }
 

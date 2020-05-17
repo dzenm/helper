@@ -4,14 +4,22 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+
+import androidx.annotation.IntDef;
 
 import com.dzenm.lib.R;
+import com.dzenm.lib.drawable.DrawableHelper;
+import com.dzenm.lib.os.OsHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import androidx.annotation.IntDef;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 网格布局
@@ -28,15 +36,25 @@ public class GridLayout extends AbsAdapterLayout {
     @interface Mode {
     }
 
-    private int mHorizontalSpace = 0;               // Item 水平之间的间距
-    private int mVerticalSpace = 0;                 // Item 垂直之间的间距
-    private int mMaxCount = 9;                      // 最大的Item数量
-    private int mColumn = 3;                        // 列数
-    private float mRatio = 1f;                      // 宽高比
-    private boolean isSingleWrap = true;            // 只有一张图片显示的时候是否设置自由大小
-    private boolean isShowMore = false;             // 显示更多
+    private int mHorizontalSpace = OsHelper.dp2px(4);   // Item 水平之间的间距
+    private int mVerticalSpace = OsHelper.dp2px(4);     // Item 垂直之间的间距
+    private int mMaxCount = 9;                                // 最大的Item数量
+    private int mNumber;                                      // 最后一张图片显示剩余其它图片的数量的数量
+    private int mColumn = 3;                                  // 列数
+    private float mRatio = 1f;                                // 宽高比
+    private boolean isSingleWrap = false;                     // 只有一张图片显示的时候是否设置自由大小
+    private boolean isShowMore = false;                       // 显示更多
+    private OnItemClickListener mOnItemClickListener;
     private @Mode
     int mMode = MODE_FILL;
+
+    private boolean isEditable = true;
+    private boolean isDeletable = true;
+    private int mDeleteIcon = R.drawable.ic_delete_picture;
+
+    private List<Object> mData;
+    private ImageLoader mLoader;
+    private ImageAdapter mAdapter;
 
     public GridLayout(Context context) {
         this(context, null);
@@ -59,11 +77,20 @@ public class GridLayout extends AbsAdapterLayout {
         mRatio = t.getFloat(R.styleable.GridLayout_ratio, mRatio);
         mMode = t.getInt(R.styleable.GridLayout_mode, mMode);
         isSingleWrap = t.getBoolean(R.styleable.GridLayout_singleWrap, isSingleWrap);
+        isEditable = t.getBoolean(R.styleable.GridLayout_isEditable, isEditable);
+        isDeletable = t.getBoolean(R.styleable.GridLayout_isDeletable, isDeletable);
+        mDeleteIcon = t.getInt(R.styleable.GridLayout_deleteIcon, mDeleteIcon);
 
         t.recycle();
 
         // 设置子View的动画
-        setLayoutTransition(LayoutTransitionHelper.scaleViewAnimator(this));
+//        setLayoutTransition(LayoutTransitionHelper.scaleViewAnimator(this));
+
+        if (mData == null) {
+            mData = new ArrayList<>();
+            mAdapter = new ImageAdapter(mData);
+            setAdapter(mAdapter);
+        }
     }
 
     /**
@@ -103,7 +130,68 @@ public class GridLayout extends AbsAdapterLayout {
      */
     public void setMode(@Mode int mMode) {
         this.mMode = mMode;
-        resetLayout();
+        invalidate();
+    }
+
+    public void setShowMore(boolean showMore) {
+        isShowMore = showMore;
+        invalidate();
+    }
+
+    public void setSingleWrap(boolean singleWrap) {
+        isSingleWrap = singleWrap;
+        invalidate();
+    }
+
+    public void setData(List data) {
+        mData.clear();
+        mData.addAll(data);
+        mData.add(R.drawable.ic_add);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    public void setImageLoader(ImageLoader imageLoader) {
+        mLoader = imageLoader;
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
+        invalidate();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+    }
+
+    public void setDeletable(boolean deletable) {
+        isDeletable = deletable;
+        invalidate();
+    }
+
+    public void setNumber(int number) {
+        mNumber = number;
+        mAdapter.notifyItemChanged(mData.size() - 1);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mOnItemClickListener = listener;
+    }
+
+    public void add(List data) {
+        mAdapter.add(data);
+    }
+
+    public void add(int position, Object elem) {
+        mAdapter.add(position, elem);
+    }
+
+    public void remove(Object item) {
+        mAdapter.remove(item);
+    }
+
+    public void remove(int index) {
+        mAdapter.remove(index);
     }
 
     @Override
@@ -120,10 +208,10 @@ public class GridLayout extends AbsAdapterLayout {
             return;
         }
 
-        int width = View.MeasureSpec.getSize(widthMeasureSpec);              // 获取父控件的宽度
+        int width = View.MeasureSpec.getSize(widthMeasureSpec);        // 获取父控件的宽度
         int totalWidth = width - getPaddingLeft() - getPaddingRight();
         int height = 0;
-        if (childCount == 1 && isSingleWrap) {
+        if (childCount == 1 && mMode == MODE_GRID && isSingleWrap && !isEditable) {
             // 单个View不限制大小, 直接使用子View的大小
             View child = getChildAt(0);
             measureChild(child, heightMeasureSpec, heightMeasureSpec);
@@ -235,4 +323,153 @@ public class GridLayout extends AbsAdapterLayout {
             return Math.min(getItemCount(), mMaxCount);
         }
     }
+
+    public class ImageAdapter extends AbsAdapter {
+
+        private int mLayoutId;
+        private boolean isLastView = false;
+
+        public ImageAdapter(List<Object> data) {
+            this(data, 0);
+        }
+
+        public ImageAdapter(List<Object> data, int layoutId) {
+            mData = new ArrayList<>();
+            mData.addAll(data);
+            mLayoutId = layoutId;
+        }
+
+        protected Object getItem(int position) {
+            return mData.get(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mData.size();
+        }
+
+        protected int layoutId() {
+            return mLayoutId;
+        }
+
+        @Override
+        public View onCreateView(ViewGroup parent) {
+            Context context = parent.getContext();
+            if (mLayoutId != 0) {
+                return LayoutInflater.from(context).inflate(mLayoutId, parent);
+            } else {
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                        RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                RelativeLayout relativeLayout = new RelativeLayout(context);
+                relativeLayout.setLayoutParams(layoutParams);
+                RatioImageView imageView = new RatioImageView(context);
+                imageView.setLayoutParams(layoutParams);
+                imageView.setPivotX(0);
+                imageView.setPivotY(0);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                relativeLayout.addView(imageView);
+
+                if (isEditable && isDeletable) {
+                    RatioImageView deleteView = new RatioImageView(context);
+                    int deleteSize = OsHelper.dp2px(16);
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(deleteSize, deleteSize);
+                    params.addRule(RelativeLayout.ALIGN_PARENT_END);
+                    deleteView.setLayoutParams(params);
+                    relativeLayout.addView(deleteView);
+                }
+                return relativeLayout;
+            }
+        }
+
+        @Override
+        public void onBindView(View view, final int position) {
+            if (mLoader == null) {
+                throw new NullPointerException("must be use an image loader");
+            }
+            final RatioImageView imageView = (RatioImageView) ((ViewGroup) view).getChildAt(0);
+            if (position == mData.size() - 1 && position < mMaxCount) {
+                if (isEditable && position != mMaxCount - 1) {
+                    imageView.setImageResource(R.drawable.ic_add);
+                    DrawableHelper.ripple(R.color.lightGrayColor, R.color.hintColor).into(imageView);
+                    if (mOnItemClickListener != null) {
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mOnItemClickListener.onLoad(ImageAdapter.this);
+                            }
+                        });
+                    }
+                } else {
+                    imageView.setVisibility(View.GONE);
+                }
+            } else {
+                mLoader.onLoader(imageView, getItem(position));
+                if (getItemCount() == mMaxCount && !isEditable) {
+                    imageView.setNumber(mNumber);
+                }
+                if (mOnItemClickListener != null) {
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mOnItemClickListener.onItemClick(imageView, getItem(position), position);
+                        }
+                    });
+                }
+                if (isEditable && isDeletable) {
+                    RatioImageView deleteView = (RatioImageView) ((ViewGroup) view).getChildAt(1);
+                    if (mDeleteIcon != 0) {
+                        deleteView.setImageResource(mDeleteIcon);
+                    }
+                    deleteView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    // 设置点击事件, 单击删除
+                    deleteView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            remove(position);
+                        }
+                    });
+                }
+            }
+        }
+
+        public void add(Object elem) {
+            mData.add(mData.size() - 1, elem);
+            notifyItemInserted(mData.size() - 2, 1);
+        }
+
+        public void add(List data) {
+            mData.addAll(data);
+            notifyItemInserted(mData.size(), data.size());
+        }
+
+        public void add(int position, Object elem) {
+            if (position <= mData.size() - 1 && position >= 0) {
+                mData.add(position, elem);
+                notifyItemInserted(position);
+            } else {
+                throw new ArrayIndexOutOfBoundsException("position out of array index");
+            }
+        }
+
+        public void remove(Object elem) {
+            mData.remove(elem);
+            notifyItemRemoved(mData.size() - 2);
+        }
+
+        public void remove(int index) {
+            mData.remove(index);
+            notifyItemRemoved(index, 1);
+        }
+
+    }
+
+    public static class OnItemClickListener {
+
+        public void onItemClick(View view, Object data, int position) {
+        }
+
+        public void onLoad(ImageAdapter adapter) {
+        }
+    }
+
 }

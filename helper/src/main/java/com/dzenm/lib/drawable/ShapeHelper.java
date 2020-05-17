@@ -495,7 +495,7 @@ public class ShapeHelper {
      * @return ShapeHelper
      */
     public ShapeHelper ripple(int normalColor) {
-        ripple(normalColor, R.color.colorHint);
+        ripple(normalColor, R.color.hintColor);
         return this;
     }
 

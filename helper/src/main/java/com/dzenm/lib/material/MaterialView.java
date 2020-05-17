@@ -63,7 +63,7 @@ public class MaterialView {
      */
     private MaterialDialog.OnMultipleClickListener mOnMultipleClickListener;
 
-    public MaterialView(MaterialDialog dialog, DialogDelegate delegate, Activity activity) {
+    MaterialView(MaterialDialog dialog, DialogDelegate delegate, Activity activity) {
         mMaterialDialog = dialog;
         mD = delegate;
         mActivity = activity;
@@ -71,19 +71,19 @@ public class MaterialView {
 
     /******************************** 添加事件 ****************************************/
 
-    public void setOnItemClickListener(MaterialDialog.OnItemClickListener listener) {
+    void setOnItemClickListener(MaterialDialog.OnItemClickListener listener) {
         mOnItemClickListener = listener;
     }
 
-    public void setOnSingleClickListener(MaterialDialog.OnSingleClickListener listener) {
+    void setOnSingleClickListener(MaterialDialog.OnSingleClickListener listener) {
         mOnSingleClickListener = listener;
     }
 
-    public void setOnMultipleClickListener(MaterialDialog.OnMultipleClickListener listener) {
+    void setOnMultipleClickListener(MaterialDialog.OnMultipleClickListener listener) {
         mOnMultipleClickListener = listener;
     }
 
-    public MaterialDialog.OnItemClickListener getPhotoSelectorListener() {
+    MaterialDialog.OnItemClickListener getPhotoSelectorListener() {
         return new MaterialDialog.OnItemClickListener() {
             @Override
             public void onClick(MaterialDialog dialog, int which) {
@@ -98,7 +98,7 @@ public class MaterialView {
         };
     }
 
-    public PhotoSelector.OnFinishListener getPhotoSelectorFinishListener() {
+    PhotoSelector.OnFinishListener getPhotoSelectorFinishListener() {
         return new PhotoSelector.OnFinishListener() {
             @Override
             public void onFinish(int type) {
@@ -109,18 +109,14 @@ public class MaterialView {
 
     /******************************** 创建Title **************************************/
 
-    /**
-     * @param title title text
-     * @return title layout
-     */
-    public ViewGroup createTitleLayout(CharSequence title, int icon, boolean isShowContent) {
+    ViewGroup createTitleLayout(CharSequence title, Drawable icon, int titleColor) {
         boolean isMaterial = mD.isMaterialDesign;
 
         LinearLayout titleLayout = new LinearLayout(mActivity);
         titleLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
         ));
-        boolean isShowIcon = TextUtils.isEmpty(title) && icon != 0;
+        boolean isShowIcon = TextUtils.isEmpty(title) && icon != null;
         titleLayout.setPadding(OsHelper.dp2px(24), OsHelper.dp2px(isShowIcon ? 24 : 20),
                 OsHelper.dp2px(24), OsHelper.dp2px(isMaterial ? 8 : isShowIcon ? 0 : 16));
 
@@ -131,11 +127,11 @@ public class MaterialView {
         // create title view
         TextView titleView = new TextView(mActivity);
         titleView.setTextSize(16);
-        titleView.setTextColor(mD.mPrimaryTextColor);
+        titleView.setTextColor(titleColor == 0 ? mD.mPrimaryTextColor : titleColor);
         if (!mD.isMaterialDesign) titleView.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         titleView.setText(title);
 
-        if (icon != 0) {
+        if (icon != null) {
             ImageView iconImage = new ImageButton(mActivity);
             int iconSize = OsHelper.dp2px(isMaterial ? 32 : 48);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(iconSize, iconSize);
@@ -145,7 +141,7 @@ public class MaterialView {
             iconImage.setPadding(0, 0, 0, 0);
 
             iconImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            iconImage.setImageResource(icon);
+            iconImage.setImageDrawable(icon);
             iconImage.setBackground(null);
             titleLayout.addView(iconImage);
         }
@@ -158,10 +154,7 @@ public class MaterialView {
 
     /******************************** 创建Content ViewGroup **************************/
 
-    /**
-     * @return scroll layout
-     */
-    public ViewGroup createScrollLayout() {
+    ViewGroup createScrollLayout() {
         NestedScrollView nestedScrollView = new NestedScrollView(mActivity);
         int height = (int) (ScreenHelper.getDisplayHeight() * 0.6);
         int measureHeight = nestedScrollView.getMeasuredHeight();
@@ -175,10 +168,7 @@ public class MaterialView {
         return nestedScrollView;
     }
 
-    /**
-     * @return content layout
-     */
-    public ViewGroup createContentLayout() {
+    ViewGroup createContentLayout() {
         // 设置content view, 最大高度
         FrameLayout contentLayout = new FrameLayout(mActivity);
         int height = (int) (ScreenHelper.getDisplayHeight() * 0.7);
@@ -195,11 +185,7 @@ public class MaterialView {
 
     /******************************** 创建Content *************************************/
 
-    /**
-     * @param message message text
-     * @return message view
-     */
-    public View createMessageView(CharSequence message, boolean isShowTitle) {
+    View createMessageView(CharSequence message, boolean isShowTitle) {
         TextView messageView = new TextView(mActivity);
         messageView.setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -214,7 +200,7 @@ public class MaterialView {
         return messageView;
     }
 
-    public ViewGroup createMenuLayout(
+    ViewGroup createMenuLayout(
             final int which, boolean isShowTitle, boolean isShowButton, final CharSequence[] items
     ) {
         LinearLayout menuLayout;
@@ -242,8 +228,8 @@ public class MaterialView {
         return menuLayout;
     }
 
-    public ViewGroup createIOSMenuLayout(final int which, boolean isShowTitle,
-                                         final CharSequence[] items) {
+    ViewGroup createIOSMenuLayout(final int which, boolean isShowTitle,
+                                  final CharSequence[] items) {
         LinearLayout menuLayout = new LinearLayout(mActivity);
         menuLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
@@ -269,16 +255,7 @@ public class MaterialView {
 
     /******************************** 创建Button ************************************/
 
-    /**
-     * @param positiveText     positive button text
-     * @param negativeText     negative button text
-     * @param neutralText      neutral button text
-     * @param positiveListener positive button click listener
-     * @param negativeListener negative button click listener
-     * @param neutralListener  neutral button click listener
-     * @return button layout
-     */
-    public LinearLayout createButtonLayout(
+    LinearLayout createButtonLayout(
             CharSequence positiveText, CharSequence negativeText, CharSequence neutralText,
             MaterialDialog.OnClickListener positiveListener,
             MaterialDialog.OnClickListener negativeListener,
@@ -301,7 +278,7 @@ public class MaterialView {
                 && TextUtils.isEmpty(neutralText);
         if (!TextUtils.isEmpty(neutralText) && mD.isMaterialDesign) {
             buttonLayout.addView(createButton(isSingleButton, neutralText, neutralListener,
-                    MaterialDialog.OnClickListener.BUTTON_NEUTRAL));
+                    MaterialDialog.BUTTON_NEUTRAL));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     0, ViewGroup.LayoutParams.MATCH_PARENT, 1
             );
@@ -313,7 +290,7 @@ public class MaterialView {
         // 根据positive button和negative button文本不为空时添加按钮
         if (!TextUtils.isEmpty(negativeText)) {
             buttonLayout.addView(createButton(isSingleButton, negativeText, negativeListener,
-                    MaterialDialog.OnClickListener.BUTTON_NEGATIVE
+                    MaterialDialog.BUTTON_NEGATIVE
             ));
             if (!mD.isMaterialDesign) {
                 buttonLayout.addView(createLine(1, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -321,7 +298,7 @@ public class MaterialView {
         }
         if (!TextUtils.isEmpty(positiveText)) {
             buttonLayout.addView(createButton(isSingleButton, positiveText, positiveListener,
-                    MaterialDialog.OnClickListener.BUTTON_POSITIVE
+                    MaterialDialog.BUTTON_POSITIVE
             ));
         }
         return buttonLayout;
@@ -329,8 +306,9 @@ public class MaterialView {
 
     /**
      * @param isSingleButton 是否显示一个Button
-     * @param which          {@link MaterialDialog.OnClickListener#BUTTON_NEGATIVE} or
-     *                       {@link MaterialDialog.OnClickListener#BUTTON_POSITIVE}
+     *                       {@link MaterialDialog#BUTTON_NEUTRAL} or
+     * @param which          {@link MaterialDialog#BUTTON_NEGATIVE} or
+     *                       {@link MaterialDialog#BUTTON_POSITIVE}
      * @param buttonText     current button text
      * @param listener       button click listener
      * @return a button
@@ -347,7 +325,7 @@ public class MaterialView {
             params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT
             );
-            if (which == MaterialDialog.OnClickListener.BUTTON_POSITIVE) {
+            if (which == MaterialDialog.BUTTON_POSITIVE) {
                 params.leftMargin = OsHelper.dp2px(8);
             }
             // 设置button内边距, 设置点击背景颜色
@@ -355,7 +333,7 @@ public class MaterialView {
             int paddingH = OsHelper.dp2px(8);
             button.setPadding(paddingH, 0, paddingH, 0);
             DrawableHelper.radius(mD.mBackgroundRadius)
-                    .pressed(mD.mBackgroundColor, mD.mPressedColor)
+                    .pressed(mD.mActiveColor, mD.mInactiveColor)
                     .into(button);
             textColor = mD.mButtonTextColor;
         } else {
@@ -363,7 +341,7 @@ public class MaterialView {
             params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
             // 设置点击背景颜色
             float[] radius;
-            if (which == MaterialDialog.OnClickListener.BUTTON_POSITIVE) {
+            if (which == MaterialDialog.BUTTON_POSITIVE) {
                 if (isSingleButton) {
                     radius = new float[]{0, 0, mD.mBackgroundRadiusII[2], mD.mBackgroundRadiusII[3]};
                 } else {
@@ -373,7 +351,7 @@ public class MaterialView {
                 radius = new float[]{0, 0, 0, mD.mBackgroundRadiusII[3]};
             }
             DrawableHelper.radius(radius)
-                    .pressed(mD.mBackgroundColor, mD.mPressedColor)
+                    .pressed(mD.mActiveColor, mD.mInactiveColor)
                     .into(button);
             textColor = mD.mButtonTextColor;
         }
@@ -393,11 +371,6 @@ public class MaterialView {
 
     /******************************** 创建Line **************************************/
 
-    /**
-     * @param width  line width
-     * @param height line height
-     * @return a line view
-     */
     public View createLine(int width, int height) {
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(width, height);
         View line = new View(mActivity);
@@ -407,6 +380,12 @@ public class MaterialView {
     }
 
     /******************************** 辅助方法 **************************************/
+
+    private Drawable getDrawable(boolean isShowTitle, CharSequence[] items, int position) {
+        return DrawableHelper.radius(getItemRadius(isShowTitle, items, position))
+                .pressed(mD.mActiveColor, mD.mInactiveColor)
+                .build();
+    }
 
     /**
      * create multiple choices type item view
@@ -439,7 +418,7 @@ public class MaterialView {
      *
      * @return a cancel view
      */
-    public ViewGroup createIOSCancelView() {
+    ViewGroup createIOSCancelView() {
         FrameLayout cancelLayout = new FrameLayout(mActivity);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
@@ -471,9 +450,8 @@ public class MaterialView {
      * @param isShowTitle title visible
      * @param position    item position
      * @param items       item string
-     * @return a item view
      */
-    public TextView createItemView(
+    private void createItemView(
             TextView itemView, int which, boolean isShowTitle, int position, CharSequence... items
     ) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -499,7 +477,6 @@ public class MaterialView {
         itemView.setText(items[position]);
         itemView.setTextColor(textColor);
         itemView.setBackground(getDrawable(isShowTitle, items, position));
-        return itemView;
     }
 
     private View.OnClickListener getOnClickListener(final int which, final int position) {
@@ -561,12 +538,6 @@ public class MaterialView {
                 return new float[]{0, 0, 0, 0};
             }
         }
-    }
-
-    private Drawable getDrawable(boolean isShowTitle, CharSequence[] items, int position) {
-        return DrawableHelper.radius(getItemRadius(isShowTitle, items, position))
-                .pressed(mD.mBackgroundColor, mD.mPressedColor)
-                .build();
     }
 
     /**

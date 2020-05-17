@@ -15,7 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
 import com.dzenm.lib.R;
-import com.dzenm.lib.dialog.ViewHolder;
+import com.dzenm.lib.view.ViewHolder;
 import com.dzenm.lib.os.ScreenHelper;
 
 /**

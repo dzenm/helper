@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.PopupWindow;
 
-import com.dzenm.lib.dialog.ViewHolder;
+import com.dzenm.lib.view.ViewHolder;
 
 /**
  * @author dinzhenyan

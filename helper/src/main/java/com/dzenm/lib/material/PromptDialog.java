@@ -1,4 +1,4 @@
-package com.dzenm.lib.dialog;
+package com.dzenm.lib.material;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

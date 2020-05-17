@@ -6,25 +6,21 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 
+import com.bumptech.glide.Glide;
 import com.dzenm.helper.R;
 import com.dzenm.helper.databinding.ActivityDialogBinding;
+import com.dzenm.helper.util.Urls;
 import com.dzenm.lib.base.AbsBaseActivity;
-import com.dzenm.lib.databinding.DialogInfoBinding;
-import com.dzenm.lib.dialog.AbsDialogFragment;
 import com.dzenm.lib.dialog.DatePickerDialog;
-import com.dzenm.lib.dialog.DialogHelper;
-import com.dzenm.lib.dialog.EditDialog;
-import com.dzenm.lib.dialog.InfoDialog;
 import com.dzenm.lib.dialog.LoginDialog;
-import com.dzenm.lib.dialog.PromptDialog;
-import com.dzenm.lib.dialog.ViewHolder;
 import com.dzenm.lib.download.DownloadHelper;
 import com.dzenm.lib.drawable.DrawableHelper;
-import com.dzenm.lib.net.NetworkHelper;
+import com.dzenm.lib.material.MaterialDialog;
+import com.dzenm.lib.material.PromptDialog;
 import com.dzenm.lib.popupwindow.PopupDialog;
 import com.dzenm.lib.toast.ToastHelper;
+import com.dzenm.lib.view.ViewHolder;
 
 public class DialogActivity extends AbsBaseActivity implements View.OnClickListener {
 
@@ -65,6 +61,8 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
         setRippleBackground(binding.tv127, android.R.color.holo_orange_light);
         setPressedBackground(binding.tv128, android.R.color.darker_gray);
         setRippleBackground(binding.tv129, android.R.color.holo_blue_bright);
+
+        Glide.with(this).load(Urls.URL_3).into(binding.image);
     }
 
     @Override
@@ -89,264 +87,6 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                         }
                     }).show();
         } else if (view.getId() == R.id.tv_101) {
-            DialogHelper.newInstance(this)
-                    .setLayout(R.layout.dialog_info)
-                    .setOnViewDataBinding(new DialogHelper.OnViewDataBinding() {
-                        @Override
-                        public void onBinding(ViewDataBinding binding, final AbsDialogFragment dialog) {
-                            DialogInfoBinding infoBinding = (DialogInfoBinding) binding;
-                            infoBinding.etMessage.setVisibility(View.VISIBLE);
-                            infoBinding.etMessage.setText("这是使用dataBinding的结果");
-                            infoBinding.tvNegative.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            infoBinding.tvPositive.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
-                    }).show();
-        } else if (view.getId() == R.id.tv_102) {
-            InfoDialog.newInstance(this)
-                    .setTitle("设置标题")
-                    .setMessage("Material Design样式下的dialog必须有标题的, 如果没有设置, 将有一个默认的标题：\"温馨提示\", " +
-                            "其它样式是可以设置无标题的, 千万别忘了设置message, 否则将不会有任务提示出现在dialog, 仅仅有两个按钮存在")
-                    .setMaterialDesign(true)
-                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
-                        @Override
-                        public boolean onClick(final InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setMessage("这是一个Material Design样式的dialog, 在代码里未设置标题, " +
-                                                "但是居然还出现了一个默认的标题。")
-                                        .setMaterialDesign(true)
-                                        .setTouchInOutSideCancel(true)
-                                        .show();
-                            } else {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setMessage("这是一个非Material Design样式的dialog, 没有设置标题时, " +
-                                                "不会显示标题")
-                                        .setTouchInOutSideCancel(true)
-                                        .show();
-                            }
-                            return true;
-                        }
-                    }).show();
-        } else if (view.getId() == R.id.tv_103) {
-            InfoDialog.newInstance(this)
-                    .setTitle("设置按钮的文本和颜色")
-                    .setMessage("按钮的文本可以自定义, 颜色也可以自己定义, 下面将为你演示一个自定义文本和颜色的dialog")
-                    .setButtonTextColor(android.R.color.holo_blue_light)
-                    .setButtonText("文本", "颜色")
-                    .setMaterialDesign(true)
-                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
-                        @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setTitle("设置按钮文本")
-                                        .setMessage("本机IP地址: " + NetworkHelper.getIPAddress(DialogActivity.this))
-                                        .setButtonText("这是确定按钮", "这是取消按钮")
-                                        .setRadiusCard(8f)
-                                        .setBackground(DrawableHelper.solid(android.R.color.holo_blue_bright).radius(8).build())
-                                        .setTouchInOutSideCancel(true)
-                                        .setGravity(Gravity.BOTTOM)
-                                        .show();
-                            } else {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setTitle("设置按钮颜色")
-                                        .setMessage("本机IP地址: " + NetworkHelper.getIPAddress(DialogActivity.this))
-                                        .setButtonTextColor(R.color.colorMaterialLightBlue,
-                                                android.R.color.holo_red_dark)
-                                        .setRadiusCard(8f)
-                                        .setBackground(DrawableHelper.solid(android.R.color.holo_orange_light)
-                                                .radius(8).build())
-                                        .setTouchInOutSideCancel(true)
-                                        .setGravity(Gravity.TOP)
-                                        .show();
-
-                            }
-                            return true;
-                        }
-                    }).setTouchInOutSideCancel(true)
-                    .show();
-        } else if (view.getId() == R.id.tv_104) {
-            InfoDialog.newInstance(this)
-                    .setTitle("设置按钮")
-                    .setMessage("有时候存在只需要一个按钮的情况, 所以预置了单按钮的选项, 只需要设置一个按钮的文本内容, " +
-                            "将会自动只显示一个按钮")
-                    .setButtonText("普通样式", "Material Design")
-                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
-                        @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setTitle("温馨提示")
-                                        .setMessage("这是普通效果的单按钮设置")
-                                        .setButtonText("确定")
-                                        .setPrimaryColor(R.color.colorMaterialLightBlue)
-                                        .show();
-                            } else {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setMessage("这是Material Design样式下的单按钮效果")
-                                        .setButtonText("确定")
-                                        .setMaterialDesign(true)
-                                        .show();
-                            }
-                            return false;
-                        }
-                    }).show();
-        } else if (view.getId() == R.id.tv_105) {
-            InfoDialog.newInstance(this)
-                    .setTitle("设置圆角")
-                    .setMessage("直接设置圆角, 通过setRadiusCard方法设置, 如果设置了背景, 那么将会复杂一些, " +
-                            "设置了背景之后也还是需要设置setRadiusCard, 因为按钮点击时有按压效果的圆角")
-                    .setButtonText("圆角", "背景加圆角")
-                    .setOnClickListener(new InfoDialog.OnInfoClickListener() {
-                        @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setTitle("设置圆角")
-                                        .setMessage("这是Material Design样式下的单按钮效果")
-                                        .setRadiusCard(4f)
-                                        .show();
-                            } else {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setMessage("这是Material Design样式下的单按钮效果")
-                                        .setMaterialDesign(true)
-                                        .setBackground(DrawableHelper.solid(android.R.color.holo_green_light).radius(20f).build())
-                                        .setRadiusCard(20f)
-                                        .show();
-                            }
-                            return true;
-                        }
-                    })
-                    .show();
-        } else if (view.getId() == R.id.tv_106) {
-            InfoDialog.newInstance(this)
-                    .setTitle("设置边距")
-                    .setMessage("当dialog显示在center时, 基本上不需要设置margin, 但如果一定需要设置, " +
-                            "也可以通过setMargin方法设置, 一般显示的bottom或者top时, 设置margin可以显示出不一样的效果")
-                    .setButtonText("无边距", "有边距")
-                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
-                        @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setTitle("温馨提示")
-                                        .setMessage("显示在底部,无边距,可以取消")
-                                        .setGravity(Gravity.BOTTOM)
-                                        .setBackground(DrawableHelper.solid(android.R.color.holo_orange_light).radius(0).build())
-                                        .setMargin(0)
-                                        .setTouchInOutSideCancel(true)
-                                        .show();
-                            } else {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setTitle("温馨提示")
-                                        .setMessage("显示在底部,有边距,可以取消")
-                                        .setGravity(Gravity.BOTTOM)
-                                        .setBackground(DrawableHelper.solid(android.R.color.holo_blue_light).radius(20).build())
-                                        .setMargin(20)
-                                        .setRadiusCard(20)
-                                        .setTouchInOutSideCancel(true)
-                                        .show();
-                            }
-                            return false;
-                        }
-                    }).show();
-        } else if (view.getId() == R.id.tv_107) {
-            InfoDialog.newInstance(this)
-                    .setTitle("设置样式")
-                    .setMessage("预置了dialog多种样式, 包括Material Design和像ISO的dialog一样存在分割线, 或者无分割线, " +
-                            "当前显示的是一个IOS样式的dialog")
-                    .setButtonText("无分割线", "Material Design")
-                    .setDivide(true)
-                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
-                        @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setTitle("设置样式")
-                                        .setMessage("类IOS风格, 无分割线")
-                                        .setBackground(DrawableHelper.solid(android.R.color.holo_purple).radius(8).build())
-                                        .setTouchInOutSideCancel(true)
-                                        .show();
-                            } else {
-                                InfoDialog.newInstance(DialogActivity.this)
-                                        .setTitle("设置样式")
-                                        .setMessage("这是一个Material Design样式的dialog")
-                                        .setMaterialDesign(true)
-                                        .setBackground(DrawableHelper.solid(android.R.color.holo_blue_bright).radius(8).build())
-                                        .setTouchInOutSideCancel(true)
-                                        .show();
-                            }
-                            return false;
-                        }
-                    }).show();
-        } else if (view.getId() == R.id.tv_1071) {
-            InfoDialog.newInstance(this)
-                    .setTitleIcon(R.drawable.ic_warm)
-                    .setMessage("dialog的位置是通过Gravity类来设置, 常用的有bottom和top")
-                    .show();
-        } else if (view.getId() == R.id.tv_108) {
-            InfoDialog.newInstance(this)
-                    .setTitle("设置编辑框的位置")
-                    .setMessage("dialog的位置是通过Gravity类来设置, 常用的有bottom和top")
-                    .setButtonText("bottom", "top")
-                    .setMaterialDesign(true)
-                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
-                        @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                EditDialog.newInstance(DialogActivity.this)
-                                        .setTitle("测试")
-                                        .setMessage("底部编辑框")
-                                        .setBackground(DrawableHelper.solid(android.R.color.holo_green_dark).radius(8).build())
-                                        .setTouchInOutSideCancel(true)
-                                        .setGravity(Gravity.BOTTOM)
-                                        .show();
-                            } else {
-                                EditDialog.newInstance(DialogActivity.this)
-                                        .setTitle("测试")
-                                        .setMessage("顶部编辑框")
-                                        .setTouchInOutSideCancel(true)
-                                        .setGravity(Gravity.TOP)
-                                        .show();
-                            }
-                            return false;
-                        }
-                    }).show();
-        } else if (view.getId() == R.id.tv_109) {
-            InfoDialog.newInstance(this)
-                    .setMessage("查看编辑框显示风格")
-                    .setButtonText("无边框", "有边框")
-                    .setOnClickListener(new InfoDialog.OnClickListener<InfoDialog>() {
-                        @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
-                                EditDialog.newInstance(DialogActivity.this)
-                                        .setMessage("无边框")
-                                        .setBackground(DrawableHelper.solid(android.R.color.holo_orange_dark).radius(8).build())
-                                        .setTouchInOutSideCancel(true)
-                                        .setGravity(Gravity.BOTTOM)
-                                        .show();
-                            } else {
-                                EditDialog.newInstance(DialogActivity.this)
-                                        .setMessage("有边框")
-                                        .setDivide(true)
-                                        .setTouchInOutSideCancel(true)
-                                        .show();
-                            }
-                            return false;
-                        }
-                    }).show();
-        } else if (view.getId() == R.id.tv_110) {
 
         } else if (view.getId() == R.id.tv_1101) {
             String url = "https://downpack.baidu.com/appsearch_AndroidPhone_v8.0.3(1.0.65.172)_1012271b.apk";
@@ -382,14 +122,14 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     }).create()
                     .showAsDropDown(findViewById(R.id.toolbar), 100, 0);
         } else if (view.getId() == R.id.tv_114) {
-            InfoDialog.newInstance(this)
+            new MaterialDialog.Builder(this)
                     .setTitle("提示")
                     .setMessage("日期选择器")
                     .setButtonText("循环查看", "指定初始日期")
-                    .setOnClickListener(new InfoDialog.OnInfoClickListener() {
+                    .setOnClickListener(new MaterialDialog.OnClickListener() {
                         @Override
-                        public boolean onClick(InfoDialog dialog, boolean confirm) {
-                            if (confirm) {
+                        public void onClick(MaterialDialog dialog, int which) {
+                            if (which == MaterialDialog.BUTTON_POSITIVE) {
                                 DatePickerDialog.newInstance(DialogActivity.this)
                                         .setRange("1970/1/1", "2019/8/1")
                                         .setLoop(true)
@@ -414,9 +154,10 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                                         }).setPrimaryColor(android.R.color.holo_green_light)
                                         .show();
                             }
-                            return false;
                         }
-                    }).show();
+                    })
+                    .create()
+                    .show();
         } else if (view.getId() == R.id.tv_120) {
             PromptDialog.newInstance(this)
                     .setTranslucent(true)
@@ -431,7 +172,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
                     .showWarming("您的身份信息可能被泄露");
         } else if (view.getId() == R.id.tv_123) {
             PromptDialog.newInstance(this)
-                    .show("正在加载中, 请稍后...", R.drawable.one, true);
+                    .show("正在加载中, 请稍后...", R.drawable.updata, true);
         } else if (view.getId() == R.id.tv_124) {
             PromptDialog.newInstance(this)
                     .setTranslucent(true)
@@ -461,7 +202,7 @@ public class DialogActivity extends AbsBaseActivity implements View.OnClickListe
     }
 
     private void setPressedBackground(View viewBackground, int color) {
-        DrawableHelper.radius(20).pressed(color, R.color.colorGray).into(viewBackground);
+        DrawableHelper.radius(20).pressed(color, R.attr.colorSecondary).into(viewBackground);
     }
 
     private void setRippleBackground(View viewBackground, int color) {

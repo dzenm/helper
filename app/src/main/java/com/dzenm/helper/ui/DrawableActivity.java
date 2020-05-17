@@ -2,6 +2,7 @@ package com.dzenm.helper.ui;
 
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -50,7 +51,18 @@ public class DrawableActivity extends AbsBaseActivity {
             }
         });
         DrawableHelper.radius(20).ripple(android.R.color.holo_blue_bright,
-                R.attr.colorDialogPrimaryText
+                R.attr.dialogPrimaryTextColor
         ).into(binding.ripple);
+
+        binding.updateView.setMax(100);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                count++;
+                binding.updateView.setProgress(count);
+            }
+        }, 500);
     }
+
+    private int count = 0;
 }

@@ -6,13 +6,12 @@ import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.ColorRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
-import com.dzenm.lib.dialog.PromptDialog;
 import com.dzenm.lib.log.Logger;
+import com.dzenm.lib.material.PromptDialog;
 import com.dzenm.lib.os.ActivityHelper;
 import com.dzenm.lib.os.StatusBarHelper;
 import com.dzenm.lib.os.ThemeHelper;
@@ -25,8 +24,6 @@ public class ActivityDelegate {
 
     private AppCompatActivity mActivity;
     private PromptDialog mPromptDialog;
-    private AbsBaseActivity.OnActivityResult mOnActivityResult;
-    private AbsBaseActivity.OnRequestPermissionsResult mOnRequestPermissionsResult;
     private String mTag;
 
     ActivityDelegate(AppCompatActivity activity, String tag) {
@@ -34,19 +31,36 @@ public class ActivityDelegate {
         mTag = tag;
 
         ActivityHelper.getInstance().add(mActivity); // 添加Activity到Stack管理
-        Logger.d(mTag + "set default theme");
-        ThemeHelper.setTheme(mActivity, ThemeHelper.getTheme());
         mActivity.getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);    // 设置切换页面动画开关
-        mPromptDialog = PromptDialog.newInstance(mActivity);
+
+        ThemeHelper.setTheme(mActivity, ThemeHelper.getLocalTheme());
     }
 
-    void toggleTheme(int theme) {
-        ThemeHelper.setTheme(mActivity, theme);
+    void setLocalTheme(int theme) {
+        logD("current theme: " + theme);
+        ThemeHelper.setLocalTheme(mActivity, theme);
+    }
+
+    void toggleTheme(int mode) {
+        mActivity.getDelegate().setLocalNightMode(mode);
+        ThemeHelper.saveLocalNightMode(mode);
         // 重启Activity
         Intent intent = new Intent(mActivity, mActivity.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mActivity.startActivity(intent);
+    }
+
+    void toggleTheme() {
+        int oldMode = mActivity.getDelegate().getLocalNightMode();
+        logD("current theme mode: " + oldMode);
+        if (oldMode == AppCompatDelegate.MODE_NIGHT_NO) {
+            toggleTheme(AppCompatDelegate.MODE_NIGHT_YES);
+        } else if (oldMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            toggleTheme(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            toggleTheme(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 
     /**
@@ -99,13 +113,17 @@ public class ActivityDelegate {
      * @param isShow 是否显示提示框
      */
     void show(boolean isShow) {
-        if (isShow) {
-            if (!mPromptDialog.isShowing()) {
-                mPromptDialog.showLoading(PromptDialog.LOADING_POINT_SCALE);
-            }
+        if (mPromptDialog == null) {
+            mPromptDialog = PromptDialog.newInstance(mActivity);
         } else {
-            if (mPromptDialog.isShowing()) {
-                mPromptDialog.dismiss();
+            if (isShow) {
+                if (!mPromptDialog.isShowing()) {
+                    mPromptDialog.showLoading(PromptDialog.LOADING_POINT_SCALE);
+                }
+            } else {
+                if (mPromptDialog.isShowing()) {
+                    mPromptDialog.dismiss();
+                }
             }
         }
     }
@@ -148,29 +166,5 @@ public class ActivityDelegate {
 
     void onDestroy() {
         ActivityHelper.getInstance().remove(mActivity);
-    }
-
-    void setOnActivityResult(AbsBaseActivity.OnActivityResult onActivityResult) {
-        mOnActivityResult = onActivityResult;
-    }
-
-    void setOnRequestPermissionsResult(AbsBaseActivity.OnRequestPermissionsResult onRequestPermissionsResult) {
-        mOnRequestPermissionsResult = onRequestPermissionsResult;
-    }
-
-    void onRequestActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (mOnActivityResult != null) {
-            mOnActivityResult.onResult(requestCode, resultCode, data);
-        }
-    }
-
-    void onRequestSelfPermissionsResult(
-            int requestCode,
-            @NonNull String[] permissions,
-            @NonNull int[] grantResults
-    ) {
-        if (mOnRequestPermissionsResult != null) {
-            mOnRequestPermissionsResult.onResult(requestCode, permissions, grantResults);
-        }
     }
 }

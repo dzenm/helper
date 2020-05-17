@@ -1,5 +1,6 @@
 package com.dzenm.helper.ui;
 
+import android.opengl.Matrix;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -10,7 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import com.dzenm.helper.R;
 import com.dzenm.helper.databinding.ActivityMaterialBinding;
 import com.dzenm.lib.base.AbsBaseActivity;
-import com.dzenm.lib.dialog.ViewHolder;
+import com.dzenm.lib.view.ViewHolder;
 import com.dzenm.lib.drawable.DrawableHelper;
 import com.dzenm.lib.material.MaterialDialog;
 import com.dzenm.lib.material.UpGradeView;
@@ -29,31 +30,32 @@ public class MaterialActivity extends AbsBaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_material);
         setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorPrimary);
 
-        DrawableHelper.radius(8).ripple(android.R.color.holo_red_dark, R.color.colorDivide).into(binding.tv11);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_green_dark, R.color.colorDivide).into(binding.tv12);
-        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv13);
-        DrawableHelper.radius(8).ripple(android.R.color.holo_red_light, R.color.colorDivide).into(binding.tv14);
-        DrawableHelper.radius(8).ripple(android.R.color.holo_orange_dark, R.color.colorDivide).into(binding.tv15);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_red_dark, R.color.divideColor).into(binding.tv11);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_green_dark, R.color.divideColor).into(binding.tv12);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_bright, R.color.divideColor).into(binding.tv13);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_red_light, R.color.divideColor).into(binding.tv14);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_orange_dark, R.color.divideColor).into(binding.tv15);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_green_dark, R.color.divideColor).into(binding.tv16);
 
-        DrawableHelper.radius(8).pressed(android.R.color.holo_green_light, R.color.colorDivide).into(binding.tv111);
-        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv121);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.color.colorDivide).into(binding.tv131);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_red_dark, R.color.colorDivide).into(binding.tv141);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_green_light, R.color.divideColor).into(binding.tv111);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_bright, R.color.divideColor).into(binding.tv121);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.color.divideColor).into(binding.tv131);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_red_dark, R.color.divideColor).into(binding.tv141);
 
-        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_dark, R.color.colorDivide).into(binding.tv21);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_dark, R.color.colorDivide).into(binding.tv22);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_red_dark, R.color.colorDivide).into(binding.tv23);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_green_dark, R.color.colorDivide).into(binding.tv24);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_red_light, R.color.colorDivide).into(binding.tv25);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_green_light, R.color.colorDivide).into(binding.tv26);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_dark, R.attr.divideColor).into(binding.tv21);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_dark, R.attr.divideColor).into(binding.tv22);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_red_dark, R.attr.divideColor).into(binding.tv23);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_green_dark, R.attr.divideColor).into(binding.tv24);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_red_light, R.attr.divideColor).into(binding.tv25);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_green_light, R.attr.divideColor).into(binding.tv26);
 
-        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.color.colorDivide).into(binding.tv40);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_red_light, R.color.colorDivide).into(binding.tv41);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_dark, R.color.colorDivide).into(binding.tv42);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.attr.divideColor).into(binding.tv40);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_red_light, R.attr.divideColor).into(binding.tv41);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_dark, R.attr.divideColor).into(binding.tv42);
 
-        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.color.colorDivide).into(binding.tv43);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_red_light, R.color.colorDivide).into(binding.tv44);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_dark, R.color.colorDivide).into(binding.tv45);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.attr.divideColor).into(binding.tv43);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_red_light, R.attr.divideColor).into(binding.tv44);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_dark, R.attr.divideColor).into(binding.tv45);
 
     }
 
@@ -139,6 +141,44 @@ public class MaterialActivity extends AbsBaseActivity {
                         }
                     }).create().show();
 
+        }  else if (view.getId() == R.id.tv_16) {
+            new MaterialDialog.Builder(this)
+                    .setTitle("Title")
+                    .setMessage("Message")
+                    .setButtonText("ACCECP", "DECLINE", "NEUTRAL")
+                    .setOnClickListener(new MaterialDialog.OnClickListener() {
+                        @Override
+                        public void onClick(final MaterialDialog materialDialog, int which) {
+                            if (which == MaterialDialog.BUTTON_POSITIVE) {
+                                new MaterialDialog.Builder(MaterialActivity.this)
+                                        .setTitle("Title")
+                                        .setMessage("Message")
+                                        .setButtonText("ACCECP", "DECLINE")
+                                        .setDimAccount(0.8f)
+                                        .setOnClickListener(new MaterialDialog.OnClickListener() {
+                                            @Override
+                                            public void onClick(MaterialDialog dialog, int which) {
+                                                dialog.dismiss();
+                                                materialDialog.dismiss();
+                                            }
+                                        }).create().show();
+                            } else {
+                                new MaterialDialog.Builder(MaterialActivity.this)
+                                        .setTitle("Title")
+                                        .setMessage("Message")
+                                        .setButtonText("ACCECP", "DECLINE")
+                                        .setDimAccount(0.8f)
+                                        .setOnClickListener(new MaterialDialog.OnClickListener() {
+                                            @Override
+                                            public void onClick(MaterialDialog dialog, int which) {
+                                                dialog.dismiss();
+                                                materialDialog.dismiss();
+                                            }
+                                        }).create().show();
+                            }
+                        }
+                    }).create().show();
+
         } else if (view.getId() == R.id.tv_111) {
             new MaterialDialog.Builder(this)
                     .setTitle("Title")
@@ -188,6 +228,7 @@ public class MaterialActivity extends AbsBaseActivity {
         } else if (view.getId() == R.id.tv_21) {
             new MaterialDialog.Builder(this)
                     .setTitle("Title")
+                    .setMessage("Hello Message")
                     .setItem(mItems)
                     .setButtonText("ACCECP", "DECLINE")
                     .setOnItemClickListener(new MaterialDialog.OnItemClickListener() {

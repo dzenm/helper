@@ -19,7 +19,6 @@ public class SPHelper {
 
     /************************************* 需要在Application中初始化 *********************************/
     private Context mContext;
-    @SuppressLint("StaticFieldLeak")
     private static SPHelper sSPHelper;
 
     private SPHelper() {

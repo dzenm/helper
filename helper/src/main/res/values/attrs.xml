@@ -11,16 +11,6 @@
         <attr name="progressColor" format="color|reference" />
     </declare-styleable>
 
-    <declare-styleable name="PhotoLayout">
-        <attr name="columnNumber" />
-        <attr name="totalNumber" format="integer" />
-        <attr name="margin" format="dimension|reference" />
-        <attr name="isPreview" format="boolean" />
-        <attr name="deleteSize" format="dimension|reference" />
-        <attr name="deleteIcon" format="reference" />
-        <attr name="defaultIcon" format="reference" />
-    </declare-styleable>
-
     <declare-styleable name="RatioImageView">
         <attr name="isCircle" format="boolean" />
         <attr name="isMask" format="boolean" />
@@ -54,6 +44,9 @@
             <flag name="grid" value="1" />
         </attr>
         <attr name="singleWrap" format="boolean" />
+        <attr name="isEditable" format="boolean" />
+        <attr name="isDeletable" format="boolean" />
+        <attr name="deleteIcon" format="integer|reference" />
     </declare-styleable>
 
     <declare-styleable name="EditTextLayout">
@@ -64,23 +57,22 @@
 
     <!-- Color palette -->
     <eat-comment />
-    <attr name="colorPrimaryText" format="color" />
-    <attr name="colorSecondaryText" format="color" />
-    <attr name="colorHintText" format="color" />
-    <attr name="colorDivide" format="color" />
-    <attr name="colorActive" format="color" />
-    <attr name="colorInactive" format="color" />
+    <attr name="primaryTextColor" format="color" />
+    <attr name="secondaryTextColor" format="color" />
+    <attr name="hintTextColor" format="color" />
+    <attr name="divideColor" format="color" />
+    <attr name="activeColor" format="color" />
+    <attr name="inactiveColor" format="color" />
 
-    <attr name="colorDialogPrimary" format="color" />
-    <attr name="colorDialogSecondary" format="color" />
-    <attr name="colorDialogAccent" format="color" />
-    <attr name="colorDialogPrimaryText" format="color" />
-    <attr name="colorDialogSecondaryText" format="color" />
-    <attr name="colorDialogHintText" format="color" />
-    <attr name="colorDialogDivide" format="color" />
-    <attr name="colorDialogButtonText" format="color" />
-    <attr name="colorDialogBackground" format="color" />
-    <attr name="colorDialogPressedBackground" format="color" />
-    <attr name="colorDialogActive" format="color" />
-    <attr name="colorDialogInactive" format="color" />
+    <attr name="dialogPrimaryColor" format="color" />
+    <attr name="dialogSecondaryColor" format="color" />
+    <attr name="dialogAccentColor" format="color" />
+    <attr name="dialogPrimaryTextColor" format="color" />
+    <attr name="dialogSecondaryColorText" format="color" />
+    <attr name="dialogHintTextColor" format="color" />
+    <attr name="dialogDivideColor" format="color" />
+    <attr name="dialogButtonTextColor" format="color" />
+    <attr name="dialogBackgroundColor" format="color" />
+    <attr name="dialogActiveColor" format="color" />
+    <attr name="dialogInactiveColor" format="color" />
 </resources>

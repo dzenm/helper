@@ -69,6 +69,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:gravity="center" />
+
+            <com.dzenm.helper.UpdateProgressView
+                android:id="@+id/updateView"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="@dimen/margin_normal" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>

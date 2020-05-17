@@ -1,6 +1,8 @@
 package com.dzenm.lib.os;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -11,12 +13,11 @@ import android.util.TypedValue;
 import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.dzenm.lib.R;
 import com.dzenm.lib.file.SPHelper;
-
-import java.lang.reflect.TypeVariable;
 
 /**
  * @author dzenm
@@ -26,18 +27,42 @@ public class ThemeHelper {
 
     private static final String THEME_PREF = "theme_pref";
     private static final String THEME_TYPE = "theme_type";
+    private static final String THEME_MODE = "theme_mode";
 
-    public static void setTheme(@NonNull Context context, int theme) {
-        SPHelper.getInstance().put(THEME_PREF, THEME_TYPE, theme);
-        context.setTheme(theme);
+    public static void setLocalTheme(@NonNull Activity activity, int theme) {
+        setTheme(activity, theme);
+        // 重启Activity
+//        activity.recreate();
+        Intent intent = new Intent(activity, activity.getClass());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
     }
 
-    public static int getTheme() {
+    public static void setTheme(@NonNull Activity activity, int theme) {
+        saveNewTheme(theme);
+        activity.setTheme(theme);
+    }
+
+    public static void saveNewTheme(int theme) {
+        SPHelper.getInstance().put(THEME_PREF, THEME_TYPE, theme);
+    }
+
+    public static void saveLocalNightMode(int theme) {
+        SPHelper.getInstance().put(THEME_PREF, THEME_MODE, theme);
+    }
+
+    public static int getLocalTheme() {
         return (int) SPHelper.getInstance().get(THEME_PREF, THEME_TYPE, R.style.AppTheme_Light);
     }
 
+    public static int getLocalNightMode() {
+        return (int) SPHelper.getInstance().get(THEME_PREF, THEME_MODE,
+                AppCompatDelegate.MODE_NIGHT_UNSPECIFIED);
+    }
+
     /**
-     * 获取 attr 下文件的颜色值
+     * 获取 attr/color 下文件的颜色值
      *
      * @param color 颜色值
      * @return 是否通过Resource文件获取的颜色值

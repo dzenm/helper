@@ -14,7 +14,7 @@
         android:paddingTop="@dimen/padding_normal"
         android:paddingRight="@dimen/padding_big"
         android:text="@string/dialog_info"
-        android:textColor="@color/colorPrimaryTextDark"
+        android:textColor="?attr/primaryTextColor"
         android:textSize="@dimen/text_size_title"
         android:textStyle="bold" />
 
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/divide_size"
         android:layout_marginTop="@dimen/margin_small"
-        android:background="@color/colorDivideDark" />
+        android:background="?attr/divideColor" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,7 +53,7 @@
             android:id="@+id/line"
             android:layout_width="@dimen/divide_size"
             android:layout_height="match_parent"
-            android:background="@color/colorDivideDark" />
+            android:background="?attr/divideColor" />
 
         <Button
             android:id="@+id/bt_positive"

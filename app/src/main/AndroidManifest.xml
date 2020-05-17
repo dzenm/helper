@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.ViewActivity"></activity>
-        <activity android:name=".PhotoSelectorActivity" />
+        <activity android:name=".ui.PhotoSelectorActivity" />
         <activity android:name=".ui.MaterialActivity" />
         <activity
             android:name=".ui.DrawActivity"

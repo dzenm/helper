@@ -31,9 +31,9 @@ public class GalleryActivity extends AbsBaseActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_gallery);
         setToolbar(binding.toolbar);
 
-        int[] images = new int[]{R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four,
-                R.drawable.five, R.drawable.six, R.drawable.seven};
-        binding.viewPager.setOffscreenPageLimit(images.length);
+//        int[] images = new int[]{R.drawable.one, R.drawable.two, R.drawable.three, R.drawable.four,
+//                R.drawable.five, R.drawable.six, R.drawable.seven};
+//        binding.viewPager.setOffscreenPageLimit(images.length);
         binding.viewPager.setPageMargin(20);
         binding.llRoot.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -43,7 +43,7 @@ public class GalleryActivity extends AbsBaseActivity {
             }
         });
 
-        binding.viewPager.setAdapter(new ViewPagerAdapter(this, images));
+//        binding.viewPager.setAdapter(new ViewPagerAdapter(this, images));
     }
 
     class ViewPagerAdapter extends PagerAdapter {

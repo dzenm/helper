@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.dzenm.helper.PhotoSelectorActivity;
 import com.dzenm.helper.R;
 import com.dzenm.helper.databinding.FragmentHomeBinding;
 import com.dzenm.lib.base.AbsBaseFragment;
@@ -21,22 +20,21 @@ import com.dzenm.lib.drawable.DrawableHelper;
 public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.OnClickListener {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState) {
         logD("onCreateView");
 
         FragmentHomeBinding binding = FragmentHomeBinding.inflate(inflater);
         setToolbarWithImmersiveStatusBar(binding.toolbar, R.color.colorMaterialLightBlue);
 
-        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv100);
-        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_light, R.color.colorDivide).into(binding.tv101);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.color.colorDivide).into(binding.tv102);
-        DrawableHelper.radius(8).ripple(android.R.color.holo_green_light, R.color.colorDivide).into(binding.tv103);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_purple, R.color.colorDivide).into(binding.tv104);
-        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_bright, R.color.colorDivide).into(binding.tv105);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_dark, R.color.colorDivide).into(binding.tv106);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_dark, R.color.colorDivide).into(binding.tv107);
-        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.color.colorDivide).into(binding.tv108);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_bright, R.attr.divideColor).into(binding.tv100);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_light, R.attr.divideColor).into(binding.tv101);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.attr.divideColor).into(binding.tv102);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_green_light, R.attr.divideColor).into(binding.tv103);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_purple, R.attr.divideColor).into(binding.tv104);
+        DrawableHelper.radius(8).ripple(android.R.color.holo_blue_bright, R.attr.divideColor).into(binding.tv105);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_dark, R.attr.divideColor).into(binding.tv106);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_blue_dark, R.attr.divideColor).into(binding.tv107);
+        DrawableHelper.radius(8).pressed(android.R.color.holo_orange_light, R.attr.divideColor).into(binding.tv108);
 
         binding.tv100.setOnClickListener(this);
         binding.tv101.setOnClickListener(this);
@@ -59,8 +57,8 @@ public class HomeFragment extends AbsBaseFragment<MainActivity> implements View.
             Intent intent = new Intent(getActivity(), LoadingActivity.class);
             startActivity(intent);
         } else if (view.getId() == R.id.tv_102) {
-            Intent intent = new Intent(getActivity(), GalleryActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(getActivity(), GalleryActivity.class);
+//            startActivity(intent);
         } else if (view.getId() == R.id.tv_103) {
             Intent intent = new Intent(getActivity(), PermissionActivity.class);
             startActivity(intent);

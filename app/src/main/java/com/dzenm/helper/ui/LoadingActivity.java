@@ -6,9 +6,11 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 
+import com.bumptech.glide.Glide;
 import com.dzenm.helper.LottieDialog;
 import com.dzenm.helper.R;
 import com.dzenm.helper.databinding.ActivityLoadingBinding;
+import com.dzenm.helper.util.Urls;
 import com.dzenm.lib.base.AbsBaseActivity;
 import com.dzenm.lib.drawable.DrawableHelper;
 
@@ -42,6 +44,9 @@ public class LoadingActivity extends AbsBaseActivity implements View.OnClickList
         setRippleBackground(binding.tv147, android.R.color.holo_red_light);
         setPressedBackground(binding.tv148, android.R.color.holo_green_light);
         setRippleBackground(binding.tv149, android.R.color.holo_orange_light);
+
+        Glide.with(this).load(Urls.URL_4).into(binding.image);
+
     }
 
     @Override
@@ -107,7 +112,7 @@ public class LoadingActivity extends AbsBaseActivity implements View.OnClickList
     }
 
     private void setPressedBackground(View viewBackground, int color) {
-        DrawableHelper.radius(8).pressed(color, R.color.colorDivide).into(viewBackground);
+        DrawableHelper.radius(8).pressed(color, R.color.divideColor).into(viewBackground);
     }
 
     private void setRippleBackground(View viewBackground, int color) {

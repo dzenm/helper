@@ -219,8 +219,8 @@ public class LoginDialog extends AbsDialogFragment implements View.OnClickListen
 //            etUsername.setBackgroundResource(R.drawable.bg_gray_border);
 //            etPassword.setBackgroundResource(R.drawable.bg_gray_border);
 //            etVerifyCode.setBackgroundResource(R.drawable.bg_gray_border);
-            line_1.setBackgroundColor(getColor(R.color.colorDivideDark));
-            line_2.setBackgroundColor(getColor(R.color.colorDivideDark));
+            line_1.setBackgroundColor(getColor(R.color.divideColor));
+            line_2.setBackgroundColor(getColor(R.color.divideColor));
         }
         // 验证码按钮点击颜色效果
         DrawableHelper.radiusBR(4f)
